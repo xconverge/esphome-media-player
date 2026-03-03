@@ -303,6 +303,13 @@ text_sensor:
   - platform: template
     id: media_source_sensor
     on_value:
+      # #region agent log — source change
+      - logger.log:
+          level: INFO
+          tag: debug_vol
+          format: "media_source_sensor on_value source='%s' is_tv=%d vol_arc=%d"
+          args: ['x.c_str()', '(int)id(is_tv_mode)', 'lv_arc_get_value(id(volume_arc))']
+      # #endregion
       - if:
           condition:
             lambda: |-
@@ -339,6 +346,13 @@ sensor:
   - platform: template
     id: media_volume_sensor
     on_value:
+      # #region agent log — volume sensor update
+      - logger.log:
+          level: INFO
+          tag: debug_vol
+          format: "media_volume_sensor on_value x=%.4f arc_will_be=%d is_tv=%d"
+          args: ['x', '(int)(x * 100.0f)', '(int)id(is_tv_mode)']
+      # #endregion
       - lvgl.arc.update:
           id: volume_arc
           value: !lambda 'return (int)(x * 100.0f);'

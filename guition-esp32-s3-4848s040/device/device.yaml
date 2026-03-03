@@ -445,6 +445,13 @@ script:
     mode: restart
     then:
       - delay: 250ms
+      # #region agent log — debounce volume fire
+      - logger.log:
+          level: INFO
+          tag: debug_vol
+          format: "debounce_volume FIRING arc=%d vol=%.4f target='%s' is_tv=%d"
+          args: ['lv_arc_get_value(id(volume_arc))', 'lv_arc_get_value(id(volume_arc)) / 100.0f', 'id(media_player_entity).state.c_str()', '(int)id(is_tv_mode)']
+      # #endregion
       - homeassistant.service:
           service: media_player.volume_set
           variables:
