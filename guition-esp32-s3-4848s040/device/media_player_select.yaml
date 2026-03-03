@@ -162,15 +162,7 @@ script:
           sub_text("media_position_updated_at", id(media_position_updated_at_sensor));
           sub_num("media_duration", id(media_duration_sensor));
           sub_num("media_position", id(media_position_sensor));
-          // #region agent log — volume debug
-          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("volume_level"),
-              str_cb([gen, gen_ptr](const std::string &state) {
-                if (gen != *gen_ptr) return;
-                ESP_LOGI("debug_vol", "HA volume_level raw='%s' is_tv=%d", state.c_str(), (int)id(is_tv_mode));
-                auto v = esphome::parse_number<float>(state);
-                if (v.has_value()) id(media_volume_sensor).publish_state(v.value());
-              }));
-          // #endregion
+          sub_num("volume_level", id(media_volume_sensor));
           sub_text("source", id(media_source_sensor));
 
           ESP_LOGI("media_select", "Subscribed to '%s'", entity.c_str());
