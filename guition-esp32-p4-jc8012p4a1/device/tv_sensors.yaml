@@ -106,6 +106,22 @@ text_sensor:
     on_value:
       - if:
           condition:
+            lambda: |-
+              return id(is_tv_mode)
+                  && (x == "idle" || x == "off" || x == "standby");
+          then:
+            - script.execute: exit_tv_mode
+      - if:
+          condition:
+            lambda: |-
+              return !id(is_tv_mode) && x == "playing"
+                  && id(media_source_sensor).has_state()
+                  && id(media_source_sensor).state == "TV"
+                  && !id(tv_media_player_entity).state.empty();
+          then:
+            - script.execute: enter_tv_mode
+      - if:
+          condition:
             lambda: 'return id(is_tv_mode);'
           then:
             - if:
