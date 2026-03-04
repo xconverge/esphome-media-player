@@ -31,7 +31,7 @@ http_request:
   id: http_req
 
 image:
-  - file: "assets/placeholder.png"
+  - file: "https://github.com/jtenniswood/esphome-media-player/raw/main/guition-esp32-p4-jc8012p4a1/assets/placeholder.png"
     id: album_art_placeholder
     type: RGB565
     byte_order: little_endian
