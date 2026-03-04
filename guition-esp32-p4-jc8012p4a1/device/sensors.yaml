@@ -312,7 +312,9 @@ sensor:
     on_value:
       - lambda: |-
           id(volume_updating_from_ha) = true;
-          lv_arc_set_value(id(volume_arc), (int)(x * 100.0f));
+          int pct = (int)(x * 100.0f);
+          lv_arc_set_value(id(volume_arc), pct);
+          lv_slider_set_value(id(group_volume_slider), pct, LV_ANIM_OFF);
           id(volume_updating_from_ha) = false;
       - lvgl.label.update:
           id: volume_pct_label
