@@ -465,16 +465,16 @@ lvgl:
                     pad_row: 2
                   widgets:
                     # --- Row 0 (selected speaker / leader) ---
-                    - obj: &speaker_row
+                    - obj:
                         id: speaker_row_0
                         width: 500
-                        height: 64
+                        height: 80
                         bg_opa: 0%
                         border_width: 0
                         pad_left: 8
                         pad_right: 8
-                        pad_top: 0
-                        pad_bottom: 0
+                        pad_top: 4
+                        pad_bottom: 4
                         scrollable: false
                         hidden: true
                         widgets:
@@ -483,15 +483,22 @@ lvgl:
                               text: ""
                               text_font: roboto30_font
                               text_color: 0xFFFFFF
-                              align: left_mid
-                              width: 170
+                              x: 0
+                              y: 4
+                              width: 400
+                          - switch:
+                              id: speaker_sw_0
+                              align: top_right
+                              y: 4
+                              width: 56
+                              height: 32
                           - button:
                               id: speaker_vol_down_0
-                              align: left_mid
-                              x: 178
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 0
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -506,24 +513,24 @@ lvgl:
                                     slot: 0
                           - slider:
                               id: speaker_slider_0
-                              align: left_mid
-                              x: 220
-                              width: 116
-                              height: 8
+                              x: 56
+                              y: 54
+                              width: 320
+                              height: 10
                               min_value: 0
                               max_value: 100
                               value: 0
                               bg_color: 0x333333
                               bg_opa: 100%
-                              radius: 4
+                              radius: 5
                               indicator:
                                 bg_color: 0x999999
-                                radius: 4
+                                radius: 5
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 8
-                                width: 16
-                                height: 16
+                                radius: 10
+                                width: 20
+                                height: 20
                                 border_width: 0
                               hidden: true
                               on_value:
@@ -534,11 +541,11 @@ lvgl:
                                     id(debounce_speaker_volume).execute();
                           - button:
                               id: speaker_vol_up_0
-                              align: left_mid
-                              x: 342
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 392
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -551,23 +558,18 @@ lvgl:
                                 - script.execute:
                                     id: speaker_volume_up
                                     slot: 0
-                          - switch:
-                              id: speaker_sw_0
-                              align: right_mid
-                              width: 56
-                              height: 32
 
                     # --- Row 1 ---
                     - obj:
                         id: speaker_row_1
                         width: 500
-                        height: 64
+                        height: 80
                         bg_opa: 0%
                         border_width: 0
                         pad_left: 8
                         pad_right: 8
-                        pad_top: 0
-                        pad_bottom: 0
+                        pad_top: 4
+                        pad_bottom: 4
                         scrollable: false
                         hidden: true
                         widgets:
@@ -576,15 +578,26 @@ lvgl:
                               text: ""
                               text_font: roboto30_font
                               text_color: 0xFFFFFF
-                              align: left_mid
-                              width: 170
+                              x: 0
+                              y: 4
+                              width: 400
+                          - switch:
+                              id: speaker_sw_1
+                              align: top_right
+                              y: 4
+                              width: 56
+                              height: 32
+                              on_click:
+                                - script.execute:
+                                    id: speaker_toggle
+                                    slot: 1
                           - button:
                               id: speaker_vol_down_1
-                              align: left_mid
-                              x: 178
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 0
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -599,24 +612,24 @@ lvgl:
                                     slot: 1
                           - slider:
                               id: speaker_slider_1
-                              align: left_mid
-                              x: 220
-                              width: 116
-                              height: 8
+                              x: 56
+                              y: 54
+                              width: 320
+                              height: 10
                               min_value: 0
                               max_value: 100
                               value: 0
                               bg_color: 0x333333
                               bg_opa: 100%
-                              radius: 4
+                              radius: 5
                               indicator:
                                 bg_color: 0x999999
-                                radius: 4
+                                radius: 5
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 8
-                                width: 16
-                                height: 16
+                                radius: 10
+                                width: 20
+                                height: 20
                                 border_width: 0
                               hidden: true
                               on_value:
@@ -627,11 +640,11 @@ lvgl:
                                     id(debounce_speaker_volume).execute();
                           - button:
                               id: speaker_vol_up_1
-                              align: left_mid
-                              x: 342
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 392
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -644,27 +657,18 @@ lvgl:
                                 - script.execute:
                                     id: speaker_volume_up
                                     slot: 1
-                          - switch:
-                              id: speaker_sw_1
-                              align: right_mid
-                              width: 56
-                              height: 32
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 1
 
                     # --- Row 2 ---
                     - obj:
                         id: speaker_row_2
                         width: 500
-                        height: 64
+                        height: 80
                         bg_opa: 0%
                         border_width: 0
                         pad_left: 8
                         pad_right: 8
-                        pad_top: 0
-                        pad_bottom: 0
+                        pad_top: 4
+                        pad_bottom: 4
                         scrollable: false
                         hidden: true
                         widgets:
@@ -673,15 +677,26 @@ lvgl:
                               text: ""
                               text_font: roboto30_font
                               text_color: 0xFFFFFF
-                              align: left_mid
-                              width: 170
+                              x: 0
+                              y: 4
+                              width: 400
+                          - switch:
+                              id: speaker_sw_2
+                              align: top_right
+                              y: 4
+                              width: 56
+                              height: 32
+                              on_click:
+                                - script.execute:
+                                    id: speaker_toggle
+                                    slot: 2
                           - button:
                               id: speaker_vol_down_2
-                              align: left_mid
-                              x: 178
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 0
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -696,24 +711,24 @@ lvgl:
                                     slot: 2
                           - slider:
                               id: speaker_slider_2
-                              align: left_mid
-                              x: 220
-                              width: 116
-                              height: 8
+                              x: 56
+                              y: 54
+                              width: 320
+                              height: 10
                               min_value: 0
                               max_value: 100
                               value: 0
                               bg_color: 0x333333
                               bg_opa: 100%
-                              radius: 4
+                              radius: 5
                               indicator:
                                 bg_color: 0x999999
-                                radius: 4
+                                radius: 5
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 8
-                                width: 16
-                                height: 16
+                                radius: 10
+                                width: 20
+                                height: 20
                                 border_width: 0
                               hidden: true
                               on_value:
@@ -724,11 +739,11 @@ lvgl:
                                     id(debounce_speaker_volume).execute();
                           - button:
                               id: speaker_vol_up_2
-                              align: left_mid
-                              x: 342
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 392
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -741,27 +756,18 @@ lvgl:
                                 - script.execute:
                                     id: speaker_volume_up
                                     slot: 2
-                          - switch:
-                              id: speaker_sw_2
-                              align: right_mid
-                              width: 56
-                              height: 32
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 2
 
                     # --- Row 3 ---
                     - obj:
                         id: speaker_row_3
                         width: 500
-                        height: 64
+                        height: 80
                         bg_opa: 0%
                         border_width: 0
                         pad_left: 8
                         pad_right: 8
-                        pad_top: 0
-                        pad_bottom: 0
+                        pad_top: 4
+                        pad_bottom: 4
                         scrollable: false
                         hidden: true
                         widgets:
@@ -770,15 +776,26 @@ lvgl:
                               text: ""
                               text_font: roboto30_font
                               text_color: 0xFFFFFF
-                              align: left_mid
-                              width: 170
+                              x: 0
+                              y: 4
+                              width: 400
+                          - switch:
+                              id: speaker_sw_3
+                              align: top_right
+                              y: 4
+                              width: 56
+                              height: 32
+                              on_click:
+                                - script.execute:
+                                    id: speaker_toggle
+                                    slot: 3
                           - button:
                               id: speaker_vol_down_3
-                              align: left_mid
-                              x: 178
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 0
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -793,24 +810,24 @@ lvgl:
                                     slot: 3
                           - slider:
                               id: speaker_slider_3
-                              align: left_mid
-                              x: 220
-                              width: 116
-                              height: 8
+                              x: 56
+                              y: 54
+                              width: 320
+                              height: 10
                               min_value: 0
                               max_value: 100
                               value: 0
                               bg_color: 0x333333
                               bg_opa: 100%
-                              radius: 4
+                              radius: 5
                               indicator:
                                 bg_color: 0x999999
-                                radius: 4
+                                radius: 5
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 8
-                                width: 16
-                                height: 16
+                                radius: 10
+                                width: 20
+                                height: 20
                                 border_width: 0
                               hidden: true
                               on_value:
@@ -821,11 +838,11 @@ lvgl:
                                     id(debounce_speaker_volume).execute();
                           - button:
                               id: speaker_vol_up_3
-                              align: left_mid
-                              x: 342
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 392
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -838,27 +855,18 @@ lvgl:
                                 - script.execute:
                                     id: speaker_volume_up
                                     slot: 3
-                          - switch:
-                              id: speaker_sw_3
-                              align: right_mid
-                              width: 56
-                              height: 32
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 3
 
                     # --- Row 4 ---
                     - obj:
                         id: speaker_row_4
                         width: 500
-                        height: 64
+                        height: 80
                         bg_opa: 0%
                         border_width: 0
                         pad_left: 8
                         pad_right: 8
-                        pad_top: 0
-                        pad_bottom: 0
+                        pad_top: 4
+                        pad_bottom: 4
                         scrollable: false
                         hidden: true
                         widgets:
@@ -867,15 +875,26 @@ lvgl:
                               text: ""
                               text_font: roboto30_font
                               text_color: 0xFFFFFF
-                              align: left_mid
-                              width: 170
+                              x: 0
+                              y: 4
+                              width: 400
+                          - switch:
+                              id: speaker_sw_4
+                              align: top_right
+                              y: 4
+                              width: 56
+                              height: 32
+                              on_click:
+                                - script.execute:
+                                    id: speaker_toggle
+                                    slot: 4
                           - button:
                               id: speaker_vol_down_4
-                              align: left_mid
-                              x: 178
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 0
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -890,24 +909,24 @@ lvgl:
                                     slot: 4
                           - slider:
                               id: speaker_slider_4
-                              align: left_mid
-                              x: 220
-                              width: 116
-                              height: 8
+                              x: 56
+                              y: 54
+                              width: 320
+                              height: 10
                               min_value: 0
                               max_value: 100
                               value: 0
                               bg_color: 0x333333
                               bg_opa: 100%
-                              radius: 4
+                              radius: 5
                               indicator:
                                 bg_color: 0x999999
-                                radius: 4
+                                radius: 5
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 8
-                                width: 16
-                                height: 16
+                                radius: 10
+                                width: 20
+                                height: 20
                                 border_width: 0
                               hidden: true
                               on_value:
@@ -918,11 +937,11 @@ lvgl:
                                     id(debounce_speaker_volume).execute();
                           - button:
                               id: speaker_vol_up_4
-                              align: left_mid
-                              x: 342
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 392
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -935,27 +954,18 @@ lvgl:
                                 - script.execute:
                                     id: speaker_volume_up
                                     slot: 4
-                          - switch:
-                              id: speaker_sw_4
-                              align: right_mid
-                              width: 56
-                              height: 32
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 4
 
                     # --- Row 5 ---
                     - obj:
                         id: speaker_row_5
                         width: 500
-                        height: 64
+                        height: 80
                         bg_opa: 0%
                         border_width: 0
                         pad_left: 8
                         pad_right: 8
-                        pad_top: 0
-                        pad_bottom: 0
+                        pad_top: 4
+                        pad_bottom: 4
                         scrollable: false
                         hidden: true
                         widgets:
@@ -964,15 +974,26 @@ lvgl:
                               text: ""
                               text_font: roboto30_font
                               text_color: 0xFFFFFF
-                              align: left_mid
-                              width: 170
+                              x: 0
+                              y: 4
+                              width: 400
+                          - switch:
+                              id: speaker_sw_5
+                              align: top_right
+                              y: 4
+                              width: 56
+                              height: 32
+                              on_click:
+                                - script.execute:
+                                    id: speaker_toggle
+                                    slot: 5
                           - button:
                               id: speaker_vol_down_5
-                              align: left_mid
-                              x: 178
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 0
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -987,24 +1008,24 @@ lvgl:
                                     slot: 5
                           - slider:
                               id: speaker_slider_5
-                              align: left_mid
-                              x: 220
-                              width: 116
-                              height: 8
+                              x: 56
+                              y: 54
+                              width: 320
+                              height: 10
                               min_value: 0
                               max_value: 100
                               value: 0
                               bg_color: 0x333333
                               bg_opa: 100%
-                              radius: 4
+                              radius: 5
                               indicator:
                                 bg_color: 0x999999
-                                radius: 4
+                                radius: 5
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 8
-                                width: 16
-                                height: 16
+                                radius: 10
+                                width: 20
+                                height: 20
                                 border_width: 0
                               hidden: true
                               on_value:
@@ -1015,11 +1036,11 @@ lvgl:
                                     id(debounce_speaker_volume).execute();
                           - button:
                               id: speaker_vol_up_5
-                              align: left_mid
-                              x: 342
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 392
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -1032,27 +1053,18 @@ lvgl:
                                 - script.execute:
                                     id: speaker_volume_up
                                     slot: 5
-                          - switch:
-                              id: speaker_sw_5
-                              align: right_mid
-                              width: 56
-                              height: 32
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 5
 
                     # --- Row 6 ---
                     - obj:
                         id: speaker_row_6
                         width: 500
-                        height: 64
+                        height: 80
                         bg_opa: 0%
                         border_width: 0
                         pad_left: 8
                         pad_right: 8
-                        pad_top: 0
-                        pad_bottom: 0
+                        pad_top: 4
+                        pad_bottom: 4
                         scrollable: false
                         hidden: true
                         widgets:
@@ -1061,15 +1073,26 @@ lvgl:
                               text: ""
                               text_font: roboto30_font
                               text_color: 0xFFFFFF
-                              align: left_mid
-                              width: 170
+                              x: 0
+                              y: 4
+                              width: 400
+                          - switch:
+                              id: speaker_sw_6
+                              align: top_right
+                              y: 4
+                              width: 56
+                              height: 32
+                              on_click:
+                                - script.execute:
+                                    id: speaker_toggle
+                                    slot: 6
                           - button:
                               id: speaker_vol_down_6
-                              align: left_mid
-                              x: 178
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 0
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -1084,24 +1107,24 @@ lvgl:
                                     slot: 6
                           - slider:
                               id: speaker_slider_6
-                              align: left_mid
-                              x: 220
-                              width: 116
-                              height: 8
+                              x: 56
+                              y: 54
+                              width: 320
+                              height: 10
                               min_value: 0
                               max_value: 100
                               value: 0
                               bg_color: 0x333333
                               bg_opa: 100%
-                              radius: 4
+                              radius: 5
                               indicator:
                                 bg_color: 0x999999
-                                radius: 4
+                                radius: 5
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 8
-                                width: 16
-                                height: 16
+                                radius: 10
+                                width: 20
+                                height: 20
                                 border_width: 0
                               hidden: true
                               on_value:
@@ -1112,11 +1135,11 @@ lvgl:
                                     id(debounce_speaker_volume).execute();
                           - button:
                               id: speaker_vol_up_6
-                              align: left_mid
-                              x: 342
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 392
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -1129,27 +1152,18 @@ lvgl:
                                 - script.execute:
                                     id: speaker_volume_up
                                     slot: 6
-                          - switch:
-                              id: speaker_sw_6
-                              align: right_mid
-                              width: 56
-                              height: 32
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 6
 
                     # --- Row 7 ---
                     - obj:
                         id: speaker_row_7
                         width: 500
-                        height: 64
+                        height: 80
                         bg_opa: 0%
                         border_width: 0
                         pad_left: 8
                         pad_right: 8
-                        pad_top: 0
-                        pad_bottom: 0
+                        pad_top: 4
+                        pad_bottom: 4
                         scrollable: false
                         hidden: true
                         widgets:
@@ -1158,15 +1172,26 @@ lvgl:
                               text: ""
                               text_font: roboto30_font
                               text_color: 0xFFFFFF
-                              align: left_mid
-                              width: 170
+                              x: 0
+                              y: 4
+                              width: 400
+                          - switch:
+                              id: speaker_sw_7
+                              align: top_right
+                              y: 4
+                              width: 56
+                              height: 32
+                              on_click:
+                                - script.execute:
+                                    id: speaker_toggle
+                                    slot: 7
                           - button:
                               id: speaker_vol_down_7
-                              align: left_mid
-                              x: 178
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 0
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -1181,24 +1206,24 @@ lvgl:
                                     slot: 7
                           - slider:
                               id: speaker_slider_7
-                              align: left_mid
-                              x: 220
-                              width: 116
-                              height: 8
+                              x: 56
+                              y: 54
+                              width: 320
+                              height: 10
                               min_value: 0
                               max_value: 100
                               value: 0
                               bg_color: 0x333333
                               bg_opa: 100%
-                              radius: 4
+                              radius: 5
                               indicator:
                                 bg_color: 0x999999
-                                radius: 4
+                                radius: 5
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 8
-                                width: 16
-                                height: 16
+                                radius: 10
+                                width: 20
+                                height: 20
                                 border_width: 0
                               hidden: true
                               on_value:
@@ -1209,11 +1234,11 @@ lvgl:
                                     id(debounce_speaker_volume).execute();
                           - button:
                               id: speaker_vol_up_7
-                              align: left_mid
-                              x: 342
-                              width: 36px
-                              height: 36px
-                              radius: 18
+                              x: 392
+                              y: 40
+                              width: 40px
+                              height: 40px
+                              radius: 20
                               styles: control_round
                               hidden: true
                               widgets:
@@ -1225,15 +1250,6 @@ lvgl:
                               on_press:
                                 - script.execute:
                                     id: speaker_volume_up
-                                    slot: 7
-                          - switch:
-                              id: speaker_sw_7
-                              align: right_mid
-                              width: 56
-                              height: 32
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
                                     slot: 7
 
         # ---------------------------------------------------------------
