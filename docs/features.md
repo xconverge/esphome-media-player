@@ -30,6 +30,10 @@ If your speaker has a "TV" source (e.g. Sonos with a home theater setup), the co
 
 To enable this, set the optional **Sonos Tv Source** field in the device's configuration to the entity ID of your TV media player (e.g. `media_player.apple_tv`). Leave it empty to disable. See [Settings](/configurable-settings#tv-source) for details.
 
+## Speaker grouping (Sonos)
+
+When controlling a Sonos speaker, a speaker icon appears on the main screen. Tap it to open a panel listing all your Sonos speakers with toggle switches to group or ungroup them. Changes happen instantly via the standard Home Assistant `media_player.join` and `media_player.unjoin` services. Requires a one-time setup of two template helpers in Home Assistant — see [Speaker Grouping](/speaker-grouping) for instructions.
+
 ## Touch controls
 
 - **Play / Pause** — button in the bottom-right toggles playback.
