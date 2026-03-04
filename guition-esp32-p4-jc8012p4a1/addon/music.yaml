@@ -30,7 +30,7 @@ external_components:
       ref: main
       path: components
     components: [online_image]
-    refresh: 1d
+    refresh: 1s
 
 http_request:
   id: http_req
