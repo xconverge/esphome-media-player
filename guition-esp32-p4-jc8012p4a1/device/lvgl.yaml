@@ -6,8 +6,13 @@
 # =============================================================================
 
 lvgl:
-  buffer_size: 25%
+  buffer_size: 12%
   byte_order: little_endian
+  on_boot:
+    - lambda: |-
+        lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_SCROLL_MOMENTUM);
+        lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_SCROLL_ELASTIC);
+        lv_obj_set_scroll_dir(id(speakers_container), LV_DIR_VER);
 
   pages:
     - id: main_page
@@ -385,8 +390,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0
@@ -448,8 +453,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0
@@ -524,8 +529,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0
@@ -623,8 +628,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0
@@ -722,8 +727,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0
@@ -821,8 +826,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0
@@ -920,8 +925,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0
@@ -1019,8 +1024,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0
@@ -1118,8 +1123,8 @@ lvgl:
                         height: 72
                         bg_opa: 0%
                         border_width: 1
-                        border_color: 0xFFFFFF
-                        border_opa: 20%
+                        border_color: 0x333333
+                        border_opa: 100%
                         border_side: bottom
                         pad_left: 0
                         pad_right: 0

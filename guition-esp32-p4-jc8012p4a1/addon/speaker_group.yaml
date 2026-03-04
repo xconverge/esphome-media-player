@@ -404,24 +404,22 @@ script:
     parameters:
       direction: int
     then:
-      - lambda: |-
-          int i = id(group_vol_index);
-          int count = id(speaker_count);
-
-          while (i < count && !id(speaker_grouped)[i]) {
-            i++;
-          }
-
-          if (i >= count) return;
-
-          id(speaker_vol_target) = id(speaker_entity_ids)[i];
-          id(group_vol_index) = i + 1;
-      - homeassistant.service:
-          service: !lambda 'return direction > 0 ? "media_player.volume_up" : "media_player.volume_down";'
-          variables:
-            target: !lambda 'return id(speaker_vol_target);'
-          data_template:
-            entity_id: "{{ target }}"
-      - script.execute:
-          id: group_volume_step
-          direction: !lambda 'return direction;'
+      - while:
+          condition:
+            lambda: |-
+              int i = id(group_vol_index);
+              int count = id(speaker_count);
+              while (i < count && !id(speaker_grouped)[i]) {
+                i++;
+              }
+              if (i >= count) return false;
+              id(speaker_vol_target) = id(speaker_entity_ids)[i];
+              id(group_vol_index) = i + 1;
+              return true;
+          then:
+            - homeassistant.service:
+                service: !lambda 'return direction > 0 ? "media_player.volume_up" : "media_player.volume_down";'
+                variables:
+                  target: !lambda 'return id(speaker_vol_target);'
+                data_template:
+                  entity_id: "{{ target }}"
