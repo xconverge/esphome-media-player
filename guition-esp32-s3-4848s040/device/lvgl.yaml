@@ -173,7 +173,7 @@ lvgl:
         - bar:
             id: media_progress_bar
             align: bottom_mid
-            y: -3
+            y: 0
             width: 480
             height: 6
             bg_color: 0x000000
