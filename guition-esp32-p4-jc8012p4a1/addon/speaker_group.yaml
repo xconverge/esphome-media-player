@@ -29,6 +29,15 @@ globals:
   - id: speaker_vol_target
     type: std::string
     initial_value: '""'
+  - id: group_vol_index
+    type: int
+    initial_value: '0'
+  - id: speaker_volumes
+    type: float[8]
+    initial_value: '{0.0f}'
+  - id: prev_arc_value
+    type: int
+    initial_value: '-1'
 
 text_sensor:
   - platform: homeassistant
@@ -42,6 +51,12 @@ text_sensor:
     entity_id: sensor.sonos_speaker_names
     on_value:
       - script.execute: parse_speakers
+
+  - platform: homeassistant
+    id: sonos_volumes_sensor
+    entity_id: sensor.sonos_speaker_volumes
+    on_value:
+      - script.execute: parse_speaker_volumes
 
   - platform: template
     id: group_members_sensor
@@ -156,6 +171,74 @@ script:
           }
 
       - script.execute: update_group_state
+      - script.execute: parse_speaker_volumes
+
+  # ---------------------------------------------------------------------------
+  # Parse volume levels from the HA template sensor and map them to speaker
+  # slots using entity ID matching. Volumes arrive in sensor discovery order;
+  # we need them in our slot order.
+  # ---------------------------------------------------------------------------
+  - id: parse_speaker_volumes
+    mode: restart
+    then:
+      - lambda: |-
+          if (!id(sonos_volumes_sensor).has_state() || !id(sonos_entity_ids_sensor).has_state())
+            return;
+
+          std::string vols_raw = id(sonos_volumes_sensor).state;
+          std::string ids_raw = id(sonos_entity_ids_sensor).state;
+
+          if (vols_raw.empty() || vols_raw == "unknown" || vols_raw == "None") return;
+
+          // Parse sensor-order entity IDs
+          std::vector<std::string> sensor_ids;
+          size_t start = 0, end;
+          while ((end = ids_raw.find(',', start)) != std::string::npos && sensor_ids.size() < 8) {
+            std::string t = ids_raw.substr(start, end - start);
+            while (!t.empty() && t.front() == ' ') t.erase(0, 1);
+            while (!t.empty() && t.back() == ' ') t.pop_back();
+            if (!t.empty()) sensor_ids.push_back(t);
+            start = end + 1;
+          }
+          if (start < ids_raw.size() && sensor_ids.size() < 8) {
+            std::string t = ids_raw.substr(start);
+            while (!t.empty() && t.front() == ' ') t.erase(0, 1);
+            while (!t.empty() && t.back() == ' ') t.pop_back();
+            if (!t.empty()) sensor_ids.push_back(t);
+          }
+
+          // Parse sensor-order volumes
+          std::vector<float> sensor_vols;
+          start = 0;
+          while ((end = vols_raw.find(',', start)) != std::string::npos && sensor_vols.size() < 8) {
+            std::string t = vols_raw.substr(start, end - start);
+            while (!t.empty() && t.front() == ' ') t.erase(0, 1);
+            while (!t.empty() && t.back() == ' ') t.pop_back();
+            auto v = esphome::parse_number<float>(t);
+            sensor_vols.push_back(v.has_value() ? v.value() : 0.0f);
+            start = end + 1;
+          }
+          if (start < vols_raw.size() && sensor_vols.size() < 8) {
+            std::string t = vols_raw.substr(start);
+            while (!t.empty() && t.front() == ' ') t.erase(0, 1);
+            while (!t.empty() && t.back() == ' ') t.pop_back();
+            auto v = esphome::parse_number<float>(t);
+            sensor_vols.push_back(v.has_value() ? v.value() : 0.0f);
+          }
+
+          // Map sensor-order volumes to slot-order by matching entity IDs
+          for (int slot = 0; slot < id(speaker_count); slot++) {
+            for (size_t s = 0; s < sensor_ids.size(); s++) {
+              if (sensor_ids[s] == id(speaker_entity_ids)[slot] && s < sensor_vols.size()) {
+                id(speaker_volumes)[slot] = sensor_vols[s];
+                break;
+              }
+            }
+          }
+
+          // Sync the arc to the primary speaker's volume
+          int primary_pct = (int)(id(speaker_volumes)[0] * 100.0f);
+          id(prev_arc_value) = primary_pct;
 
   # ---------------------------------------------------------------------------
   # Parse group_members and update the grouped state for each speaker slot.
@@ -220,6 +303,7 @@ script:
                 std::swap(id(speaker_entity_ids)[i], id(speaker_entity_ids)[j]);
                 std::swap(id(speaker_names)[i], id(speaker_names)[j]);
                 std::swap(id(speaker_grouped)[i], id(speaker_grouped)[j]);
+                std::swap(id(speaker_volumes)[i], id(speaker_volumes)[j]);
               }
             }
           }
@@ -381,3 +465,79 @@ script:
             target: !lambda 'return id(speaker_vol_target);'
           data_template:
             entity_id: "{{ target }}"
+
+  # ---------------------------------------------------------------------------
+  # Group volume: adjusts all grouped speakers relative to their current level.
+  # Computes the delta from the previous arc position and applies it to each
+  # speaker's tracked volume, keeping their relative balance intact.
+  # Debounced so rapid arc dragging doesn't flood HA with requests.
+  # ---------------------------------------------------------------------------
+  - id: debounce_group_volume
+    mode: restart
+    then:
+      - delay: 150ms
+      - lambda: |-
+          int new_val = lv_arc_get_value(id(volume_arc));
+          int prev = id(prev_arc_value);
+
+          // First interaction or no speakers — just set the primary
+          if (prev < 0 || id(speaker_count) < 2) {
+            id(prev_arc_value) = new_val;
+            id(speaker_volumes)[0] = new_val / 100.0f;
+            id(speaker_vol_target) = id(media_player_entity).state;
+            id(do_group_volume_set).execute();
+            return;
+          }
+
+          float delta = (new_val - prev) / 100.0f;
+          id(prev_arc_value) = new_val;
+
+          // Apply delta to each grouped speaker's tracked volume
+          for (int i = 0; i < id(speaker_count); i++) {
+            if (id(speaker_grouped)[i]) {
+              float v = id(speaker_volumes)[i] + delta;
+              if (v < 0.0f) v = 0.0f;
+              if (v > 1.0f) v = 1.0f;
+              id(speaker_volumes)[i] = v;
+            }
+          }
+
+          id(group_vol_index) = 0;
+      - script.execute: group_volume_next
+
+  - id: group_volume_next
+    mode: single
+    then:
+      - lambda: |-
+          int i = id(group_vol_index);
+          int count = id(speaker_count);
+
+          while (i < count && !id(speaker_grouped)[i]) {
+            i++;
+          }
+
+          if (i >= count) return;
+
+          id(speaker_vol_target) = id(speaker_entity_ids)[i];
+          id(group_vol_index) = i + 1;
+          id(do_group_volume_set).execute();
+
+  - id: do_group_volume_set
+    mode: single
+    then:
+      - homeassistant.service:
+          service: media_player.volume_set
+          variables:
+            target: !lambda 'return id(speaker_vol_target);'
+            vol_level: !lambda |-
+              // Find the slot for this target and return its tracked volume
+              for (int i = 0; i < id(speaker_count); i++) {
+                if (id(speaker_entity_ids)[i] == id(speaker_vol_target)) {
+                  return id(speaker_volumes)[i];
+                }
+              }
+              return lv_arc_get_value(id(volume_arc)) / 100.0f;
+          data_template:
+            entity_id: "{{ target }}"
+            volume_level: "{{ vol_level }}"
+      - script.execute: group_volume_next

@@ -369,14 +369,7 @@ lvgl:
                         condition:
                           lambda: 'return !id(volume_updating_from_ha);'
                         then:
-                          - homeassistant.service:
-                              service: media_player.volume_set
-                              variables:
-                                target: !lambda 'return id(media_player_entity).state;'
-                                vol_level: !lambda 'return x / 100.0f;'
-                              data_template:
-                                entity_id: "{{ target }}"
-                                volume_level: "{{ vol_level }}"
+                          - script.execute: debounce_group_volume
 
               - label:
                   id: volume_title_label
@@ -504,7 +497,7 @@ lvgl:
                                 - label:
                                     text_font: roboto19_font
                                     align: center
-                                    text: "−"
+                                    text: "-"
                                     text_color: 0xFFFFFF
                               on_press:
                                 - script.execute:
@@ -569,7 +562,7 @@ lvgl:
                                 - label:
                                     text_font: roboto19_font
                                     align: center
-                                    text: "−"
+                                    text: "-"
                                     text_color: 0xFFFFFF
                               on_press:
                                 - script.execute:
@@ -638,7 +631,7 @@ lvgl:
                                 - label:
                                     text_font: roboto19_font
                                     align: center
-                                    text: "−"
+                                    text: "-"
                                     text_color: 0xFFFFFF
                               on_press:
                                 - script.execute:
@@ -707,7 +700,7 @@ lvgl:
                                 - label:
                                     text_font: roboto19_font
                                     align: center
-                                    text: "−"
+                                    text: "-"
                                     text_color: 0xFFFFFF
                               on_press:
                                 - script.execute:
@@ -776,7 +769,7 @@ lvgl:
                                 - label:
                                     text_font: roboto19_font
                                     align: center
-                                    text: "−"
+                                    text: "-"
                                     text_color: 0xFFFFFF
                               on_press:
                                 - script.execute:
@@ -845,7 +838,7 @@ lvgl:
                                 - label:
                                     text_font: roboto19_font
                                     align: center
-                                    text: "−"
+                                    text: "-"
                                     text_color: 0xFFFFFF
                               on_press:
                                 - script.execute:
@@ -914,7 +907,7 @@ lvgl:
                                 - label:
                                     text_font: roboto19_font
                                     align: center
-                                    text: "−"
+                                    text: "-"
                                     text_color: 0xFFFFFF
                               on_press:
                                 - script.execute:
@@ -983,7 +976,7 @@ lvgl:
                                 - label:
                                     text_font: roboto19_font
                                     align: center
-                                    text: "−"
+                                    text: "-"
                                     text_color: 0xFFFFFF
                               on_press:
                                 - script.execute:

@@ -1,7 +1,7 @@
 # =============================================================================
 # SONOS SPEAKER DISCOVERY - Home Assistant Setup
 # =============================================================================
-# Create two template sensor helpers in the Home Assistant UI so the ESPHome
+# Create three template sensor helpers in the Home Assistant UI so the ESPHome
 # panel can auto-discover your Sonos speakers for the grouping UI.
 #
 # Steps:
@@ -18,9 +18,15 @@
 #        State template: {{ integration_entities("sonos") | select("match", "media_player") | map("state_attr", "friendly_name") | join(",") }}
 #      Leave everything else as default and click Submit.
 #
+#   4. Click "+ Create Helper" > Template > Template a sensor
+#        Name:           Sonos Speaker Volumes
+#        State template: {{ integration_entities("sonos") | select("match", "media_player") | map("state_attr", "volume_level") | join(",") }}
+#      Leave everything else as default and click Submit.
+#
 # Done. The ESPHome panel picks up these sensors automatically.
 #
 # To verify, check Developer Tools > States:
-#   sensor.sonos_speaker_ids   → e.g. media_player.office,media_player.kitchen
-#   sensor.sonos_speaker_names → e.g. Office,Kitchen
+#   sensor.sonos_speaker_ids     → e.g. media_player.office,media_player.kitchen
+#   sensor.sonos_speaker_names   → e.g. Office,Kitchen
+#   sensor.sonos_speaker_volumes → e.g. 0.45,0.6
 # =============================================================================
