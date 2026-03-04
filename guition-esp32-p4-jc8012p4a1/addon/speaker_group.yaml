@@ -268,10 +268,6 @@ script:
             nullptr, id(speaker_btn_label_1), id(speaker_btn_label_2), id(speaker_btn_label_3),
             id(speaker_btn_label_4), id(speaker_btn_label_5), id(speaker_btn_label_6), id(speaker_btn_label_7)
           };
-          lv_obj_t *btns[] = {
-            nullptr, id(speaker_btn_1), id(speaker_btn_2), id(speaker_btn_3),
-            id(speaker_btn_4), id(speaker_btn_5), id(speaker_btn_6), id(speaker_btn_7)
-          };
           lv_obj_t *rows[] = {
             id(speaker_row_0), id(speaker_row_1), id(speaker_row_2), id(speaker_row_3),
             id(speaker_row_4), id(speaker_row_5), id(speaker_row_6), id(speaker_row_7)
@@ -296,10 +292,6 @@ script:
 
               if (id(speaker_grouped)[i]) {
                 if (btn_labels[i]) lv_label_set_text(btn_labels[i], "Remove");
-                if (btns[i]) {
-                  lv_obj_set_style_bg_opa(btns[i], LV_OPA_0, 0);
-                  lv_obj_set_style_border_opa(btns[i], LV_OPA_COVER * 80 / 100, 0);
-                }
                 lv_obj_clear_flag(vol_down[i], LV_OBJ_FLAG_HIDDEN);
                 lv_obj_clear_flag(vol_up[i], LV_OBJ_FLAG_HIDDEN);
                 lv_obj_clear_flag(vol_pcts[i], LV_OBJ_FLAG_HIDDEN);
@@ -308,10 +300,6 @@ script:
                 lv_label_set_text(vol_pcts[i], buf);
               } else {
                 if (btn_labels[i]) lv_label_set_text(btn_labels[i], "Add");
-                if (btns[i]) {
-                  lv_obj_set_style_bg_opa(btns[i], LV_OPA_30, 0);
-                  lv_obj_set_style_border_opa(btns[i], LV_OPA_0, 0);
-                }
                 lv_obj_add_flag(vol_down[i], LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(vol_up[i], LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(vol_pcts[i], LV_OBJ_FLAG_HIDDEN);
