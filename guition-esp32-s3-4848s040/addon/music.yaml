@@ -6,7 +6,7 @@
 # =============================================================================
 
 external_components:
-  - source: github://jtenniswood/esphome-onlineimage-grayscale-fix@main
+  - source: github://jtenniswood/esphome-media-player@main
     components: [online_image]
 
 http_request:
