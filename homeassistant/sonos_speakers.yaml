@@ -12,11 +12,11 @@
 #        Name:           Sonos Speakers
 #        State template:
 #          {%- set s = integration_entities("sonos") | select("match", "media_player") | list -%}
-#          {{ s | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
+#          {{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
 #      Leave everything else as default and click Submit.
 #
 # Done. The ESPHome panel picks up this sensor automatically.
 #
 # To verify, check Developer Tools > States:
-#   sensor.sonos_speakers → e.g. media_player.office,media_player.kitchen|Office,Kitchen|0.45,0.6
+#   sensor.sonos_speakers → e.g. office,kitchen|Office,Kitchen|0.45,0.6
 # =============================================================================

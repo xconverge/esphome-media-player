@@ -34,17 +34,17 @@ Paste this into the **State template** field:
 
 ```
 {%- set s = integration_entities("sonos") | select("match", "media_player") | list -%}
-{{ s | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
+{{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
 ```
 
 Leave all other fields as default and click **Submit**.
 
 ### Verify
 
-Go to **Developer Tools → States** and search for `sensor.sonos_speakers`. It should show a pipe-delimited string containing entity IDs, friendly names, and volume levels, e.g.:
+Go to **Developer Tools → States** and search for `sensor.sonos_speakers`. It should show a pipe-delimited string containing short entity IDs (without the `media_player.` prefix), friendly names, and volume levels, e.g.:
 
 ```
-media_player.office,media_player.kitchen|Office,Kitchen|0.45,0.6
+office,kitchen|Office,Kitchen|0.45,0.6
 ```
 
 The ESPHome panel subscribes to this sensor automatically at boot. No device restart is needed after creating the helper.
@@ -68,5 +68,5 @@ template:
           {%- set s = integration_entities("sonos")
                       | select("match", "media_player")
                       | list -%}
-          {{ s | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
+          {{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
 ```
