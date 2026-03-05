@@ -430,7 +430,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: group_vol_slider
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100
@@ -495,7 +495,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: speaker_slider_0
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100
@@ -565,7 +565,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: speaker_slider_1
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100
@@ -635,7 +635,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: speaker_slider_2
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100
@@ -705,7 +705,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: speaker_slider_3
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100
@@ -775,7 +775,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: speaker_slider_4
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100
@@ -845,7 +845,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: speaker_slider_5
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100
@@ -915,7 +915,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: speaker_slider_6
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100
@@ -985,7 +985,7 @@ lvgl:
                                     text_opa: 80%
                           - slider:
                               id: speaker_slider_7
-                              width: 160
+                              width: 100%
                               height: 6
                               min_value: 0
                               max_value: 100

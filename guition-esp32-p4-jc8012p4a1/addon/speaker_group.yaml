@@ -295,7 +295,7 @@ script:
 
               if (id(speaker_grouped)[i]) {
                 lv_obj_set_style_bg_opa(cards[i], LV_OPA_COVER, 0);
-                lv_obj_set_style_bg_color(cards[i], lv_color_hex(0x5A5A5A), 0);
+                lv_obj_set_style_bg_color(cards[i], lv_color_hex(0x4D4D4D), 0);
                 lv_obj_set_style_border_width(cards[i], 0, 0);
                 lv_obj_set_style_flex_main_place(cards[i], LV_FLEX_ALIGN_SPACE_BETWEEN, 0);
                 int pct = (int)(id(speaker_volumes)[i] * 100.0f);
