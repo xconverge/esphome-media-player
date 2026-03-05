@@ -430,10 +430,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: group_vol_btns
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -442,13 +442,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -461,10 +462,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -526,10 +528,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: speaker_btns_0
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -538,13 +540,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -560,10 +563,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -632,10 +636,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: speaker_btns_1
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -644,13 +648,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -666,10 +671,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -738,10 +744,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: speaker_btns_2
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -750,13 +756,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -772,10 +779,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -844,10 +852,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: speaker_btns_3
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -856,13 +864,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -878,10 +887,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -950,10 +960,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: speaker_btns_4
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -962,13 +972,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -984,10 +995,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -1056,10 +1068,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: speaker_btns_5
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -1068,13 +1080,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -1090,10 +1103,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -1162,10 +1176,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: speaker_btns_6
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -1174,13 +1188,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -1196,10 +1211,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -1268,10 +1284,10 @@ lvgl:
                                     text_opa: 80%
                           - obj:
                               id: speaker_btns_7
-                              width: 130
-                              height: 44
-                              radius: 22
-                              bg_color: 0x535353
+                              width: 105
+                              height: 48
+                              radius: 24
+                              bg_color: 0x212121
                               bg_opa: 100%
                               border_width: 0
                               pad_all: 0
@@ -1280,13 +1296,14 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: ROW
-                                pad_column: 1
+                                pad_column: 2
                               widgets:
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
@@ -1302,10 +1319,11 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           align: center
                                 - button:
-                                    width: 65
-                                    height: 44
+                                    width: 52
+                                    height: 48
                                     radius: 0
-                                    bg_opa: 0%
+                                    bg_color: 0x535353
+                                    bg_opa: 100%
                                     border_width: 0
                                     shadow_width: 0
                                     pad_all: 0
