@@ -56,7 +56,7 @@ When the device is on your network:
 
 The display will start showing the current track. You can change this later without reflashing. For more detail, see [How do I configure a media player?](/troubleshooting#how-do-i-configure-a-media-player).
 
-**Optional:** If your speaker has a TV source (e.g. Sonos home theater), you can also set the **Sonos Tv Source** field to show now-playing info from the TV media player when the speaker switches to its TV input. This is not required — see [Settings](/configurable-settings#tv-source) for details.
+**Optional:** If your speaker has a TV source (e.g. a home theater setup), you can also set the **Sonos Tv Source** field to show now-playing info from the TV media player when the speaker switches to its TV input. This is not required — see [Settings](/configurable-settings#tv-source) for details.
 
 ## Step 5: Enable device controls
 

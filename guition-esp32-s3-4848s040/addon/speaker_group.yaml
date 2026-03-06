@@ -1,14 +1,15 @@
 # =============================================================================
-# SPEAKER GROUPING - Sonos multi-room control
+# SPEAKER GROUPING - Multi-room control
 # =============================================================================
-# Subscribes to a HA template sensor (sensor.sonos_speakers) that auto-discovers
-# Sonos media_player entities, and to the group_members attribute on the
-# currently selected media player. Provides scripts to parse the data, update
-# the LVGL grouping panel, and call media_player.join / unjoin.
+# Subscribes to a HA template sensor (sensor.speaker_group) that discovers
+# media_player entities from a configured integration, and to the
+# group_members attribute on the currently selected media player. Provides
+# scripts to parse the data, update the LVGL grouping panel, and call
+# media_player.join / unjoin.
 #
 # When speakers are visible, the volume arc widgets are hidden to make room.
 #
-# Requires: homeassistant/sonos_speakers.yaml installed in HA packages/.
+# Requires: homeassistant/speakers.yaml template sensor in HA.
 # =============================================================================
 
 globals:
@@ -43,8 +44,8 @@ globals:
 
 text_sensor:
   - platform: homeassistant
-    id: sonos_speakers_sensor
-    entity_id: sensor.sonos_speakers
+    id: speakers_sensor
+    entity_id: sensor.speaker_group
     on_value:
       - script.execute: parse_speakers
 
@@ -62,12 +63,13 @@ script:
     mode: restart
     then:
       - lambda: |-
-          std::string raw = id(sonos_speakers_sensor).state;
+          std::string raw = id(speakers_sensor).state;
 
           auto hide_speakers = []() {
             lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(speakers_close_button), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(id(drag_handle), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
@@ -77,7 +79,7 @@ script:
 
           if (raw.empty() || raw == "None" || raw == "unknown") {
             id(speaker_count) = 0;
-            ESP_LOGW("speaker_group", "No Sonos speakers found");
+            ESP_LOGW("speaker_group", "No speakers found");
             hide_speakers();
             return;
           }
@@ -131,7 +133,7 @@ script:
           }
 
           if (ids.empty()) {
-            ESP_LOGW("speaker_group", "No Sonos speakers found");
+            ESP_LOGW("speaker_group", "No speakers found");
             hide_speakers();
             return;
           }
@@ -153,7 +155,7 @@ script:
           }
 
           if (!found_selected) {
-            ESP_LOGD("speaker_group", "Selected player '%s' is not a Sonos device", selected.c_str());
+            ESP_LOGD("speaker_group", "Selected player '%s' not in speaker list", selected.c_str());
             hide_speakers();
             return;
           }
@@ -168,12 +170,13 @@ script:
           }
 
           id(speaker_count) = count;
-          ESP_LOGI("speaker_group", "Discovered %d Sonos speakers", count);
+          ESP_LOGI("speaker_group", "Discovered %d speakers", count);
 
           if (count > 1) {
             lv_obj_clear_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(speakers_close_button), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(drag_handle), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);

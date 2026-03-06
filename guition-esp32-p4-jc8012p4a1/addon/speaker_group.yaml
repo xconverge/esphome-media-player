@@ -1,12 +1,13 @@
 # =============================================================================
-# SPEAKER GROUPING - Sonos multi-room control
+# SPEAKER GROUPING - Multi-room control
 # =============================================================================
-# Subscribes to a HA template sensor (sensor.sonos_speakers) that auto-discovers
-# Sonos media_player entities, and to the group_members attribute on the
-# currently selected media player. Provides scripts to parse the data, update
-# the LVGL grouping panel, and call media_player.join / unjoin.
+# Subscribes to a HA template sensor (sensor.speaker_group) that discovers
+# media_player entities from a configured integration, and to the
+# group_members attribute on the currently selected media player. Provides
+# scripts to parse the data, update the LVGL grouping panel, and call
+# media_player.join / unjoin.
 #
-# Requires: homeassistant/sonos_speakers.yaml installed in HA packages/.
+# Requires: homeassistant/speakers.yaml template sensor in HA.
 # =============================================================================
 
 globals:
@@ -41,8 +42,8 @@ globals:
 
 text_sensor:
   - platform: homeassistant
-    id: sonos_speakers_sensor
-    entity_id: sensor.sonos_speakers
+    id: speakers_sensor
+    entity_id: sensor.speaker_group
     on_value:
       - script.execute: parse_speakers
 
@@ -61,11 +62,11 @@ script:
     mode: restart
     then:
       - lambda: |-
-          std::string raw = id(sonos_speakers_sensor).state;
+          std::string raw = id(speakers_sensor).state;
 
           if (raw.empty() || raw == "None" || raw == "unknown") {
             id(speaker_count) = 0;
-            ESP_LOGW("speaker_group", "No Sonos speakers found — showing fallback");
+            ESP_LOGW("speaker_group", "No speakers found — showing fallback");
             id(show_fallback_speaker).execute();
             return;
           }
@@ -124,13 +125,13 @@ script:
           }
 
           if (ids.empty()) {
-            ESP_LOGW("speaker_group", "No Sonos speakers parsed — showing fallback");
+            ESP_LOGW("speaker_group", "No speakers parsed — showing fallback");
             id(show_fallback_speaker).execute();
             return;
           }
 
-          // Selected player goes in slot 0 — if it's not in the Sonos list,
-          // this device isn't controlling a Sonos speaker so hide grouping.
+          // Selected player goes in slot 0 — if it's not in the speaker list,
+          // hide grouping and show the fallback card instead.
           std::string selected = id(media_player_entity).state;
           int count = 0;
           bool found_selected = false;
@@ -148,7 +149,7 @@ script:
           }
 
           if (!found_selected) {
-            ESP_LOGD("speaker_group", "Selected player '%s' is not a Sonos device — showing fallback", selected.c_str());
+            ESP_LOGD("speaker_group", "Selected player '%s' not in speaker list — showing fallback", selected.c_str());
             id(show_fallback_speaker).execute();
             return;
           }
@@ -164,7 +165,7 @@ script:
           }
 
           id(speaker_count) = count;
-          ESP_LOGI("speaker_group", "Discovered %d Sonos speakers", count);
+          ESP_LOGI("speaker_group", "Discovered %d speakers", count);
 
           if (count > 1) {
             lv_label_set_text(id(speakers_title_label), "Speakers");
@@ -182,8 +183,8 @@ script:
       - script.execute: update_group_state
 
   # ---------------------------------------------------------------------------
-  # Fallback: show a single card for the primary media player when the Sonos
-  # sensor is unavailable or the selected player isn't in the Sonos list.
+  # Fallback: show a single card for the primary media player when the speaker
+  # sensor is unavailable or the selected player isn't in the speaker list.
   # ---------------------------------------------------------------------------
   - id: show_fallback_speaker
     mode: restart

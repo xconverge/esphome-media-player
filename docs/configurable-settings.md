@@ -14,7 +14,7 @@ The device updates immediately and keeps your choice across reboots. You can cha
 
 ### TV source (optional)
 
-If your speaker has a "TV" source (e.g. a Sonos home theater setup), you can optionally configure a secondary media player so the controller shows now-playing info from the TV device when the speaker switches to the TV input. Most users can ignore this setting.
+If your speaker has a "TV" source (e.g. a home theater setup), you can optionally configure a secondary media player so the controller shows now-playing info from the TV device when the speaker switches to the TV input. Most users can ignore this setting.
 
 1. Under **Configuration**, find the **Sonos Tv Source** field.
 2. Enter the entity ID of the media player that represents the TV source device (e.g. `media_player.apple_tv`).

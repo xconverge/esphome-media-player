@@ -12,11 +12,8 @@ lvgl:
         lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_SCROLL_MOMENTUM);
         lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_SCROLL_ELASTIC);
         lv_obj_set_scroll_dir(id(speakers_container), LV_DIR_VER);
-        lv_obj_update_layout(id(speakers_container));
-        lv_coord_t w = lv_obj_get_width(id(speakers_container));
-        lv_coord_t sb_w = lv_obj_get_style_width(id(speakers_container), LV_PART_SCROLLBAR);
-        if (sb_w <= 0) sb_w = 4;
-        lv_obj_set_style_pad_right(id(speakers_container), w - sb_w, LV_PART_SCROLLBAR);
+        lv_indev_t *indev = lv_indev_get_next(NULL);
+        if (indev) lv_indev_set_scroll_limit(indev, 20);
 
   pages:
     - id: main_page
@@ -438,6 +435,7 @@ lvgl:
 
               # Drag handle indicator (visual cue to swipe up to close)
               - obj:
+                  id: drag_handle
                   x: 210
                   y: 466
                   width: 60
@@ -488,9 +486,9 @@ lvgl:
               - obj:
                   id: speakers_container
                   x: 4%
-                  y: 84
-                  width: 92%
-                  height: 80%
+                  y: 100
+                  width: 96%
+                  height: 380
                   bg_opa: 0%
                   border_width: 0
                   pad_left: 0
@@ -509,7 +507,7 @@ lvgl:
                     # --- Group Volume card ---
                     - obj:
                         id: group_vol_card
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x212121
@@ -612,7 +610,7 @@ lvgl:
                     # --- Card 0 (selected speaker / leader, no toggle) ---
                     - obj:
                         id: speaker_card_0
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x000000
@@ -724,7 +722,7 @@ lvgl:
                     # --- Card 1 ---
                     - obj:
                         id: speaker_card_1
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x000000
@@ -737,6 +735,7 @@ lvgl:
                         pad_bottom: 20
                         scrollable: false
                         hidden: true
+                        clickable: true
                         on_click:
                           - script.execute:
                               id: speaker_toggle
@@ -840,7 +839,7 @@ lvgl:
                     # --- Card 2 ---
                     - obj:
                         id: speaker_card_2
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x000000
@@ -853,6 +852,7 @@ lvgl:
                         pad_bottom: 20
                         scrollable: false
                         hidden: true
+                        clickable: true
                         on_click:
                           - script.execute:
                               id: speaker_toggle
@@ -956,7 +956,7 @@ lvgl:
                     # --- Card 3 ---
                     - obj:
                         id: speaker_card_3
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x000000
@@ -969,6 +969,7 @@ lvgl:
                         pad_bottom: 20
                         scrollable: false
                         hidden: true
+                        clickable: true
                         on_click:
                           - script.execute:
                               id: speaker_toggle
@@ -1072,7 +1073,7 @@ lvgl:
                     # --- Card 4 ---
                     - obj:
                         id: speaker_card_4
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x000000
@@ -1085,6 +1086,7 @@ lvgl:
                         pad_bottom: 20
                         scrollable: false
                         hidden: true
+                        clickable: true
                         on_click:
                           - script.execute:
                               id: speaker_toggle
@@ -1188,7 +1190,7 @@ lvgl:
                     # --- Card 5 ---
                     - obj:
                         id: speaker_card_5
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x000000
@@ -1201,6 +1203,7 @@ lvgl:
                         pad_bottom: 20
                         scrollable: false
                         hidden: true
+                        clickable: true
                         on_click:
                           - script.execute:
                               id: speaker_toggle
@@ -1304,7 +1307,7 @@ lvgl:
                     # --- Card 6 ---
                     - obj:
                         id: speaker_card_6
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x000000
@@ -1317,6 +1320,7 @@ lvgl:
                         pad_bottom: 20
                         scrollable: false
                         hidden: true
+                        clickable: true
                         on_click:
                           - script.execute:
                               id: speaker_toggle
@@ -1420,7 +1424,7 @@ lvgl:
                     # --- Card 7 ---
                     - obj:
                         id: speaker_card_7
-                        width: 212
+                        width: 222
                         height: 180
                         radius: 24
                         bg_color: 0x000000
@@ -1433,6 +1437,7 @@ lvgl:
                         pad_bottom: 20
                         scrollable: false
                         hidden: true
+                        clickable: true
                         on_click:
                           - script.execute:
                               id: speaker_toggle

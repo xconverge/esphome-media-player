@@ -22,7 +22,7 @@ The 10.1" panel uses a side-panel layout where the track info is always visible 
 
 ## TV source mode (optional)
 
-If your speaker has a "TV" source (e.g. Sonos with a home theater setup), the controller can optionally show now-playing info from the TV's media player (e.g. Apple TV, Chromecast) when the speaker's source changes to "TV". This feature is entirely optional and the controller works without it.
+If your speaker has a "TV" source (e.g. a home theater setup), the controller can optionally show now-playing info from the TV's media player (e.g. Apple TV, Chromecast) when the speaker's source changes to "TV". This feature is entirely optional and the controller works without it.
 
 - **Automatic switching** — when the primary media player's source becomes "TV", the UI shows title, artist, artwork, and progress from the secondary TV media player. When the source changes back, the UI reverts to the primary player.
 - **Idle state** — when the TV player is idle, off, or on standby, the screen displays "TV" on a black background with playback controls hidden. Controls reappear when the TV player starts playing again.
@@ -34,7 +34,7 @@ To enable this, set the optional **Sonos Tv Source** field in the device's confi
 
 Group and ungroup multi-room speakers directly from the touchscreen. A speaker icon appears on the main screen — tap it to open a panel listing all your speakers with toggle switches to group or ungroup them. Changes happen instantly via the standard Home Assistant `media_player.join` and `media_player.unjoin` services.
 
-This feature requires speakers that support grouping in Home Assistant (tested with Sonos). Requires a one-time setup of a template helper in Home Assistant — see [Speaker Grouping](/speaker-grouping) for instructions.
+This feature works with any speaker platform that supports grouping in Home Assistant (e.g. Sonos, Google Cast, HEOS, MusicCast, LinkPlay, Bluesound). Requires a one-time setup of a template helper in Home Assistant — see [Speaker Grouping](/speaker-grouping) for instructions.
 
 ## Touch controls
 
