@@ -32,10 +32,6 @@ export default {
         link: '/configurable-settings',
       },
       {
-        text: 'Events & automations',
-        link: '/automations',
-      },
-      {
         text: 'Manual Installation',
         link: '/manual-setup',
       },
