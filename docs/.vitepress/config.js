@@ -35,6 +35,7 @@ export default {
         items: [
           { text: 'Manual Setup', link: '/advanced/manual-setup' },
           { text: 'Troubleshooting', link: '/advanced/troubleshooting' },
+          { text: 'Raising an Issue', link: '/advanced/raising-an-issue' },
         ],
       },
     ],
