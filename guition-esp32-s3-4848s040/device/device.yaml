@@ -9,7 +9,6 @@
 #          Using this config with a different device may cause issues.
 # =============================================================================
 
-
 # -----------------------------------------------------------------------------
 # PROCESSOR / BOARD
 # -----------------------------------------------------------------------------
@@ -24,7 +23,6 @@ esp32:
   framework:
     type: esp-idf
 
-
 # -----------------------------------------------------------------------------
 # ESPHOME DEVICE IDENTITY
 # -----------------------------------------------------------------------------
@@ -38,7 +36,6 @@ esp32:
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
-
 
 # -----------------------------------------------------------------------------
 # OVER THE AIR (OTA) UPDATES
@@ -59,7 +56,6 @@ ota:
           brightness: 100%
           transition_length: 0s
       - lvgl.resume
-
 
 # -----------------------------------------------------------------------------
 # HOME ASSISTANT API
@@ -87,7 +83,6 @@ api:
         then:
           - lvgl.widget.show: ha_setup_prompt
 
-
 # -----------------------------------------------------------------------------
 # LOGGING
 # -----------------------------------------------------------------------------
@@ -95,7 +90,6 @@ api:
 # View logs in ESPHome dashboard or via serial connection.
 # -----------------------------------------------------------------------------
 logger:
-
 
 # -----------------------------------------------------------------------------
 # PSRAM (External Memory)
@@ -110,7 +104,6 @@ logger:
 psram:
   mode: octal
   speed: 80MHz
-
 
 # -----------------------------------------------------------------------------
 # BACKLIGHT CONTROL
@@ -132,7 +125,6 @@ output:
     min_power: 0.01
     zero_means_zero: true
 
-
 # -----------------------------------------------------------------------------
 # SPI BUS (Display Communication)
 # -----------------------------------------------------------------------------
@@ -146,7 +138,6 @@ spi:
   - id: lcd_spi
     clk_pin: GPIO48
     mosi_pin: GPIO47
-
 
 # -----------------------------------------------------------------------------
 # I2C BUS (Touchscreen Communication)
@@ -166,7 +157,6 @@ i2c:
     number: 45
     ignore_strapping_warning: true
 
-
 # -----------------------------------------------------------------------------
 # GLOBAL STATE VARIABLES
 # -----------------------------------------------------------------------------
@@ -176,59 +166,57 @@ i2c:
 # -----------------------------------------------------------------------------
 globals:
   # -- Touch tracking (swipe gesture detection) --
-  - id: touch_x_start            # X coordinate when finger first touches
+  - id: touch_x_start # X coordinate when finger first touches
     type: int
-    initial_value: '0'
-  - id: touch_y_start            # Y coordinate when finger first touches
+    initial_value: "0"
+  - id: touch_y_start # Y coordinate when finger first touches
     type: int
-    initial_value: '0'
-  - id: touch_x_end              # X coordinate updated as finger moves
+    initial_value: "0"
+  - id: touch_x_end # X coordinate updated as finger moves
     type: int
-    initial_value: '0'
-  - id: touch_y_end              # Y coordinate updated as finger moves
+    initial_value: "0"
+  - id: touch_y_end # Y coordinate updated as finger moves
     type: int
-    initial_value: '0'
+    initial_value: "0"
 
   # -- UI overlay visibility --
-  - id: is_ui_hidden             # True when title/artist/play button are hidden
+  - id: is_ui_hidden # True when title/artist/play button are hidden
     type: bool
-    initial_value: 'false'
-  - id: is_screen_dimmed         # True when backlight is in dimmed/idle state
+    initial_value: "false"
+  - id: is_screen_dimmed # True when backlight is in dimmed/idle state
     type: bool
-    initial_value: 'false'
-  - id: was_screen_dimmed        # Snapshot at touch-start; prevents toggle on wake
+    initial_value: "false"
+  - id: was_screen_dimmed # Snapshot at touch-start; prevents toggle on wake
     type: bool
-    initial_value: 'false'
+    initial_value: "false"
 
   # -- Settings panel state --
-  - id: is_panel_open            # True when the swipe-down settings panel is visible
+  - id: is_panel_open # True when the swipe-down settings panel is visible
     type: bool
-    initial_value: 'false'
-  - id: was_panel_open           # Snapshot at touch-start; blocks bleed-through taps
+    initial_value: "false"
+  - id: was_panel_open # Snapshot at touch-start; blocks bleed-through taps
     type: bool
-    initial_value: 'false'
+    initial_value: "false"
 
   # -- TV source mode --
   - id: is_tv_mode
     type: bool
-    initial_value: 'false'
+    initial_value: "false"
   - id: is_tv_idle
     type: bool
-    initial_value: 'false'
+    initial_value: "false"
 
   # -- Setup flow --
   - id: actions_prompt_acked
     type: bool
     restore_value: true
-    initial_value: 'false'
+    initial_value: "false"
   # True after first successful setup (WiFi + HA + media entity); suppresses
   # WiFi/HA/actions setup prompts on restart so user sees loading/main UI instead.
   - id: device_has_been_setup
     type: bool
     restore_value: true
-    initial_value: 'false'
-
-
+    initial_value: "false"
 
 # -----------------------------------------------------------------------------
 # TOUCHSCREEN (GT911 Controller)
@@ -355,7 +343,6 @@ touchscreen:
             }
           }
 
-
 # -----------------------------------------------------------------------------
 # INTERACTION SCRIPTS
 # -----------------------------------------------------------------------------
@@ -378,27 +365,27 @@ script:
     then:
       - if:
           condition:
-            lambda: 'return id(is_ui_hidden);'
+            lambda: "return id(is_ui_hidden);"
           then:
-            - lambda: 'id(is_ui_hidden) = false;'
+            - lambda: "id(is_ui_hidden) = false;"
             - lvgl.widget.show: track_info_overlay
             - lvgl.widget.show: track_info_text
-            - lvgl.widget.show: media_play_pause_button
+            - lvgl.widget.show: media_controls_container
             - lambda: |-
                 if (id(artist_has_content)) lv_obj_clear_flag(id(media_artist_label), LV_OBJ_FLAG_HIDDEN);
                 lv_obj_fade_in(id(track_info_overlay), 200, 0);
                 lv_obj_fade_in(id(track_info_text), 200, 0);
-                lv_obj_fade_in(id(media_play_pause_button), 200, 0);
+                lv_obj_fade_in(id(media_controls_container), 200, 0);
           else:
-            - lambda: 'id(is_ui_hidden) = true;'
+            - lambda: "id(is_ui_hidden) = true;"
             - lambda: |-
                 lv_obj_fade_out(id(track_info_overlay), 300, 0);
                 lv_obj_fade_out(id(track_info_text), 300, 0);
-                lv_obj_fade_out(id(media_play_pause_button), 300, 0);
+                lv_obj_fade_out(id(media_controls_container), 300, 0);
             - delay: 400ms
             - lvgl.widget.hide: track_info_overlay
             - lvgl.widget.hide: track_info_text
-            - lvgl.widget.hide: media_play_pause_button
+            - lvgl.widget.hide: media_controls_container
             - lvgl.widget.hide: media_artist_label
   # -- Track navigation (horizontal swipe; allowed when playing or paused) --
   - id: swipe_next_track
@@ -438,10 +425,10 @@ script:
   - id: open_settings_panel
     mode: single
     then:
-      - lambda: 'id(is_panel_open) = true;'
+      - lambda: "id(is_panel_open) = true;"
       - if:
           condition:
-            lambda: 'return id(speaker_count) == 0;'
+            lambda: "return id(speaker_count) == 0;"
           then:
             - script.execute: show_fallback_speaker
       - lvgl.widget.show: settings_panel
@@ -451,18 +438,18 @@ script:
     then:
       - script.stop: start_speaker_panel_timeout
       - lvgl.widget.hide: settings_panel
-      - lambda: 'id(is_panel_open) = false;'
+      - lambda: "id(is_panel_open) = false;"
   - id: start_speaker_panel_timeout
     mode: restart
     then:
       - if:
           condition:
-            lambda: 'return id(speaker_panel_timeout).state > 0;'
+            lambda: "return id(speaker_panel_timeout).state > 0;"
           then:
-            - delay: !lambda 'return (uint32_t)(id(speaker_panel_timeout).state * 1000);'
+            - delay: !lambda "return (uint32_t)(id(speaker_panel_timeout).state * 1000);"
             - if:
                 condition:
-                  lambda: 'return id(is_panel_open);'
+                  lambda: "return id(is_panel_open);"
                 then:
                   - script.execute: close_settings_panel
 
@@ -472,16 +459,16 @@ script:
     then:
       - if:
           condition:
-            lambda: 'return id(is_panel_open) && lv_obj_has_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);'
+            lambda: "return id(is_panel_open) && lv_obj_has_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);"
           then:
             - lvgl.widget.hide: settings_panel
-            - lambda: 'id(is_panel_open) = false;'
+            - lambda: "id(is_panel_open) = false;"
       - if:
           condition:
-            lambda: 'return id(is_ui_hidden);'
+            lambda: "return id(is_ui_hidden);"
           then:
             - script.stop: toggle_ui
-            - lambda: 'id(is_ui_hidden) = false;'
+            - lambda: "id(is_ui_hidden) = false;"
             - lvgl.widget.show: track_info_overlay
             - lvgl.widget.show: track_info_text
             - lambda: |-
@@ -511,13 +498,13 @@ script:
                   && !id(tv_media_artist_sensor).state.empty()
                   && id(tv_media_artist_sensor).state != "\xe2\x80\x94";
           then:
-            - lambda: 'id(artist_has_content) = true;'
+            - lambda: "id(artist_has_content) = true;"
             - lvgl.label.update:
                 id: media_artist_label
-                text: !lambda 'return id(tv_media_artist_sensor).state;'
+                text: !lambda "return id(tv_media_artist_sensor).state;"
             - lvgl.widget.show: media_artist_label
           else:
-            - lambda: 'id(artist_has_content) = false;'
+            - lambda: "id(artist_has_content) = false;"
             - lvgl.widget.hide: media_artist_label
       - if:
           condition:
@@ -549,7 +536,7 @@ script:
                 id(last_tv_artwork_url) = (path.substr(0, 7) == "http://" || path.substr(0, 8) == "https://") ? path : (id(ha_base_url) + path);
             - online_image.set_url:
                 id: tv_art_background
-                url: !lambda 'return id(last_tv_artwork_url);'
+                url: !lambda "return id(last_tv_artwork_url);"
       - script.execute: show_track_view
       - logger.log: "TV: entered TV mode"
 
@@ -576,13 +563,13 @@ script:
                   && !id(media_artist_sensor).state.empty()
                   && id(media_artist_sensor).state != "\xe2\x80\x94";
           then:
-            - lambda: 'id(artist_has_content) = true;'
+            - lambda: "id(artist_has_content) = true;"
             - lvgl.label.update:
                 id: media_artist_label
-                text: !lambda 'return id(media_artist_sensor).state;'
+                text: !lambda "return id(media_artist_sensor).state;"
             - lvgl.widget.show: media_artist_label
           else:
-            - lambda: 'id(artist_has_content) = false;'
+            - lambda: "id(artist_has_content) = false;"
             - lvgl.widget.hide: media_artist_label
       - if:
           condition:
@@ -615,11 +602,9 @@ script:
                 id(last_artwork_url) = (path.substr(0, 7) == "http://" || path.substr(0, 8) == "https://") ? path : (id(ha_base_url) + path);
             - online_image.set_url:
                 id: album_art_background
-                url: !lambda 'return id(last_artwork_url);'
+                url: !lambda "return id(last_artwork_url);"
       - script.execute: show_track_view
       - logger.log: "TV: exited TV mode"
-
-
 
 # -----------------------------------------------------------------------------
 # DISPLAY (ST7701S LCD Controller)

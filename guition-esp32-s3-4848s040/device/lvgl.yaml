@@ -140,44 +140,86 @@ lvgl:
                   on_click:
                     - switch.toggle: show_remaining_time
 
-        # Play/pause: 96px round, bottom-right corner
-        - button:
-            id: media_play_pause_button
-            align: bottom_right
-            x: -24
-            y: -30
-            width: 96px
+        # Media controls: previous, play/pause, next (centered bottom)
+        - obj:
+            id: media_controls_container
+            align: bottom_mid
+            y: -24
+            width: 288px
             height: 96px
-            styles: control_round
+            bg_opa: 0%
+            border_width: 0
+            pad_all: 0
+            scrollable: false
+            layout:
+              type: flex
+              flex_flow: ROW
+              flex_align_main: space_evenly
+              flex_align_cross: center
             widgets:
-              - label:
-                  id: media_play_icon
-                  text_font: icon_font_large
-                  align: center
-                  text: $play
-                  text_color: 0xFFFFFF
-                  hidden: false
-              - label:
-                  id: media_pause_icon
-                  text_font: icon_font_large
-                  align: center
-                  text: $pause
-                  text_color: 0xFFFFFF
-                  hidden: true
-            on_press:
-              - homeassistant.service:
-                  service: media_player.media_play_pause
-                  variables:
-                    target: !lambda |-
-                      return id(is_tv_mode) ? id(tv_media_player_entity).state : id(media_player_entity).state;
-                  data_template:
-                    entity_id: "{{ target }}"
-                  on_error:
-                    - lambda: |-
-                        if (!id(actions_prompt_acked) && !id(device_has_been_setup)) {
-                          lv_obj_clear_flag(id(actions_prompt), LV_OBJ_FLAG_HIDDEN);
-                        }
-              - logger.log: "Media: play_pause"
+              # Previous track
+              - button:
+                  id: media_previous_button
+                  width: 72px
+                  height: 72px
+                  styles: control_round
+                  widgets:
+                    - label:
+                        text_font: icon_font_large
+                        align: center
+                        text: $skip_previous
+                        text_color: 0xFFFFFF
+                  on_press:
+                    - script.execute: swipe_previous_track
+              # Play/pause
+              - button:
+                  id: media_play_pause_button
+                  width: 96px
+                  height: 96px
+                  styles: control_round
+                  widgets:
+                    - label:
+                        id: media_play_icon
+                        text_font: icon_font_large
+                        align: center
+                        text: $play
+                        text_color: 0xFFFFFF
+                        hidden: false
+                    - label:
+                        id: media_pause_icon
+                        text_font: icon_font_large
+                        align: center
+                        text: $pause
+                        text_color: 0xFFFFFF
+                        hidden: true
+                  on_press:
+                    - homeassistant.service:
+                        service: media_player.media_play_pause
+                        variables:
+                          target: !lambda |-
+                            return id(is_tv_mode) ? id(tv_media_player_entity).state : id(media_player_entity).state;
+                        data_template:
+                          entity_id: "{{ target }}"
+                        on_error:
+                          - lambda: |-
+                              if (!id(actions_prompt_acked) && !id(device_has_been_setup)) {
+                                lv_obj_clear_flag(id(actions_prompt), LV_OBJ_FLAG_HIDDEN);
+                              }
+                    - logger.log: "Media: play_pause"
+              # Next track
+              - button:
+                  id: media_next_button
+                  width: 72px
+                  height: 72px
+                  styles: control_round
+                  widgets:
+                    - label:
+                        text_font: icon_font_large
+                        align: center
+                        text: $skip_next
+                        text_color: 0xFFFFFF
+                  on_press:
+                    - script.execute: swipe_next_track
 
         # Progress bar: full screen width, at the very bottom of the screen
         - bar:

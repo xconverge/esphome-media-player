@@ -133,7 +133,7 @@ text_sensor:
                       text: "TV"
                   - lambda: 'id(artist_has_content) = false;'
                   - lvgl.widget.hide: media_artist_label
-                  - lvgl.widget.hide: media_play_pause_button
+                  - lvgl.widget.hide: media_controls_container
                   - lvgl.widget.hide: media_time_label
                   - lvgl.widget.hide: media_progress_bar
                   - lvgl.widget.hide: album_art_background_widget
@@ -162,7 +162,7 @@ text_sensor:
                         lambda: 'return id(is_tv_idle);'
                       then:
                         - lambda: 'id(is_tv_idle) = false;'
-                        - lvgl.widget.show: media_play_pause_button
+                        - lvgl.widget.show: media_controls_container
                         - lvgl.widget.show: media_time_label
                         - lvgl.widget.show: album_art_background_widget
                   - script.stop: backlight_wake_timeout

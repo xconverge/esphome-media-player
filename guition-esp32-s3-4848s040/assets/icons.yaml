@@ -33,10 +33,14 @@ font:
     glyphs:
       - "\U000F040A"  # mdi-play
       - "\U000F03E4"  # mdi-pause
+      - "\U000F04AD"  # mdi-skip-next
+      - "\U000F04AE"  # mdi-skip-previous
 
 substitutions:
   play:          "\U000F040A"
   pause:         "\U000F03E4"
+  skip_next:     "\U000F04AD"
+  skip_previous: "\U000F04AE"
   icon_plus:     "\U000F0415"
   icon_minus:    "\U000F0374"
   icon_wifi:     "\U000F05A9"
