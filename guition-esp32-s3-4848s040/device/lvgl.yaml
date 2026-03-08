@@ -140,12 +140,12 @@ lvgl:
                   on_click:
                     - switch.toggle: show_remaining_time
 
-        # Media controls: previous, play/pause, next (centered bottom)
+        # Media controls: previous, play/pause, next, shuffle (centered bottom)
         - obj:
             id: media_controls_container
             align: bottom_mid
             y: -24
-            width: 288px
+            width: 370px
             height: 96px
             bg_opa: 0%
             border_width: 0
@@ -220,6 +220,32 @@ lvgl:
                         text_color: 0xFFFFFF
                   on_press:
                     - script.execute: swipe_next_track
+              # Shuffle
+              - button:
+                  id: media_shuffle_button
+                  width: 72px
+                  height: 72px
+                  styles: control_round
+                  widgets:
+                    - label:
+                        id: media_shuffle_icon
+                        text_font: icon_font_large
+                        align: center
+                        text: $icon_shuffle
+                        text_color: 0xFFFFFF
+                        text_opa: 50%
+                  on_press:
+                    - homeassistant.service:
+                        service: media_player.shuffle_set
+                        variables:
+                          target: !lambda |-
+                            return id(is_tv_mode) ? id(tv_media_player_entity).state : id(media_player_entity).state;
+                          is_shuffle: !lambda |-
+                            return id(shuffle_state) ? "false" : "true";
+                        data_template:
+                          entity_id: "{{ target }}"
+                          shuffle: "{{ is_shuffle }}"
+                    - logger.log: "Media: shuffle_toggle"
 
         # Progress bar: full screen width, at the very bottom of the screen
         - bar:
