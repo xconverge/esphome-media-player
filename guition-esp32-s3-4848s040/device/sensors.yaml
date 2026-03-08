@@ -309,7 +309,11 @@ text_sensor:
       - lambda: |-
           bool on = (x == "True" || x == "true" || x == "on");
           id(shuffle_state) = on;
-          lv_obj_set_style_text_opa(id(media_shuffle_icon), on ? LV_OPA_COVER : LV_OPA_50, 0);
+          if (on) {
+            lv_obj_set_style_bg_color(id(media_shuffle_button), lv_color_make(0xFF, 0x8C, 0x00), 0);
+          } else {
+            lv_obj_set_style_bg_color(id(media_shuffle_button), lv_color_make(0x31, 0x31, 0x31), 0);
+          }
 
 sensor:
   - platform: template

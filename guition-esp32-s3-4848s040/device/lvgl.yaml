@@ -233,7 +233,6 @@ lvgl:
                         align: center
                         text: $icon_shuffle
                         text_color: 0xFFFFFF
-                        text_opa: 50%
                   on_press:
                     - homeassistant.service:
                         service: media_player.shuffle_set
