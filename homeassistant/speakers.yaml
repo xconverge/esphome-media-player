@@ -11,16 +11,16 @@
 # Add the following to your configuration.yaml (replace "sonos" with your
 # integration name), then restart Home Assistant:
 #
-#   template:
-#     - sensor:
-#         - name: "Speaker Group"
-#           state: >
-#             {%- set s = integration_entities("sonos") | select("match", "media_player") | list -%}
-#             {{ s | count }}
-#           attributes:
-#             data: >
-#               {%- set s = integration_entities("sonos") | select("match", "media_player") | list -%}
-#               {{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
+template:
+  - sensor:
+      - name: "Speaker Group"
+        state: >
+          {%- set s = integration_entities("sonos") | select("match", "media_player") | list -%}
+          {{ s | count }}
+        attributes:
+          data: >
+            {%- set s = integration_entities("sonos") | select("match", "media_player") | list -%}
+            {{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
 #
 # Done. The ESPHome panel picks up this sensor automatically.
 #
