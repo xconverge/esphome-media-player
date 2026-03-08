@@ -3,6 +3,13 @@ substitutions:
   tv_media_player: ""
   ha_port: "8123"
   ha_host: "homeassistant.local"
+  # Radio station favorites (from HA Browse Media > Favorites > Radio)
+  # To find the content ID: open HA Developer Tools > Services > media_player.play_media,
+  # use the UI media picker, then switch to YAML mode to see media_content_id.
+  radio_station_1_name: "Station 1"
+  radio_station_1_content_id: ""
+  radio_station_2_name: "Station 2"
+  radio_station_2_content_id: ""
   # Display rotation in degrees: 0, 90, 180, or 270
   # Rotate to match your preferred mounting orientation / power cable direction
   display_rotation: "0"

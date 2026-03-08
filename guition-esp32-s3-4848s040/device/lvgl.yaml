@@ -399,13 +399,87 @@ lvgl:
                   text_align: left
                   hidden: true
 
+              # Radio station buttons
+              - obj:
+                  id: radio_buttons_row
+                  x: 0
+                  y: 85
+                  width: 100%
+                  height: 50
+                  bg_opa: 0%
+                  border_width: 0
+                  pad_left: 20
+                  pad_right: 20
+                  pad_top: 0
+                  pad_bottom: 0
+                  scrollable: false
+                  layout:
+                    type: flex
+                    flex_flow: ROW
+                    pad_column: 16
+                  widgets:
+                    - button:
+                        id: radio_station_1_button
+                        width: 212
+                        height: 50
+                        radius: 25
+                        bg_color: 0x212121
+                        border_width: 0
+                        shadow_width: 0
+                        pad_all: 0
+                        widgets:
+                          - label:
+                              text: "$icon_radio  ${radio_station_1_name}"
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              align: center
+                        on_press:
+                          - homeassistant.service:
+                              service: media_player.play_media
+                              variables:
+                                target: !lambda |-
+                                  return id(media_player_entity).state;
+                              data:
+                                media_content_id: "${radio_station_1_content_id}"
+                                media_content_type: music
+                              data_template:
+                                entity_id: "{{ target }}"
+                          - script.execute: close_settings_panel
+                    - button:
+                        id: radio_station_2_button
+                        width: 212
+                        height: 50
+                        radius: 25
+                        bg_color: 0x212121
+                        border_width: 0
+                        shadow_width: 0
+                        pad_all: 0
+                        widgets:
+                          - label:
+                              text: "$icon_radio  ${radio_station_2_name}"
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              align: center
+                        on_press:
+                          - homeassistant.service:
+                              service: media_player.play_media
+                              variables:
+                                target: !lambda |-
+                                  return id(media_player_entity).state;
+                              data:
+                                media_content_id: "${radio_station_2_content_id}"
+                                media_content_type: music
+                              data_template:
+                                entity_id: "{{ target }}"
+                          - script.execute: close_settings_panel
+
               # Speaker card grid (2-across)
               - obj:
                   id: speakers_container
                   x: 0
-                  y: 110
+                  y: 150
                   width: 100%
-                  height: 370
+                  height: 330
                   bg_opa: 0%
                   border_width: 0
                   pad_left: 20
