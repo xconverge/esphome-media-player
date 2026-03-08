@@ -425,13 +425,13 @@ lvgl:
                   text_align: left
                   hidden: true
 
-              # Sonos favorites buttons (dynamically populated)
+              # Sonos favorites buttons (dynamically populated, 2x2 grid)
               - obj:
                   id: radio_buttons_row
                   x: 0
                   y: 85
                   width: 100%
-                  height: 50
+                  height: 116
                   bg_opa: 0%
                   border_width: 0
                   pad_left: 20
@@ -441,11 +441,13 @@ lvgl:
                   scrollable: false
                   layout:
                     type: flex
-                    flex_flow: ROW
+                    flex_flow: ROW_WRAP
                     pad_column: 12
+                    pad_row: 12
                   widgets:
                     - button:
                         id: fav_button_0
+                        width: 212
                         height: 50
                         radius: 25
                         bg_color: 0x212121
@@ -469,6 +471,7 @@ lvgl:
                               slot: 0
                     - button:
                         id: fav_button_1
+                        width: 212
                         height: 50
                         radius: 25
                         bg_color: 0x212121
@@ -492,6 +495,7 @@ lvgl:
                               slot: 1
                     - button:
                         id: fav_button_2
+                        width: 212
                         height: 50
                         radius: 25
                         bg_color: 0x212121
@@ -515,6 +519,7 @@ lvgl:
                               slot: 2
                     - button:
                         id: fav_button_3
+                        width: 212
                         height: 50
                         radius: 25
                         bg_color: 0x212121
@@ -541,9 +546,9 @@ lvgl:
               - obj:
                   id: speakers_container
                   x: 0
-                  y: 150
+                  y: 215
                   width: 100%
-                  height: 330
+                  height: 265
                   bg_opa: 0%
                   border_width: 0
                   pad_left: 20

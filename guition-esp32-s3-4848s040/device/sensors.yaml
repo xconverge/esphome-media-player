@@ -130,29 +130,11 @@ interval:
                   return 0;
 
 script:
-  # Start the hide timer only (no show). Used when artwork finishes loading or when
-  # playback starts. After duration seconds, hides overlay if still playing and visible.
-  # mode: restart so re-triggering (e.g. new artwork) restarts the timer.
+  # Hide timer disabled — overlay always visible
   - id: start_hide_track_info_timer
     mode: restart
     then:
-      - if:
-          condition:
-            lambda: "return id(track_info_duration).state > 0;"
-          then:
-            - delay: !lambda "return (uint32_t)(id(track_info_duration).state * 1000);"
-            - if:
-                condition:
-                  lambda: |-
-                    bool playing;
-                    if (id(is_tv_mode)) {
-                      playing = id(tv_media_player_state_sensor).has_state() && id(tv_media_player_state_sensor).state == "playing";
-                    } else {
-                      playing = id(media_player_state_sensor).has_state() && id(media_player_state_sensor).state == "playing";
-                    }
-                    return !id(is_ui_hidden) && playing;
-                then:
-                  - script.execute: toggle_ui
+      - logger.log: "start_hide_track_info_timer: overlay always visible, no-op"
 
 text_sensor:
   - platform: template
