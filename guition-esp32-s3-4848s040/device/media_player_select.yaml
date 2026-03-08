@@ -12,10 +12,10 @@
 globals:
   - id: subscription_gen
     type: int
-    initial_value: '0'
+    initial_value: "0"
   - id: tv_subscription_gen
     type: int
-    initial_value: '0'
+    initial_value: "0"
 
 text:
   - platform: template
@@ -51,7 +51,7 @@ text:
                 tag: media_select
                 format: "Rebooting to apply new media player subscription"
             - delay: 200ms
-            - lambda: 'App.safe_reboot();'
+            - lambda: "App.safe_reboot();"
 
   - platform: template
     name: "Sonos Tv Source"
@@ -81,7 +81,7 @@ text:
                 tag: media_select
                 format: "Rebooting to apply new TV media player subscription"
             - delay: 200ms
-            - lambda: 'App.safe_reboot();'
+            - lambda: "App.safe_reboot();"
 
 script:
   - id: subscribe_media_player
@@ -165,6 +165,7 @@ script:
           sub_num("volume_level", id(media_volume_sensor));
           sub_text("source", id(media_source_sensor));
           sub_text("group_members", id(group_members_sensor));
+          sub_text("shuffle", id(shuffle_sensor));
 
           ESP_LOGI("media_select", "Subscribed to '%s'", entity.c_str());
 

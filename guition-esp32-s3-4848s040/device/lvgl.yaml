@@ -425,7 +425,7 @@ lvgl:
                   text_align: left
                   hidden: true
 
-              # Radio station buttons
+              # Sonos favorites buttons (dynamically populated)
               - obj:
                   id: radio_buttons_row
                   x: 0
@@ -442,62 +442,100 @@ lvgl:
                   layout:
                     type: flex
                     flex_flow: ROW
-                    pad_column: 16
+                    pad_column: 12
                   widgets:
                     - button:
-                        id: radio_station_1_button
-                        width: 212
+                        id: fav_button_0
                         height: 50
                         radius: 25
                         bg_color: 0x212121
                         border_width: 0
                         shadow_width: 0
-                        pad_all: 0
+                        pad_left: 16
+                        pad_right: 16
+                        pad_top: 0
+                        pad_bottom: 0
+                        hidden: true
                         widgets:
                           - label:
-                              text: "$icon_radio  ${radio_station_1_name}"
+                              id: fav_label_0
+                              text: ""
                               text_font: roboto19_font
                               text_color: 0xFFFFFF
                               align: center
                         on_press:
-                          - homeassistant.service:
-                              service: media_player.play_media
-                              variables:
-                                target: !lambda |-
-                                  return id(media_player_entity).state;
-                              data:
-                                media_content_id: "${radio_station_1_content_id}"
-                                media_content_type: favorite_item_id
-                              data_template:
-                                entity_id: "{{ target }}"
-                          - script.execute: close_settings_panel
+                          - script.execute:
+                              id: play_favorite
+                              slot: 0
                     - button:
-                        id: radio_station_2_button
-                        width: 212
+                        id: fav_button_1
                         height: 50
                         radius: 25
                         bg_color: 0x212121
                         border_width: 0
                         shadow_width: 0
-                        pad_all: 0
+                        pad_left: 16
+                        pad_right: 16
+                        pad_top: 0
+                        pad_bottom: 0
+                        hidden: true
                         widgets:
                           - label:
-                              text: "$icon_radio  ${radio_station_2_name}"
+                              id: fav_label_1
+                              text: ""
                               text_font: roboto19_font
                               text_color: 0xFFFFFF
                               align: center
                         on_press:
-                          - homeassistant.service:
-                              service: media_player.play_media
-                              variables:
-                                target: !lambda |-
-                                  return id(media_player_entity).state;
-                              data:
-                                media_content_id: "${radio_station_2_content_id}"
-                                media_content_type: favorite_item_id
-                              data_template:
-                                entity_id: "{{ target }}"
-                          - script.execute: close_settings_panel
+                          - script.execute:
+                              id: play_favorite
+                              slot: 1
+                    - button:
+                        id: fav_button_2
+                        height: 50
+                        radius: 25
+                        bg_color: 0x212121
+                        border_width: 0
+                        shadow_width: 0
+                        pad_left: 16
+                        pad_right: 16
+                        pad_top: 0
+                        pad_bottom: 0
+                        hidden: true
+                        widgets:
+                          - label:
+                              id: fav_label_2
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              align: center
+                        on_press:
+                          - script.execute:
+                              id: play_favorite
+                              slot: 2
+                    - button:
+                        id: fav_button_3
+                        height: 50
+                        radius: 25
+                        bg_color: 0x212121
+                        border_width: 0
+                        shadow_width: 0
+                        pad_left: 16
+                        pad_right: 16
+                        pad_top: 0
+                        pad_bottom: 0
+                        hidden: true
+                        widgets:
+                          - label:
+                              id: fav_label_3
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              align: center
+                        on_press:
+                          - script.execute:
+                              id: play_favorite
+                              slot: 3
 
               # Speaker card grid (2-across)
               - obj:

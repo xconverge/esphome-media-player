@@ -16,22 +16,25 @@ globals:
     initial_value: '"http://${ha_host}:${ha_port}"'
   - id: last_media_position
     type: float
-    initial_value: '0.0'
+    initial_value: "0.0"
   - id: last_position_timestamp
     type: int
-    initial_value: '0'
+    initial_value: "0"
   - id: title_received_once
     type: bool
-    initial_value: 'false'
+    initial_value: "false"
   - id: ha_position_epoch
     type: int
-    initial_value: '0'
+    initial_value: "0"
   - id: artist_has_content
     type: bool
-    initial_value: 'false'
+    initial_value: "false"
   - id: last_artwork_url
     type: std::string
     initial_value: '""'
+  - id: shuffle_state
+    type: bool
+    initial_value: "false"
 
 # Refresh progress bar and elapsed time every second; when playing, estimate
 # position from last HA update + elapsed time so the clock moves smoothly
@@ -74,41 +77,41 @@ interval:
             id(last_media_position) = pos;
           }
       - lvgl.label.update:
-            id: media_time_label
-            text: !lambda |-
-              if (id(is_tv_idle)) return std::string("");
-              float pos = id(is_tv_mode) ? id(last_tv_media_position) : id(last_media_position);
-              float dur;
-              if (id(is_tv_mode)) {
-                dur = id(tv_media_duration_sensor).has_state() ? id(tv_media_duration_sensor).state : 0.0f;
+          id: media_time_label
+          text: !lambda |-
+            if (id(is_tv_idle)) return std::string("");
+            float pos = id(is_tv_mode) ? id(last_tv_media_position) : id(last_media_position);
+            float dur;
+            if (id(is_tv_mode)) {
+              dur = id(tv_media_duration_sensor).has_state() ? id(tv_media_duration_sensor).state : 0.0f;
+            } else {
+              dur = id(media_duration_sensor).has_state() ? id(media_duration_sensor).state : 0.0f;
+            }
+            int e = (int)pos; if (e < 0) e = 0;
+            char buf[32];
+            if (id(show_remaining_time).state) {
+              int rem = (int)(dur - pos); if (rem < 0) rem = 0;
+              if (dur >= 3600) {
+                snprintf(buf, sizeof(buf), "%d:%02d:%02d / -%d:%02d:%02d",
+                         e / 3600, (e % 3600) / 60, e % 60,
+                         rem / 3600, (rem % 3600) / 60, rem % 60);
               } else {
-                dur = id(media_duration_sensor).has_state() ? id(media_duration_sensor).state : 0.0f;
+                snprintf(buf, sizeof(buf), "%d:%02d / -%d:%02d", e / 60, e % 60, rem / 60, rem % 60);
               }
-              int e = (int)pos; if (e < 0) e = 0;
-              char buf[32];
-              if (id(show_remaining_time).state) {
-                int rem = (int)(dur - pos); if (rem < 0) rem = 0;
-                if (dur >= 3600) {
-                  snprintf(buf, sizeof(buf), "%d:%02d:%02d / -%d:%02d:%02d",
-                           e / 3600, (e % 3600) / 60, e % 60,
-                           rem / 3600, (rem % 3600) / 60, rem % 60);
-                } else {
-                  snprintf(buf, sizeof(buf), "%d:%02d / -%d:%02d", e / 60, e % 60, rem / 60, rem % 60);
-                }
+            } else {
+              int d = (int)dur; if (d < 0) d = 0;
+              if (dur >= 3600) {
+                snprintf(buf, sizeof(buf), "%d:%02d:%02d / %d:%02d:%02d",
+                         e / 3600, (e % 3600) / 60, e % 60,
+                         d / 3600, (d % 3600) / 60, d % 60);
               } else {
-                int d = (int)dur; if (d < 0) d = 0;
-                if (dur >= 3600) {
-                  snprintf(buf, sizeof(buf), "%d:%02d:%02d / %d:%02d:%02d",
-                           e / 3600, (e % 3600) / 60, e % 60,
-                           d / 3600, (d % 3600) / 60, d % 60);
-                } else {
-                  snprintf(buf, sizeof(buf), "%d:%02d / %d:%02d", e / 60, e % 60, d / 60, d % 60);
-                }
+                snprintf(buf, sizeof(buf), "%d:%02d / %d:%02d", e / 60, e % 60, d / 60, d % 60);
               }
-              return std::string(buf);
+            }
+            return std::string(buf);
       - if:
           condition:
-            lambda: 'return !id(show_progress_bar).state || id(is_tv_idle);'
+            lambda: "return !id(show_progress_bar).state || id(is_tv_idle);"
           then:
             - lvgl.widget.hide: media_progress_bar
           else:
@@ -135,9 +138,9 @@ script:
     then:
       - if:
           condition:
-            lambda: 'return id(track_info_duration).state > 0;'
+            lambda: "return id(track_info_duration).state > 0;"
           then:
-            - delay: !lambda 'return (uint32_t)(id(track_info_duration).state * 1000);'
+            - delay: !lambda "return (uint32_t)(id(track_info_duration).state * 1000);"
             - if:
                 condition:
                   lambda: |-
@@ -162,11 +165,11 @@ text_sensor:
             - lambda: 'id(media_source_sensor).publish_state("");'
       - if:
           condition:
-            lambda: 'return !id(is_tv_mode);'
+            lambda: "return !id(is_tv_mode);"
           then:
             - if:
                 condition:
-                  lambda: 'return id(track_info_duration).state > 0;'
+                  lambda: "return id(track_info_duration).state > 0;"
                 then:
                   - script.execute: show_track_view
                   - script.stop: start_hide_track_info_timer
@@ -176,7 +179,7 @@ text_sensor:
                 text: !lambda 'return x.empty() ? std::string("\xe2\x80\x94") : x;'
             - if:
                 condition:
-                  lambda: 'return id(title_received_once);'
+                  lambda: "return id(title_received_once);"
                 then:
                   - lambda: |-
                       id(last_media_position) = 0.0f;
@@ -195,26 +198,26 @@ text_sensor:
                       id: media_progress_bar
                       value: 0
                 else:
-                  - lambda: 'id(title_received_once) = true;'
+                  - lambda: "id(title_received_once) = true;"
 
   - platform: template
     id: media_artist_sensor
     on_value:
       - if:
           condition:
-            lambda: 'return !id(is_tv_mode);'
+            lambda: "return !id(is_tv_mode);"
           then:
             - if:
                 condition:
                   lambda: 'return !x.empty() && x != "\xe2\x80\x94";'
                 then:
-                  - lambda: 'id(artist_has_content) = true;'
+                  - lambda: "id(artist_has_content) = true;"
                   - lvgl.label.update:
                       id: media_artist_label
-                      text: !lambda 'return x;'
+                      text: !lambda "return x;"
                   - lvgl.widget.show: media_artist_label
                 else:
-                  - lambda: 'id(artist_has_content) = false;'
+                  - lambda: "id(artist_has_content) = false;"
                   - lvgl.widget.hide: media_artist_label
 
   - platform: template
@@ -237,7 +240,7 @@ text_sensor:
             - lvgl.widget.hide: artwork_error_label
             - online_image.set_url:
                 id: album_art_background
-                url: !lambda 'return id(last_artwork_url);'
+                url: !lambda "return id(last_artwork_url);"
 
   - platform: template
     id: media_player_state_sensor
@@ -249,7 +252,7 @@ text_sensor:
             - lambda: 'id(media_source_sensor).publish_state("");'
       - if:
           condition:
-            lambda: 'return !id(is_tv_mode);'
+            lambda: "return !id(is_tv_mode);"
           then:
             - if:
                 condition:
@@ -266,9 +269,9 @@ text_sensor:
                       brightness: 100%
                   - if:
                       condition:
-                        lambda: 'return id(is_screen_dimmed);'
+                        lambda: "return id(is_screen_dimmed);"
                       then:
-                        - lambda: 'id(is_screen_dimmed) = false;'
+                        - lambda: "id(is_screen_dimmed) = false;"
                         - script.execute: show_track_view
                   - script.execute: start_hide_track_info_timer
                 else:
@@ -285,7 +288,7 @@ text_sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return !id(is_tv_mode);'
+            lambda: "return !id(is_tv_mode);"
           then:
             - lambda: |-
                 int yr, mo, dy, hr, mn, sc;
@@ -318,6 +321,14 @@ text_sensor:
           then:
             - script.execute: exit_tv_mode
 
+  - platform: template
+    id: shuffle_sensor
+    on_value:
+      - lambda: |-
+          bool on = (x == "True" || x == "true" || x == "on");
+          id(shuffle_state) = on;
+          lv_obj_set_style_text_opa(id(media_shuffle_icon), on ? LV_OPA_COVER : LV_OPA_50, 0);
+
 sensor:
   - platform: template
     id: media_duration_sensor
@@ -327,7 +338,7 @@ sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return !id(is_tv_mode);'
+            lambda: "return !id(is_tv_mode);"
           then:
             - lambda: |-
                 id(last_media_position) = x;
@@ -349,7 +360,6 @@ sensor:
             snprintf(buf, sizeof(buf), "%d%%", pct);
             lv_label_set_text(id(speaker_vol_label_0), buf);
           }
-
 
 # -----------------------------------------------------------------------------
 # USER-CONFIGURABLE SETTINGS (exposed to Home Assistant)

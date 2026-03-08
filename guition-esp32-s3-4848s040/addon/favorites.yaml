@@ -1,0 +1,113 @@
+# =============================================================================
+# SONOS FAVORITES - Dynamic playlist buttons from HA sensor
+# =============================================================================
+# Subscribes to sensor.sonos_favorites (items attribute) and populates up to
+# 4 button slots in the settings panel. Each button plays the corresponding
+# favorite via media_player.play_media with favorite_item_id content type.
+#
+# The items attribute is a dict like: {'FV:2/8': 'Indie Station', ...}
+# HA serialises it as a Python repr string over the API.
+# =============================================================================
+
+globals:
+  - id: fav_count
+    type: int
+    initial_value: "0"
+  - id: fav_content_ids
+    type: std::string[4]
+  - id: fav_names
+    type: std::string[4]
+
+text_sensor:
+  - platform: homeassistant
+    id: sonos_favorites_sensor
+    entity_id: sensor.sonos_favorites
+    attribute: items
+    on_value:
+      - script.execute: parse_favorites
+
+script:
+  - id: parse_favorites
+    mode: restart
+    then:
+      - lambda: |-
+          std::string raw = id(sonos_favorites_sensor).state;
+          if (raw.empty() || raw == "None" || raw == "unknown") {
+            id(fav_count) = 0;
+            id(update_favorite_buttons).execute();
+            return;
+          }
+
+          // Parse Python dict repr: {'key': 'value', 'key2': 'value2'}
+          // We extract key-value pairs by finding quoted strings
+          int count = 0;
+          size_t pos = 0;
+          while (count < 4 && pos < raw.size()) {
+            // Find next key (after a quote)
+            size_t q1 = raw.find('\'', pos);
+            if (q1 == std::string::npos) q1 = raw.find('"', pos);
+            if (q1 == std::string::npos) break;
+            char qchar = raw[q1];
+
+            size_t q2 = raw.find(qchar, q1 + 1);
+            if (q2 == std::string::npos) break;
+            std::string key = raw.substr(q1 + 1, q2 - q1 - 1);
+
+            // Find the colon separator
+            size_t colon = raw.find(':', q2 + 1);
+            if (colon == std::string::npos) break;
+
+            // Find value (next quoted string after colon)
+            size_t v1 = raw.find('\'', colon + 1);
+            if (v1 == std::string::npos) v1 = raw.find('"', colon + 1);
+            if (v1 == std::string::npos) break;
+            char vchar = raw[v1];
+
+            size_t v2 = raw.find(vchar, v1 + 1);
+            if (v2 == std::string::npos) break;
+            std::string value = raw.substr(v1 + 1, v2 - v1 - 1);
+
+            id(fav_content_ids)[count] = key;
+            id(fav_names)[count] = value;
+            count++;
+            pos = v2 + 1;
+          }
+
+          id(fav_count) = count;
+          ESP_LOGI("favorites", "Parsed %d favorites", count);
+          id(update_favorite_buttons).execute();
+
+  - id: update_favorite_buttons
+    mode: restart
+    then:
+      - lambda: |-
+          lv_obj_t *buttons[] = {id(fav_button_0), id(fav_button_1), id(fav_button_2), id(fav_button_3)};
+          lv_obj_t *labels[]  = {id(fav_label_0), id(fav_label_1), id(fav_label_2), id(fav_label_3)};
+
+          for (int i = 0; i < 4; i++) {
+            if (i < id(fav_count)) {
+              lv_label_set_text(labels[i], id(fav_names)[i].c_str());
+              lv_obj_clear_flag(buttons[i], LV_OBJ_FLAG_HIDDEN);
+            } else {
+              lv_obj_add_flag(buttons[i], LV_OBJ_FLAG_HIDDEN);
+            }
+          }
+
+  - id: play_favorite
+    mode: single
+    parameters:
+      slot: int
+    then:
+      - homeassistant.service:
+          service: media_player.play_media
+          variables:
+            target: !lambda |-
+              return id(media_player_entity).state;
+            content_id: !lambda |-
+              return id(fav_content_ids)[slot];
+          data:
+            media_content_type: favorite_item_id
+          data_template:
+            entity_id: "{{ target }}"
+            media_content_id: "{{ content_id }}"
+      - script.execute: close_settings_panel
