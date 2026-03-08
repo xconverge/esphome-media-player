@@ -441,7 +441,7 @@ lvgl:
                                   return id(media_player_entity).state;
                               data:
                                 media_content_id: "${radio_station_1_content_id}"
-                                media_content_type: music
+                                media_content_type: favorite_item_id
                               data_template:
                                 entity_id: "{{ target }}"
                           - script.execute: close_settings_panel
@@ -468,7 +468,7 @@ lvgl:
                                   return id(media_player_entity).state;
                               data:
                                 media_content_id: "${radio_station_2_content_id}"
-                                media_content_type: music
+                                media_content_type: favorite_item_id
                               data_template:
                                 entity_id: "{{ target }}"
                           - script.execute: close_settings_panel
