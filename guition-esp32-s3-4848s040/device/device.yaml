@@ -311,11 +311,14 @@ touchscreen:
             }
           }
           // Tap: toggle settings panel (open/close)
-          // Skip if LVGL already handled the press (e.g. volume buttons)
+          // Skip if tap landed on the media controls area
           else if (abs(dx) < 20 && abs(dy) < 20) {
-            lv_indev_t *indev = lv_indev_get_next(NULL);
-            lv_obj_t *pressed = indev ? lv_indev_get_obj_act(indev) : NULL;
-            if (pressed == NULL) {
+            int tx = id(touch_x_start);
+            int ty = id(touch_y_start);
+            lv_area_t a;
+            lv_obj_get_coords(id(media_controls_container), &a);
+            bool in_controls = (tx >= a.x1 && tx <= a.x2 && ty >= a.y1 && ty <= a.y2);
+            if (!in_controls) {
               if (id(is_panel_open) || id(was_panel_open)) {
                 id(close_settings_panel).execute();
               } else {
