@@ -163,13 +163,9 @@ text_sensor:
                   s.erase(0, s.find_first_not_of(" \t\r\n"));
                   s.erase(s.find_last_not_of(" \t\r\n") + 1);
                   if (s.empty() || s == "-" || s == "\xe2\x80\x94") {
-                    // Don't clear title while playing/paused (transient blank during track change)
-                    if (id(media_player_state_sensor).has_state()) {
-                      auto &st = id(media_player_state_sensor).state;
-                      if (st == "playing" || st == "paused") {
-                        return std::string(lv_label_get_text(id(media_title_label)));
-                      }
-                    }
+                    // Keep existing label text if we have something displayed
+                    std::string cur = lv_label_get_text(id(media_title_label));
+                    if (!cur.empty() && cur != "\xe2\x80\x94") return cur;
                     return std::string("\xe2\x80\x94");
                   }
                   return x;
@@ -228,18 +224,13 @@ text_sensor:
                       text: !lambda "return x;"
                   - lvgl.widget.show: media_artist_label
                 else:
-                  - if:
-                      condition:
-                        lambda: |-
-                          // Don't hide artist while playing/paused (transient blank during track change)
-                          if (id(media_player_state_sensor).has_state()) {
-                            auto &st = id(media_player_state_sensor).state;
-                            if (st == "playing" || st == "paused") return false;
-                          }
-                          return true;
-                      then:
-                        - lambda: "id(artist_has_content) = false;"
-                        - lvgl.widget.hide: media_artist_label
+                  # Keep existing artist visible — only blank values arrive here
+                  # and we don't want transient blanks to hide the label
+                  - lambda: |-
+                      // Only clear if we never had content
+                      if (!id(artist_has_content)) {
+                        lv_obj_add_flag(id(media_artist_label), LV_OBJ_FLAG_HIDDEN);
+                      }
 
   - platform: template
     id: media_entity_picture_sensor
