@@ -659,54 +659,39 @@ lvgl:
                   hidden: true
                   layout:
                     type: flex
-                    flex_flow: ROW_WRAP
-                    pad_row: 16
-                    pad_column: 16
+                    flex_flow: COLUMN
+                    pad_row: 8
                   widgets:
                     # --- Group Volume card ---
                     - obj:
                         id: group_vol_card
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x212121
                         bg_opa: 100%
                         border_width: 0
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    text: "Group"
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: group_vol_label
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              text: "Group"
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                          - label:
+                              id: group_vol_label
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: group_vol_btns
                               width: 122
@@ -769,50 +754,37 @@ lvgl:
                     # --- Card 0 (selected speaker / leader, no toggle) ---
                     - obj:
                         id: speaker_card_0
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x000000
                         bg_opa: 100%
                         border_width: 2
                         border_color: 0x373737
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         hidden: true
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    id: speaker_name_0
-                                    text: ""
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: speaker_vol_label_0
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              id: speaker_name_0
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              width: 150
+                          - label:
+                              id: speaker_vol_label_0
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: speaker_btns_0
                               width: 122
@@ -881,17 +853,17 @@ lvgl:
                     # --- Card 1 ---
                     - obj:
                         id: speaker_card_1
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x000000
                         bg_opa: 100%
                         border_width: 2
                         border_color: 0x373737
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         hidden: true
                         clickable: true
@@ -901,40 +873,22 @@ lvgl:
                               slot: 1
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              id: speaker_top_1
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 1
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    id: speaker_name_1
-                                    text: ""
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: speaker_vol_label_1
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              id: speaker_name_1
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              width: 150
+                          - label:
+                              id: speaker_vol_label_1
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: speaker_btns_1
                               width: 122
@@ -1003,17 +957,17 @@ lvgl:
                     # --- Card 2 ---
                     - obj:
                         id: speaker_card_2
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x000000
                         bg_opa: 100%
                         border_width: 2
                         border_color: 0x373737
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         hidden: true
                         clickable: true
@@ -1023,40 +977,22 @@ lvgl:
                               slot: 2
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              id: speaker_top_2
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 2
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    id: speaker_name_2
-                                    text: ""
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: speaker_vol_label_2
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              id: speaker_name_2
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              width: 150
+                          - label:
+                              id: speaker_vol_label_2
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: speaker_btns_2
                               width: 122
@@ -1125,17 +1061,17 @@ lvgl:
                     # --- Card 3 ---
                     - obj:
                         id: speaker_card_3
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x000000
                         bg_opa: 100%
                         border_width: 2
                         border_color: 0x373737
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         hidden: true
                         clickable: true
@@ -1145,40 +1081,22 @@ lvgl:
                               slot: 3
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              id: speaker_top_3
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 3
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    id: speaker_name_3
-                                    text: ""
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: speaker_vol_label_3
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              id: speaker_name_3
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              width: 150
+                          - label:
+                              id: speaker_vol_label_3
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: speaker_btns_3
                               width: 122
@@ -1247,17 +1165,17 @@ lvgl:
                     # --- Card 4 ---
                     - obj:
                         id: speaker_card_4
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x000000
                         bg_opa: 100%
                         border_width: 2
                         border_color: 0x373737
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         hidden: true
                         clickable: true
@@ -1267,40 +1185,22 @@ lvgl:
                               slot: 4
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              id: speaker_top_4
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 4
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    id: speaker_name_4
-                                    text: ""
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: speaker_vol_label_4
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              id: speaker_name_4
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              width: 150
+                          - label:
+                              id: speaker_vol_label_4
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: speaker_btns_4
                               width: 122
@@ -1369,17 +1269,17 @@ lvgl:
                     # --- Card 5 ---
                     - obj:
                         id: speaker_card_5
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x000000
                         bg_opa: 100%
                         border_width: 2
                         border_color: 0x373737
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         hidden: true
                         clickable: true
@@ -1389,40 +1289,22 @@ lvgl:
                               slot: 5
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              id: speaker_top_5
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 5
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    id: speaker_name_5
-                                    text: ""
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: speaker_vol_label_5
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              id: speaker_name_5
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              width: 150
+                          - label:
+                              id: speaker_vol_label_5
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: speaker_btns_5
                               width: 122
@@ -1491,17 +1373,17 @@ lvgl:
                     # --- Card 6 ---
                     - obj:
                         id: speaker_card_6
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x000000
                         bg_opa: 100%
                         border_width: 2
                         border_color: 0x373737
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         hidden: true
                         clickable: true
@@ -1511,40 +1393,22 @@ lvgl:
                               slot: 6
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              id: speaker_top_6
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 6
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    id: speaker_name_6
-                                    text: ""
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: speaker_vol_label_6
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              id: speaker_name_6
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              width: 150
+                          - label:
+                              id: speaker_vol_label_6
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: speaker_btns_6
                               width: 122
@@ -1613,17 +1477,17 @@ lvgl:
                     # --- Card 7 ---
                     - obj:
                         id: speaker_card_7
-                        width: 212
-                        height: 180
-                        radius: 24
+                        width: 100%
+                        height: 56
+                        radius: 28
                         bg_color: 0x000000
                         bg_opa: 100%
                         border_width: 2
                         border_color: 0x373737
-                        pad_left: 20
-                        pad_right: 20
-                        pad_top: 20
-                        pad_bottom: 20
+                        pad_left: 16
+                        pad_right: 12
+                        pad_top: 0
+                        pad_bottom: 0
                         scrollable: false
                         hidden: true
                         clickable: true
@@ -1633,40 +1497,22 @@ lvgl:
                               slot: 7
                         layout:
                           type: flex
-                          flex_flow: COLUMN
+                          flex_flow: ROW
                           flex_align_main: space_between
-                          flex_align_cross: start
+                          flex_align_cross: center
                         widgets:
-                          - obj:
-                              id: speaker_top_7
-                              width: 160
-                              height: SIZE_CONTENT
-                              bg_opa: 0%
-                              border_width: 0
-                              pad_all: 0
-                              scrollable: false
-                              clickable: false
-                              on_click:
-                                - script.execute:
-                                    id: speaker_toggle
-                                    slot: 7
-                              layout:
-                                type: flex
-                                flex_flow: COLUMN
-                                pad_row: 7
-                              widgets:
-                                - label:
-                                    id: speaker_name_7
-                                    text: ""
-                                    text_font: roboto30_font
-                                    text_color: 0xFFFFFF
-                                    width: 150
-                                - label:
-                                    id: speaker_vol_label_7
-                                    text: ""
-                                    text_font: roboto19_font
-                                    text_color: 0xFFFFFF
-                                    text_opa: 80%
+                          - label:
+                              id: speaker_name_7
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              width: 150
+                          - label:
+                              id: speaker_vol_label_7
+                              text: ""
+                              text_font: roboto19_font
+                              text_color: 0xFFFFFF
+                              text_opa: 80%
                           - obj:
                               id: speaker_btns_7
                               width: 122
