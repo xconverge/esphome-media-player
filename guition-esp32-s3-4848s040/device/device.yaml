@@ -272,22 +272,15 @@ touchscreen:
             return;
           }
 
-          // --- Vertical swipe: settings panel open/close ---
-          // Swipe down to open: 30px+ downward movement, panel closed
-          if (dy > 20 && abs(dy) > abs(dx) * 2 && !id(is_panel_open)) {
-            id(open_settings_panel).execute();
-            return;
-          }
-          // Swipe up to close: panel is open, but not when multi-speaker list is scrollable
+          // --- Swipe up to close settings panel ---
           if (dy < -60 && abs(dy) > abs(dx) * 2 && id(is_panel_open)
               && (lv_obj_has_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN) || id(speaker_count) <= 1)) {
             id(close_settings_panel).execute();
             return;
           }
-          // When panel is (or was) open, ignore all main-screen gestures.
-          // was_panel_open guards against the close button tap bleeding
-          // through to toggle_ui after the panel has already been hidden.
-          if (id(is_panel_open) || id(was_panel_open)) {
+          // When panel is (or was) open, ignore all main-screen gestures
+          // except taps (handled below to close the panel).
+          if ((id(is_panel_open) || id(was_panel_open)) && (abs(dx) >= 20 || abs(dy) >= 20)) {
             return;
           }
 
@@ -317,9 +310,13 @@ touchscreen:
               }
             }
           }
-          // Tap: minimal movement anywhere on screen
+          // Tap: toggle settings panel (open/close)
           else if (abs(dx) < 20 && abs(dy) < 20) {
-            // No-op: overlay always visible
+            if (id(is_panel_open) || id(was_panel_open)) {
+              id(close_settings_panel).execute();
+            } else {
+              id(open_settings_panel).execute();
+            }
           }
 
 # -----------------------------------------------------------------------------
@@ -429,14 +426,20 @@ script:
       - lvgl.label.update:
           id: media_title_label
           text: !lambda |-
-            return id(tv_media_title_sensor).has_state() && !id(tv_media_title_sensor).state.empty()
-                ? id(tv_media_title_sensor).state : std::string("\xe2\x80\x94");
+            if (!id(tv_media_title_sensor).has_state()) return std::string("\xe2\x80\x94");
+            std::string s = id(tv_media_title_sensor).state;
+            s.erase(0, s.find_first_not_of(" \t\r\n"));
+            s.erase(s.find_last_not_of(" \t\r\n") + 1);
+            if (s.empty() || s == "-" || s == "\xe2\x80\x94") return std::string("\xe2\x80\x94");
+            return id(tv_media_title_sensor).state;
       - if:
           condition:
             lambda: |-
-              return id(tv_media_artist_sensor).has_state()
-                  && !id(tv_media_artist_sensor).state.empty()
-                  && id(tv_media_artist_sensor).state != "\xe2\x80\x94";
+              if (!id(tv_media_artist_sensor).has_state()) return false;
+              std::string s = id(tv_media_artist_sensor).state;
+              s.erase(0, s.find_first_not_of(" \t\r\n"));
+              s.erase(s.find_last_not_of(" \t\r\n") + 1);
+              return !s.empty() && s != "-" && s != "\xe2\x80\x94";
           then:
             - lambda: "id(artist_has_content) = true;"
             - lvgl.label.update:
@@ -494,14 +497,20 @@ script:
       - lvgl.label.update:
           id: media_title_label
           text: !lambda |-
-            return id(media_title_sensor).has_state() && !id(media_title_sensor).state.empty()
-                ? id(media_title_sensor).state : std::string("\xe2\x80\x94");
+            if (!id(media_title_sensor).has_state()) return std::string("\xe2\x80\x94");
+            std::string s = id(media_title_sensor).state;
+            s.erase(0, s.find_first_not_of(" \t\r\n"));
+            s.erase(s.find_last_not_of(" \t\r\n") + 1);
+            if (s.empty() || s == "-" || s == "\xe2\x80\x94") return std::string("\xe2\x80\x94");
+            return id(media_title_sensor).state;
       - if:
           condition:
             lambda: |-
-              return id(media_artist_sensor).has_state()
-                  && !id(media_artist_sensor).state.empty()
-                  && id(media_artist_sensor).state != "\xe2\x80\x94";
+              if (!id(media_artist_sensor).has_state()) return false;
+              std::string s = id(media_artist_sensor).state;
+              s.erase(0, s.find_first_not_of(" \t\r\n"));
+              s.erase(s.find_last_not_of(" \t\r\n") + 1);
+              return !s.empty() && s != "-" && s != "\xe2\x80\x94";
           then:
             - lambda: "id(artist_has_content) = true;"
             - lvgl.label.update:

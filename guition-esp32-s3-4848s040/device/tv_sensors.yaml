@@ -10,16 +10,16 @@
 globals:
   - id: last_tv_media_position
     type: float
-    initial_value: '0.0'
+    initial_value: "0.0"
   - id: last_tv_position_timestamp
     type: int
-    initial_value: '0'
+    initial_value: "0"
   - id: tv_title_received_once
     type: bool
-    initial_value: 'false'
+    initial_value: "false"
   - id: tv_ha_position_epoch
     type: int
-    initial_value: '0'
+    initial_value: "0"
   - id: last_tv_artwork_url
     type: std::string
     initial_value: '""'
@@ -30,21 +30,26 @@ text_sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return id(is_tv_mode);'
+            lambda: "return id(is_tv_mode);"
           then:
             - if:
                 condition:
-                  lambda: 'return id(track_info_duration).state > 0;'
+                  lambda: "return id(track_info_duration).state > 0;"
                 then:
                   - script.execute: show_track_view
                   - script.stop: start_hide_track_info_timer
             - lvgl.widget.hide: artwork_error_label
             - lvgl.label.update:
                 id: media_title_label
-                text: !lambda 'return x.empty() ? std::string("\xe2\x80\x94") : x;'
+                text: !lambda |-
+                  std::string s = x;
+                  s.erase(0, s.find_first_not_of(" \t\r\n"));
+                  s.erase(s.find_last_not_of(" \t\r\n") + 1);
+                  if (s.empty() || s == "-" || s == "\xe2\x80\x94") return std::string("\xe2\x80\x94");
+                  return x;
             - if:
                 condition:
-                  lambda: 'return id(tv_title_received_once);'
+                  lambda: "return id(tv_title_received_once);"
                 then:
                   - lambda: |-
                       id(last_tv_media_position) = 0.0f;
@@ -63,26 +68,30 @@ text_sensor:
                       id: media_progress_bar
                       value: 0
                 else:
-                  - lambda: 'id(tv_title_received_once) = true;'
+                  - lambda: "id(tv_title_received_once) = true;"
 
   - platform: template
     id: tv_media_artist_sensor
     on_value:
       - if:
           condition:
-            lambda: 'return id(is_tv_mode);'
+            lambda: "return id(is_tv_mode);"
           then:
             - if:
                 condition:
-                  lambda: 'return !x.empty() && x != "\xe2\x80\x94";'
+                  lambda: |-
+                    std::string s = x;
+                    s.erase(0, s.find_first_not_of(" \t\r\n"));
+                    s.erase(s.find_last_not_of(" \t\r\n") + 1);
+                    return !s.empty() && s != "-" && s != "\xe2\x80\x94";
                 then:
-                  - lambda: 'id(artist_has_content) = true;'
+                  - lambda: "id(artist_has_content) = true;"
                   - lvgl.label.update:
                       id: media_artist_label
-                      text: !lambda 'return x;'
+                      text: !lambda "return x;"
                   - lvgl.widget.show: media_artist_label
                 else:
-                  - lambda: 'id(artist_has_content) = false;'
+                  - lambda: "id(artist_has_content) = false;"
                   - lvgl.widget.hide: media_artist_label
 
   - platform: template
@@ -105,7 +114,7 @@ text_sensor:
             - lvgl.widget.hide: artwork_error_label
             - online_image.set_url:
                 id: tv_art_background
-                url: !lambda 'return id(last_tv_artwork_url);'
+                url: !lambda "return id(last_tv_artwork_url);"
 
   - platform: template
     id: tv_media_player_state_sensor
@@ -131,7 +140,7 @@ text_sensor:
                   - lvgl.label.update:
                       id: media_title_label
                       text: "TV"
-                  - lambda: 'id(artist_has_content) = false;'
+                  - lambda: "id(artist_has_content) = false;"
                   - lvgl.widget.hide: media_artist_label
                   - lvgl.widget.hide: media_controls_container
                   - lvgl.widget.hide: media_time_label
@@ -151,7 +160,7 @@ text_sensor:
             - script.execute: enter_tv_mode
       - if:
           condition:
-            lambda: 'return id(is_tv_mode);'
+            lambda: "return id(is_tv_mode);"
           then:
             - if:
                 condition:
@@ -159,9 +168,9 @@ text_sensor:
                 then:
                   - if:
                       condition:
-                        lambda: 'return id(is_tv_idle);'
+                        lambda: "return id(is_tv_idle);"
                       then:
-                        - lambda: 'id(is_tv_idle) = false;'
+                        - lambda: "id(is_tv_idle) = false;"
                         - lvgl.widget.show: media_controls_container
                         - lvgl.widget.show: media_time_label
                         - lvgl.widget.show: album_art_background_widget
@@ -176,15 +185,15 @@ text_sensor:
                       brightness: 100%
                   - if:
                       condition:
-                        lambda: 'return id(is_screen_dimmed);'
+                        lambda: "return id(is_screen_dimmed);"
                       then:
-                        - lambda: 'id(is_screen_dimmed) = false;'
+                        - lambda: "id(is_screen_dimmed) = false;"
                         - script.execute: show_track_view
                   - script.execute: start_hide_track_info_timer
                 else:
                   - if:
                       condition:
-                        lambda: 'return !id(is_tv_idle);'
+                        lambda: "return !id(is_tv_idle);"
                       then:
                         - script.stop: start_hide_track_info_timer
                         - script.execute: show_track_view
@@ -199,7 +208,7 @@ text_sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return id(is_tv_mode);'
+            lambda: "return id(is_tv_mode);"
           then:
             - lambda: |-
                 int yr, mo, dy, hr, mn, sc;
@@ -225,7 +234,7 @@ sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return id(is_tv_mode);'
+            lambda: "return id(is_tv_mode);"
           then:
             - lambda: |-
                 id(last_tv_media_position) = x;

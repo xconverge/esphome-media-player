@@ -117,6 +117,7 @@ lvgl:
                   text_color: 0xFFFFFF
                   text_align: left
                   text_line_space: 0
+                  clickable: true
               - label:
                   id: media_artist_label
                   text: ""
@@ -128,6 +129,7 @@ lvgl:
                   text_opa: 80%
                   text_align: left
                   hidden: true
+                  clickable: true
               - label:
                   id: media_time_label
                   text: "0:00  /  0:00"
