@@ -311,11 +311,16 @@ touchscreen:
             }
           }
           // Tap: toggle settings panel (open/close)
+          // Skip if LVGL already handled the press (e.g. volume buttons)
           else if (abs(dx) < 20 && abs(dy) < 20) {
-            if (id(is_panel_open) || id(was_panel_open)) {
-              id(close_settings_panel).execute();
-            } else {
-              id(open_settings_panel).execute();
+            lv_indev_t *indev = lv_indev_get_next(NULL);
+            lv_obj_t *pressed = indev ? lv_indev_get_obj_act(indev) : NULL;
+            if (pressed == NULL) {
+              if (id(is_panel_open) || id(was_panel_open)) {
+                id(close_settings_panel).execute();
+              } else {
+                id(open_settings_panel).execute();
+              }
             }
           }
 

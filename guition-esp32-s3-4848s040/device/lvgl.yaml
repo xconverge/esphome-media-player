@@ -113,7 +113,7 @@ lvgl:
                   width: 100%
                   max_height: 330px
                   long_mode: wrap
-                  text_font: roboto_light70_font
+                  text_font: roboto_light40_font
                   text_color: 0xFFFFFF
                   text_align: left
                   text_line_space: 0
