@@ -2,7 +2,7 @@
 # SONOS FAVORITES - Dynamic playlist buttons from HA sensor
 # =============================================================================
 # Subscribes to sensor.sonos_favorites (items attribute) and populates up to
-# 4 button slots in the settings panel. Each button plays the corresponding
+# 8 button slots in the settings panel. Each button plays the corresponding
 # favorite via media_player.play_media with favorite_item_id content type.
 #
 # The items attribute is a dict like: {'FV:2/8': 'Indie Station', ...}
@@ -14,9 +14,9 @@ globals:
     type: int
     initial_value: "0"
   - id: fav_content_ids
-    type: std::string[4]
+    type: std::string[8]
   - id: fav_names
-    type: std::string[4]
+    type: std::string[8]
 
 text_sensor:
   - platform: homeassistant
@@ -42,7 +42,7 @@ script:
           // We extract key-value pairs by finding quoted strings
           int count = 0;
           size_t pos = 0;
-          while (count < 4 && pos < raw.size()) {
+          while (count < 8 && pos < raw.size()) {
             // Find next key (after a quote)
             size_t q1 = raw.find('\'', pos);
             if (q1 == std::string::npos) q1 = raw.find('"', pos);
@@ -81,10 +81,10 @@ script:
     mode: restart
     then:
       - lambda: |-
-          lv_obj_t *buttons[] = {id(fav_button_0), id(fav_button_1), id(fav_button_2), id(fav_button_3)};
-          lv_obj_t *labels[]  = {id(fav_label_0), id(fav_label_1), id(fav_label_2), id(fav_label_3)};
+          lv_obj_t *buttons[] = {id(fav_button_0), id(fav_button_1), id(fav_button_2), id(fav_button_3), id(fav_button_4), id(fav_button_5), id(fav_button_6), id(fav_button_7)};
+          lv_obj_t *labels[]  = {id(fav_label_0), id(fav_label_1), id(fav_label_2), id(fav_label_3), id(fav_label_4), id(fav_label_5), id(fav_label_6), id(fav_label_7)};
 
-          for (int i = 0; i < 4; i++) {
+          for (int i = 0; i < 8; i++) {
             if (i < id(fav_count)) {
               lv_label_set_text(labels[i], id(fav_names)[i].c_str());
               lv_obj_clear_flag(buttons[i], LV_OBJ_FLAG_HIDDEN);
