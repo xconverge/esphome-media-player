@@ -13,6 +13,9 @@ substitutions:
   #   270: mirror_x "false", mirror_y "true"
   touch_mirror_x: "false"
   touch_mirror_y: "false"
+  # Hide transport buttons: "true" or "false"
+  hide_previous_button: "false"
+  hide_shuffle_button: "false"
 
 packages:
   music: !include addon/music.yaml
