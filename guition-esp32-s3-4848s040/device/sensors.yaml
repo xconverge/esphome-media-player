@@ -158,7 +158,12 @@ text_sensor:
             - lvgl.widget.hide: artwork_error_label
             - lvgl.label.update:
                 id: media_title_label
-                text: !lambda 'return x.empty() ? std::string("\xe2\x80\x94") : x;'
+                text: !lambda |-
+                  std::string s = x;
+                  s.erase(0, s.find_first_not_of(" \t\r\n"));
+                  s.erase(s.find_last_not_of(" \t\r\n") + 1);
+                  if (s.empty() || s == "-" || s == "\xe2\x80\x94") return std::string("\xe2\x80\x94");
+                  return x;
             - if:
                 condition:
                   lambda: "return id(title_received_once);"
@@ -191,7 +196,11 @@ text_sensor:
           then:
             - if:
                 condition:
-                  lambda: 'return !x.empty() && x != "\xe2\x80\x94";'
+                  lambda: |-
+                    std::string s = x;
+                    s.erase(0, s.find_first_not_of(" \t\r\n"));
+                    s.erase(s.find_last_not_of(" \t\r\n") + 1);
+                    return !s.empty() && s != "-" && s != "\xe2\x80\x94";
                 then:
                   - lambda: "id(artist_has_content) = true;"
                   - lvgl.label.update:
