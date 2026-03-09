@@ -16,6 +16,12 @@ globals:
   - id: tv_subscription_gen
     type: int
     initial_value: "0"
+  - id: last_subscribed_entity
+    type: std::string
+    initial_value: '""'
+  - id: last_subscribed_tv_entity
+    type: std::string
+    initial_value: '""'
 
 text:
   - platform: template
@@ -105,20 +111,28 @@ script:
             return;
           }
 
-          // --- Reset tracking state for new entity ---
-          id(title_received_once) = false;
-          id(last_media_position) = 0.0f;
-          id(ha_position_epoch) = 0;
-          id(last_position_timestamp) = 0;
+          // Only reset UI when the entity actually changed (not on reconnects)
+          bool entity_changed = (entity != id(last_subscribed_entity));
+          id(last_subscribed_entity) = entity;
 
-          // --- Reset UI ---
-          lv_obj_add_flag(id(setup_prompt), LV_OBJ_FLAG_HIDDEN);
-          lv_label_set_text(id(media_title_label), "\xe2\x80\x94");
-          id(artist_has_content) = false;
-          lv_obj_add_flag(id(media_artist_label), LV_OBJ_FLAG_HIDDEN);
-          lv_label_set_text(id(media_time_label), "0:00 / -0:00");
-          lv_bar_set_value(id(media_progress_bar), 0, LV_ANIM_OFF);
-          lv_obj_set_style_opa(id(album_art_background_widget), LV_OPA_50, 0);
+          if (entity_changed) {
+            // --- Reset tracking state for new entity ---
+            id(title_received_once) = false;
+            id(last_media_position) = 0.0f;
+            id(ha_position_epoch) = 0;
+            id(last_position_timestamp) = 0;
+
+            // --- Reset UI ---
+            lv_obj_add_flag(id(setup_prompt), LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(id(media_title_label), "\xe2\x80\x94");
+            id(artist_has_content) = false;
+            lv_obj_add_flag(id(media_artist_label), LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(id(media_time_label), "0:00 / -0:00");
+            lv_bar_set_value(id(media_progress_bar), 0, LV_ANIM_OFF);
+            lv_obj_set_style_opa(id(album_art_background_widget), LV_OPA_50, 0);
+          } else {
+            lv_obj_add_flag(id(setup_prompt), LV_OBJ_FLAG_HIDDEN);
+          }
 
           // --- Bump generation (stale callbacks from old entity are discarded) ---
           id(subscription_gen) += 1;
@@ -193,10 +207,15 @@ script:
             return;
           }
 
-          id(tv_title_received_once) = false;
-          id(last_tv_media_position) = 0.0f;
-          id(tv_ha_position_epoch) = 0;
-          id(last_tv_position_timestamp) = 0;
+          bool tv_entity_changed = (entity != id(last_subscribed_tv_entity));
+          id(last_subscribed_tv_entity) = entity;
+
+          if (tv_entity_changed) {
+            id(tv_title_received_once) = false;
+            id(last_tv_media_position) = 0.0f;
+            id(tv_ha_position_epoch) = 0;
+            id(last_tv_position_timestamp) = 0;
+          }
 
           id(tv_subscription_gen) += 1;
           int gen = id(tv_subscription_gen);
