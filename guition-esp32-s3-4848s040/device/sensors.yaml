@@ -173,9 +173,14 @@ text_sensor:
                     return std::string("\xe2\x80\x94");
                   }
                   return x;
+            # Only reset position/progress when the title is a real new track
             - if:
                 condition:
-                  lambda: "return id(title_received_once);"
+                  lambda: |-
+                    std::string s = x;
+                    s.erase(0, s.find_first_not_of(" \t\r\n"));
+                    s.erase(s.find_last_not_of(" \t\r\n") + 1);
+                    return !s.empty() && s != "-" && s != "\xe2\x80\x94" && id(title_received_once);
                 then:
                   - lambda: |-
                       id(last_media_position) = 0.0f;
@@ -194,7 +199,13 @@ text_sensor:
                       id: media_progress_bar
                       value: 0
                 else:
-                  - lambda: "id(title_received_once) = true;"
+                  - lambda: |-
+                      std::string s = x;
+                      s.erase(0, s.find_first_not_of(" \t\r\n"));
+                      s.erase(s.find_last_not_of(" \t\r\n") + 1);
+                      if (!s.empty() && s != "-" && s != "\xe2\x80\x94") {
+                        id(title_received_once) = true;
+                      }
 
   - platform: template
     id: media_artist_sensor
