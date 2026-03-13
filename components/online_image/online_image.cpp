@@ -99,6 +99,9 @@ size_t OnlineImage::resize_(int width_in, int height_in) {
   size_t new_size = this->get_buffer_size_(width, height);
   if (this->buffer_) {
     if (new_size <= this->get_buffer_size_()) {
+      // Clear reused buffer to prevent stale pixels from a previous (larger)
+      // image showing through if the new decode doesn't fill every row.
+      memset(this->buffer_, 0, this->get_buffer_size_());
       this->buffer_width_ = width;
       this->buffer_height_ = height;
       this->width_ = width;
@@ -125,8 +128,8 @@ size_t OnlineImage::resize_(int width_in, int height_in) {
 
 void OnlineImage::update() {
   if (this->decoder_) {
-    ESP_LOGW(TAG, "Image already being updated.");
-    return;
+    ESP_LOGW(TAG, "Cancelling in-progress image download to fetch new URL");
+    this->end_connection_();
   }
   ESP_LOGI(TAG, "Updating image %s", this->url_.c_str());
 
