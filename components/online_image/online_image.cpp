@@ -20,13 +20,6 @@ static const char *const IF_MODIFIED_SINCE_HEADER_NAME = "if-modified-since";
 #include "png_image.h"
 #endif
 
-#ifdef USE_ESP_IDF
-#include "soc/soc_caps.h"
-#if SOC_JPEG_CODEC_SUPPORTED
-#include "jpeg_image_hw.h"
-#endif
-#endif
-
 namespace esphome {
 namespace online_image {
 
