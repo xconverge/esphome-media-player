@@ -4,6 +4,9 @@
 
 If your speaker has a "TV" source (e.g. a home theater setup), the controller can show now-playing info from the TV's media player (e.g. Apple TV, Chromecast) when the speaker's source changes to "TV". This feature is entirely optional — the controller works without it.
 
+> [!WARNING]
+> This feature is in **beta**. If you encounter any issues, please [open an issue on GitHub](https://github.com/jtenniswood/esphome-media-player/issues).
+
 ## How it works
 
 - **Automatic switching** — when the primary media player's source becomes "TV", the UI shows title, artist, artwork, and progress from the secondary TV media player. When the source changes back, the UI reverts to the primary player.

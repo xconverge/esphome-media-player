@@ -33,3 +33,4 @@ packages:
   tv_sensors: !include device/tv_sensors.yaml
   lvgl: !include device/lvgl.yaml
   button: !include theme/button.yaml
+  firmware_update: !include addon/firmware_update.yaml

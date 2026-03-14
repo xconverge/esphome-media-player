@@ -1,5 +1,6 @@
 #include "online_image.h"
 
+#include <cstring>
 #include "esphome/core/log.h"
 
 static const char *const TAG = "online_image";
@@ -18,13 +19,6 @@ static const char *const IF_MODIFIED_SINCE_HEADER_NAME = "if-modified-since";
 #endif
 #ifdef USE_ONLINE_IMAGE_PNG_SUPPORT
 #include "png_image.h"
-#endif
-
-#ifdef USE_ESP_IDF
-#include "soc/soc_caps.h"
-#if SOC_JPEG_CODEC_SUPPORTED
-#include "jpeg_image_hw.h"
-#endif
 #endif
 
 namespace esphome {
@@ -88,17 +82,25 @@ size_t OnlineImage::resize_(int width_in, int height_in) {
       this->release();
     }
   } else if (width_in > 0 && height_in > 0) {
-    // Fit within fixed dimensions while preserving aspect ratio
-    double scale = std::min(
-      static_cast<double>(this->fixed_width_) / width_in,
-      static_cast<double>(this->fixed_height_) / height_in
-    );
-    width = static_cast<int>(width_in * scale);
-    height = static_cast<int>(height_in * scale);
+    if (width_in == height_in) {
+      // Square source — use fixed target dimensions directly
+    } else {
+      double scale = std::min(
+        static_cast<double>(this->fixed_width_) / width_in,
+        static_cast<double>(this->fixed_height_) / height_in
+      );
+      width = (static_cast<int>(width_in * scale) + 3) & ~3;
+      height = (static_cast<int>(height_in * scale) + 3) & ~3;
+      if (width > this->fixed_width_) width = this->fixed_width_;
+      if (height > this->fixed_height_) height = this->fixed_height_;
+    }
   }
   size_t new_size = this->get_buffer_size_(width, height);
   if (this->buffer_) {
     if (new_size <= this->get_buffer_size_()) {
+      // Clear reused buffer to prevent stale pixels from a previous (larger)
+      // image showing through if the new decode doesn't fill every row.
+      memset(this->buffer_, 0, this->get_buffer_size_());
       this->buffer_width_ = width;
       this->buffer_height_ = height;
       this->width_ = width;
@@ -125,8 +127,8 @@ size_t OnlineImage::resize_(int width_in, int height_in) {
 
 void OnlineImage::update() {
   if (this->decoder_) {
-    ESP_LOGW(TAG, "Image already being updated.");
-    return;
+    ESP_LOGW(TAG, "Cancelling in-progress image download to fetch new URL");
+    this->end_connection_();
   }
   ESP_LOGI(TAG, "Updating image %s", this->url_.c_str());
 
@@ -206,18 +208,8 @@ void OnlineImage::update() {
 #endif  // USE_ONLINE_IMAGE_BMP_SUPPORT
 #ifdef USE_ONLINE_IMAGE_JPEG_SUPPORT
   if (this->format_ == ImageFormat::JPEG) {
-#if defined(SOC_JPEG_CODEC_SUPPORTED) && SOC_JPEG_CODEC_SUPPORTED
-    if (this->type_ == ImageType::IMAGE_TYPE_RGB565) {
-      ESP_LOGD(TAG, "Allocating hardware JPEG decoder");
-      this->decoder_ = esphome::make_unique<HwJpegDecoder>(this);
-    } else {
-      ESP_LOGD(TAG, "Allocating software JPEG decoder (non-RGB565 image type)");
-      this->decoder_ = esphome::make_unique<JpegDecoder>(this);
-    }
-#else
-    ESP_LOGD(TAG, "Allocating JPEG decoder");
+    ESP_LOGD(TAG, "Allocating software JPEG decoder");
     this->decoder_ = esphome::make_unique<JpegDecoder>(this);
-#endif
     this->enable_loop();
   }
 #endif  // USE_ONLINE_IMAGE_JPEG_SUPPORT
@@ -241,6 +233,7 @@ void OnlineImage::update() {
     this->download_error_callback_.call();
     return;
   }
+  this->data_start_ = nullptr;
   ESP_LOGI(TAG, "Downloading image (Size: %zu)", total_size);
   this->start_time_ = ::time(nullptr);
 }
@@ -258,6 +251,10 @@ void OnlineImage::loop() {
     ESP_LOGD(TAG, "Image fully downloaded, read %zu bytes, width/height = %d/%d", this->downloader_->get_bytes_read(),
              this->width_, this->height_);
     ESP_LOGD(TAG, "Total time: %" PRIu32 "s", (uint32_t) (::time(nullptr) - this->start_time_));
+#ifdef USE_LVGL
+    this->dsc_.data = reinterpret_cast<const uint8_t *>(1);
+    this->get_lv_img_dsc();
+#endif
     this->etag_ = this->downloader_->get_response_header(ETAG_HEADER_NAME);
     this->last_modified_ = this->downloader_->get_response_header(LAST_MODIFIED_HEADER_NAME);
     this->download_finished_callback_.call(false);

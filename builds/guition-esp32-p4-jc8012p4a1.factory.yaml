@@ -9,13 +9,7 @@ esphome:
 dashboard_import:
   package_import_url: github://jtenniswood/esphome-media-player/guition-esp32-p4-jc8012p4a1/esphome.yaml@guition-esp32-p4-jc8012p4a1
 
-ota:
-  - platform: http_request
-
 update:
-  - platform: http_request
-    name: Firmware
-    source: https://jtenniswood.github.io/esphome-media-player/firmware/media-player-jc8012p4a1.manifest.json
   - platform: esp32_hosted
     id: c6_firmware_update
     type: embedded

@@ -15,6 +15,7 @@ A touchscreen media controller for Home Assistant: album art, track info, and to
 ## Learn more
 
 - [Installation](/installation) — flash, connect, and configure your device
+- [Firmware Updates](/features/firmware-updates) — automatic over-the-air updates
 - [Speaker Grouping](/features/speaker-grouping) — multi-room speaker control
 - [Settings](/features/settings) — brightness, timeouts, track info
 - [Manual installation](/advanced/manual-setup) — flash via ESPHome dashboard instead of the web installer
@@ -54,6 +55,10 @@ This feature works with any speaker platform that supports grouping in Home Assi
 - **Next / Previous** — swipe left or right to change tracks.
 - **Volume** — swipe down to open the settings panel with an arc dial. Drag the knob or use + / − for 1% steps. Swipe up to close.
 - **Hide / Show UI** — tap the screen during playback to hide or show the overlay (4" only).
+
+### Firmware updates
+
+The device checks for new firmware automatically and can install updates over-the-air — no USB cable needed. You control the behavior from Home Assistant: enable or disable auto-update, choose a check frequency (hourly, daily, or weekly), and trigger manual installs at any time. See [Firmware Updates](/features/firmware-updates) for details.
 
 ### Screensaver
 
