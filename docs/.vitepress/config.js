@@ -26,10 +26,10 @@ export default {
       {
         text: 'Features',
         items: [
-          { text: 'Firmware Updates', link: '/features/firmware-updates' },
+          { text: 'Settings', link: '/features/settings' },
           { text: 'Speaker Grouping', link: '/features/speaker-grouping' },
           { text: 'Source Inputs', link: '/features/source-inputs' },
-          { text: 'Settings', link: '/features/settings' },
+          { text: 'Firmware Updates', link: '/features/firmware-updates' },
         ],
       },
       {
