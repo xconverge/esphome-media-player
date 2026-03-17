@@ -18,6 +18,16 @@ A touchscreen media controller that shows album art and track info and lets you 
 
 *Full details: [Features](https://jtenniswood.github.io/esphome-media-player/features)*
 
+
+---
+
+## Supported Screens
+
+| Device | Size | Buy |
+|--------|------|-----|
+| [Guition ESP32-S3 4848S040](https://jtenniswood.github.io/esphome-media-player/devices/esp32-s3-4848s040) | 4" (480×480) | [AliExpress](https://s.click.aliexpress.com/e/_c3sIhvBv) |
+| [Guition ESP32-P4 JC8012P4A1](https://jtenniswood.github.io/esphome-media-player/devices/esp32-p4-jc8012p4a1) | 10.1" (1280×800) | [AliExpress](https://s.click.aliexpress.com/e/_c3wsnU43) |
+
 ---
 
 ## Support This Project
@@ -28,29 +38,15 @@ If you find this project useful, consider buying me a coffee to support ongoing 
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" />
 </a>
 
-
 ---
 
-## Get started
+## Getting Started
 
-Install guide, web installer, and device setup are on the documentation site:
+The [documentation site](https://jtenniswood.github.io/esphome-media-player/) has the install guide, configurable settings, manual setup (ESPHome dashboard), and troubleshooting.
 
 <a href="https://jtenniswood.github.io/esphome-media-player/">
   <img src="https://img.shields.io/badge/Open_Documentation_%26_Installer-blue?style=for-the-badge&logo=esphome&logoColor=white" alt="Open Documentation & Installer" />
 </a>
-
----
-
-## Documentation
-
-The [documentation site](https://jtenniswood.github.io/esphome-media-player/) has the install guide, configurable settings, manual setup (ESPHome dashboard), and troubleshooting.
-
-**Supported panels:**
-
-| Device | Size | Buy |
-|--------|------|-----|
-| [Guition ESP32-S3 4848S040](https://jtenniswood.github.io/esphome-media-player/devices/esp32-s3-4848s040) | 4" (480×480) | [AliExpress](https://s.click.aliexpress.com/e/_c3sIhvBv) |
-| [Guition ESP32-P4 JC8012P4A1](https://jtenniswood.github.io/esphome-media-player/devices/esp32-p4-jc8012p4a1) | 10.1" (1280×800) | [AliExpress](https://s.click.aliexpress.com/e/_c3wsnU43) |
 
 ---
 
