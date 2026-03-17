@@ -25,7 +25,7 @@ A touchscreen media controller that shows album art and track info and lets you 
 If you find this project useful, consider buying me a coffee to support ongoing development!
 
 <a href="https://www.buymeacoffee.com/jtenniswood">
-  <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=jtenniswood&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy Me A Coffee" />
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" />
 </a>
 
 
