@@ -68,3 +68,11 @@ When playback is paused, the device uses a two-stage screensaver:
 2. After **Timeout: Screen Off** elapses, the screen turns off (unless disabled by the **Day/Night: Screen Saver** switch, in which case it stays dimmed).
 
 Active brightness (**Day/Night: Active Brightness**) adjusts automatically between day and night based on the `sun.sun` entity in Home Assistant. All of these settings are configurable from the device page in Home Assistant (see [Settings](/features/settings)).
+
+## Support This Project
+
+If you find this project useful, consider buying me a coffee to support ongoing development!
+
+<a href="https://www.buymeacoffee.com/jtenniswood" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" />
+</a>
