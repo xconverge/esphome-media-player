@@ -44,6 +44,7 @@ image:
 online_image:
   - url: "https://placehold.co/800x800/2d2d2d/555555"
     id: album_art_background
+    format: AUTO
     type: RGB565
     byte_order: little_endian
     placeholder: album_art_placeholder
@@ -56,6 +57,7 @@ online_image:
 
   - url: "https://placehold.co/800x800/2d2d2d/555555"
     id: tv_art_background
+    format: AUTO
     type: RGB565
     byte_order: little_endian
     placeholder: album_art_placeholder
