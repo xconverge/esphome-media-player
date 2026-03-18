@@ -6,19 +6,17 @@ import esphome.codegen as cg
 from esphome.components.const import CONF_BYTE_ORDER, CONF_REQUEST_HEADERS
 from esphome.components.http_request import CONF_HTTP_REQUEST_ID, HttpRequestComponent
 from esphome.components.image import (
-    CONF_INVERT_ALPHA,
-    CONF_TRANSPARENCY,
-    IMAGE_SCHEMA,
+    IMAGE_TYPE,
     Image_,
     get_image_type_enum,
     get_transparency_enum,
     validate_settings,
+    validate_transparency,
+    validate_type,
 )
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_BUFFER_SIZE,
-    CONF_DITHER,
-    CONF_FILE,
     CONF_FORMAT,
     CONF_ID,
     CONF_ON_ERROR,
@@ -36,6 +34,7 @@ MULTI_CONF = True
 
 CONF_ON_DOWNLOAD_FINISHED = "on_download_finished"
 CONF_PLACEHOLDER = "placeholder"
+CONF_TRANSPARENCY = "transparency"
 CONF_UPDATE = "update"
 
 _LOGGER = logging.getLogger(__name__)
@@ -103,9 +102,19 @@ class PNGFormat(Format):
         cg.add_library("pngle", "1.1.0")
 
 
+class AutoFormat(Format):
+    def __init__(self):
+        super().__init__("AUTO")
+
+    def actions(self):
+        JPEGFormat().actions()
+        PNGFormat().actions()
+
+
 IMAGE_FORMATS = {
     x.image_type: x
     for x in (
+        AutoFormat(),
         BMPFormat(),
         JPEGFormat(),
         PNGFormat(),
@@ -132,27 +141,24 @@ DownloadErrorTrigger = online_image_ns.class_(
 )
 
 
-def remove_options(*options):
-    return {
-        cv.Optional(option): cv.invalid(
-            f"{option} is an invalid option for online_image"
-        )
-        for option in options
-    }
-
-
 ONLINE_IMAGE_SCHEMA = (
-    IMAGE_SCHEMA.extend(remove_options(CONF_FILE, CONF_INVERT_ALPHA, CONF_DITHER))
-    .extend(
+    cv.Schema(
         {
             cv.Required(CONF_ID): cv.declare_id(OnlineImage),
+            cv.Required(CONF_TYPE): validate_type(IMAGE_TYPE),
+            cv.Optional(CONF_RESIZE): cv.dimensions,
+            cv.Optional(CONF_BYTE_ORDER): cv.one_of(
+                "BIG_ENDIAN", "LITTLE_ENDIAN", upper=True
+            ),
+            cv.Optional(CONF_TRANSPARENCY, default="OPAQUE"): validate_transparency(),
             cv.GenerateID(CONF_HTTP_REQUEST_ID): cv.use_id(HttpRequestComponent),
-            # Online Image specific options
             cv.Required(CONF_URL): cv.url,
             cv.Optional(CONF_REQUEST_HEADERS): cv.All(
                 cv.Schema({cv.string: cv.templatable(cv.string)})
             ),
-            cv.Required(CONF_FORMAT): cv.one_of(*IMAGE_FORMATS, upper=True),
+            cv.Optional(CONF_FORMAT, default="AUTO"): cv.one_of(
+                *IMAGE_FORMATS, upper=True
+            ),
             cv.Optional(CONF_PLACEHOLDER): cv.use_id(Image_),
             cv.Optional(CONF_BUFFER_SIZE, default=65536): cv.int_range(256, 524288),
             cv.Optional(CONF_ON_DOWNLOAD_FINISHED): automation.validate_automation(
@@ -164,7 +170,9 @@ ONLINE_IMAGE_SCHEMA = (
             ),
             cv.Optional(CONF_ON_ERROR): automation.validate_automation(
                 {
-                    cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(DownloadErrorTrigger),
+                    cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(
+                        DownloadErrorTrigger
+                    ),
                 }
             ),
         }

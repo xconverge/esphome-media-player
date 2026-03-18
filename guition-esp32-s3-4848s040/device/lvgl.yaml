@@ -399,10 +399,11 @@ lvgl:
                   align: top_right
                   x: -21
                   y: 26
-                  width: 48px
-                  height: 48px
-                  radius: 24
-                  bg_opa: 0%
+                  width: 64px
+                  height: 64px
+                  radius: 32
+                  bg_color: 0x262626
+                  bg_opa: 100%
                   border_width: 0
                   shadow_width: 0
                   pad_all: 0
@@ -423,7 +424,7 @@ lvgl:
                   text_font: roboto_light55_font
                   text_color: 0xFFFFFF
                   x: 20
-                  y: 19
+                  y: 10
                   width: 400
                   text_align: left
                   hidden: true
@@ -432,7 +433,7 @@ lvgl:
               - obj:
                   id: radio_buttons_row
                   x: 0
-                  y: 85
+                  y: 90
                   width: 100%
                   height: 236
                   bg_opa: 0%
@@ -645,7 +646,7 @@ lvgl:
               - obj:
                   id: speakers_container
                   x: 0
-                  y: 335
+                  y: 345
                   width: 100%
                   height: 145
                   bg_opa: 0%

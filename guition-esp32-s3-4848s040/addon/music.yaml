@@ -8,7 +8,7 @@
 external_components:
   - source:
       type: git
-      url: https://github.com/xconverge/esphome-media-player
+      url: https://github.com/jtenniswood/esphome-media-player
       ref: main
       path: components
     components: [online_image]
@@ -28,8 +28,8 @@ image:
 online_image:
   - url: "https://placehold.co/480x480/2d2d2d/555555"
     id: album_art_background
+    format: AUTO
     type: rgb565
-    format: jpeg
     placeholder: album_art_placeholder
     resize: 480x480
     on_download_finished:
@@ -39,8 +39,8 @@ online_image:
 
   - url: "https://placehold.co/480x480/2d2d2d/555555"
     id: tv_art_background
+    format: AUTO
     type: rgb565
-    format: jpeg
     placeholder: album_art_placeholder
     resize: 480x480
     on_download_finished:
