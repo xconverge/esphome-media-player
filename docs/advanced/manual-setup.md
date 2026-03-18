@@ -61,24 +61,30 @@ These substitutions can be added to the `substitutions:` block in your configura
 | `linked_media_player` | `""`                | Entity ID of a linked media player for TV or Line In source (optional)     |
 | `ha_host`         | `"homeassistant.local"` | Hostname or IP address of Home Assistant                                   |
 | `ha_port`         | `"8123"`                | Port that Home Assistant is running on                                     |
-| `display_rotation` | `"0"`                  | Display rotation in degrees: 0, 90, 180, or 270. ESP32-S3 only.           |
-| `touch_mirror_x`  | `"false"`               | Touch X-axis mirror — must match `display_rotation`. ESP32-S3 only.       |
-| `touch_mirror_y`  | `"false"`               | Touch Y-axis mirror — must match `display_rotation`. ESP32-S3 only.       |
+| `display_rotation` | `"0"` (S3) / `"90"` (P4) | Display rotation in degrees. See [Display rotation](#display-rotation).  |
+| `touch_mirror_x`  | `"false"`               | Touch X-axis mirror — must match `display_rotation`. See rotation tables. |
+| `touch_mirror_y`  | `"false"`               | Touch Y-axis mirror — must match `display_rotation`. See rotation tables. |
 
-## Display rotation (ESP32-S3 only)
+## Display rotation
 
-If you mount the ESP32-S3 4848S040 in a different orientation (for example to change which side the power cable exits from), you can rotate the display by setting the `display_rotation` substitution to `0`, `90`, `180`, or `270` degrees.
+Both devices support display rotation for different mounting orientations (for example to change which side the power cable exits from). Set `display_rotation` and update `touch_mirror_x` / `touch_mirror_y` to match.
 
-You **must** also set `touch_mirror_x` and `touch_mirror_y` to match the rotation, otherwise touch input will not align with the display. Use the table below:
+::: warning
+If you set `display_rotation` without updating the touch mirror values, the screen image will be rotated but taps will register in the wrong position.
+:::
+
+### ESP32-S3 4848S040
+
+The 480×480 square display supports all four rotations:
 
 | `display_rotation` | `touch_mirror_x` | `touch_mirror_y` |
 | ------------------- | ----------------- | ----------------- |
-| `"0"`               | `"false"`         | `"false"`         |
+| `"0"` (default)     | `"false"`         | `"false"`         |
 | `"90"`              | `"true"`          | `"false"`         |
 | `"180"`             | `"true"`          | `"true"`          |
 | `"270"`             | `"false"`         | `"true"`          |
 
-### Example: 90-degree rotation
+#### Example: 90-degree rotation
 
 ```yaml
 substitutions:
@@ -100,9 +106,36 @@ packages:
     refresh: 1s
 ```
 
-::: warning
-If you set `display_rotation` without updating the touch mirror values, the screen image will be rotated but taps will register in the wrong position.
-:::
+### ESP32-P4 JC8012P4A1
+
+The 1280×800 rectangular display defaults to landscape (90°). To flip it 180° (e.g. to reverse the power cable side), use 270°:
+
+| `display_rotation` | `touch_mirror_x` | `touch_mirror_y` |
+| ------------------- | ----------------- | ----------------- |
+| `"90"` (default)    | `"false"`         | `"false"`         |
+| `"270"`             | `"true"`          | `"true"`          |
+
+#### Example: flipped landscape
+
+```yaml
+substitutions:
+  name: "music-dashboard-10inch"
+  friendly_name: "Music Dashboard 10inch"
+  display_rotation: "270"
+  touch_mirror_x: "true"
+  touch_mirror_y: "true"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+packages:
+  music_dashboard:
+    url: https://github.com/jtenniswood/esphome-media-player
+    files: [guition-esp32-p4-jc8012p4a1/packages.yaml]
+    ref: main
+    refresh: 1s
+```
 
 ## Non-standard Home Assistant host or port
 

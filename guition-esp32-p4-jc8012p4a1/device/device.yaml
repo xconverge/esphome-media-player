@@ -201,8 +201,8 @@ touchscreen:
     interrupt_pin: GPIO21
     transform:
       swap_xy: true
-      mirror_x: false
-      mirror_y: false
+      mirror_x: ${touch_mirror_x}
+      mirror_y: ${touch_mirror_y}
     on_touch:
       - lambda: |-
           id(was_screen_dimmed) = id(is_screen_dimmed);
@@ -488,7 +488,7 @@ display:
     model: JC8012P4A1
     id: tft_display
     reset_pin: GPIO27
-    rotation: 90
+    rotation: ${display_rotation}
     auto_clear_enabled: false
     color_order: RGB
     dimensions:
