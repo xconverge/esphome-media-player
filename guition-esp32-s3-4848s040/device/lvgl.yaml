@@ -398,7 +398,7 @@ lvgl:
                   id: speakers_close_button
                   align: top_right
                   x: -21
-                  y: 26
+                  y: 10
                   width: 64px
                   height: 64px
                   radius: 32
@@ -433,7 +433,7 @@ lvgl:
               - obj:
                   id: radio_buttons_row
                   x: 0
-                  y: 90
+                  y: 110
                   width: 100%
                   height: 236
                   bg_opa: 0%
@@ -646,7 +646,7 @@ lvgl:
               - obj:
                   id: speakers_container
                   x: 0
-                  y: 345
+                  y: 375
                   width: 100%
                   height: 145
                   bg_opa: 0%
