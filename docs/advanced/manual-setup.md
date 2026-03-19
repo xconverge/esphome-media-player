@@ -61,6 +61,8 @@ These substitutions can be added to the `substitutions:` block in your configura
 | `linked_media_player` | `""`                | Entity ID of a linked media player for TV or Line In source (optional)     |
 | `ha_host`         | `"homeassistant.local"` | Hostname or IP address of Home Assistant                                   |
 | `ha_port`         | `"8123"`                | Port that Home Assistant is running on                                     |
+| `ha_protocol`     | `"http"`                | Protocol for artwork requests — `"http"` or `"https"`                      |
+| `ha_verify_ssl`   | `"true"`                | Verify SSL certificate — set to `"false"` for self-signed or local CA certs |
 | `display_rotation` | `"0"` (S3) / `"90"` (P4) | Display rotation in degrees. See [Display rotation](#display-rotation).  |
 | `touch_mirror_x`  | `"false"`               | Touch X-axis mirror — must match `display_rotation`. See rotation tables. |
 | `touch_mirror_y`  | `"false"`               | Touch Y-axis mirror — must match `display_rotation`. See rotation tables. |
@@ -139,16 +141,18 @@ packages:
 
 ## Non-standard Home Assistant host or port
 
-By default the device constructs artwork URLs using `homeassistant.local` on port `8123`. If your Home Assistant instance uses a different hostname/IP or runs on a different port (for example behind a reverse proxy on port `80`), album art will fail to load.
+By default the device constructs artwork URLs using `http://homeassistant.local:8123`. If your Home Assistant instance uses HTTPS, a different hostname/IP, or a non-standard port, album art will fail to load.
 
-To fix this, uncomment and change the `ha_host` and/or `ha_port` substitutions in your configuration:
+To fix this, add the relevant substitutions to your configuration:
 
 ```yaml
 substitutions:
   name: "music-dashboard"
   friendly_name: "Music Dashboard"
+  ha_protocol: "https"
   ha_host: "192.168.1.100"
-  ha_port: "80"
+  ha_port: "8123"
+  ha_verify_ssl: "false"  # set to "false" for self-signed or local CA certs
 ```
 
-The device builds artwork URLs as `http://<ha_host>:<ha_port>/api/...`, so both the host and port must match whatever Home Assistant is reachable on from the device's network.
+The device builds artwork URLs as `<ha_protocol>://<ha_host>:<ha_port>/api/...`, so the protocol, host, and port must all match whatever Home Assistant is reachable on from the device's network.

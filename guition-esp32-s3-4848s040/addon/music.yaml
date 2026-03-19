@@ -16,6 +16,7 @@ external_components:
 
 http_request:
   id: http_req
+  verify_ssl: ${ha_verify_ssl}
 
 # Placeholder shown while album art is loading or when no art is available.
 image:

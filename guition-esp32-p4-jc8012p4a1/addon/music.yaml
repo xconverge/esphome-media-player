@@ -34,6 +34,7 @@ external_components:
 
 http_request:
   id: http_req
+  verify_ssl: ${ha_verify_ssl}
 
 image:
   - file: "https://github.com/jtenniswood/esphome-media-player/raw/main/guition-esp32-p4-jc8012p4a1/assets/placeholder.png"

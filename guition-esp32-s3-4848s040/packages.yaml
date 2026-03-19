@@ -3,6 +3,8 @@ substitutions:
   linked_media_player: ""
   ha_port: "8123"
   ha_host: "homeassistant.local"
+  ha_protocol: "http"
+  ha_verify_ssl: "true"
   # Display rotation in degrees: 0, 90, 180, or 270
   # Rotate to match your preferred mounting orientation / power cable direction
   display_rotation: "0"
