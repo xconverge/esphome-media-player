@@ -16,7 +16,7 @@ Select your device and click **Install** to flash the firmware directly from you
 <InstallButton />
 
 ::: tip
-If you prefer to install via the ESPHome dashboard, see [Manual Setup](/advanced/manual-setup).
+If you prefer to install via the ESPHome dashboard, see [ESPHome Config](/advanced/esphome-config).
 :::
 
 ## Connect to Wi-Fi

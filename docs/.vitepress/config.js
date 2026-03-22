@@ -52,7 +52,14 @@ export default {
       {
         text: 'Advanced',
         items: [
-          { text: 'Manual Setup', link: '/advanced/manual-setup' },
+          { text: 'ESPHome Config', link: '/advanced/esphome-config' },
+          { text: 'Display Rotation', link: '/advanced/display-rotation' },
+          { text: 'Host/Port Setup', link: '/advanced/host-port-setup' },
+        ],
+      },
+      {
+        text: 'Support',
+        items: [
           { text: 'Troubleshooting', link: '/advanced/troubleshooting' },
           { text: 'Raising an Issue', link: '/advanced/raising-an-issue' },
         ],

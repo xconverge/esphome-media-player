@@ -18,7 +18,7 @@ A touchscreen media controller for Home Assistant: album art, track info, and to
 - [Firmware Updates](/features/firmware-updates) — automatic over-the-air updates
 - [Speaker Grouping](/features/speaker-grouping) — multi-room speaker control
 - [Settings](/features/settings) — brightness, timeouts, track info
-- [Manual installation](/advanced/manual-setup) — flash via ESPHome dashboard instead of the web installer
+- [Manual installation](/advanced/esphome-config) — flash via ESPHome dashboard instead of the web installer
 - [Troubleshooting](/advanced/troubleshooting) — common issues and fixes
 
 ## Features
