@@ -2699,6 +2699,6 @@ lvgl:
             widgets:
               - label:
                   id: clock_label
-                  text_font: roboto_thin220_font
+                  text_font: roboto_thin300_font
                   text_color: 0xFFFFFF
                   text: "00:00"

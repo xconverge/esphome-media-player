@@ -2,11 +2,11 @@
 # Extended Latin glyphs cover accented characters (ñ, é, ü, µ, etc.) and common
 # symbols (©, ®, ™, €, •, etc.) and typographic quotes (' ' " ") for song metadata.
 # Two content lines in each >- block: the fold produces exactly one space glyph.
-# roboto_thin220_font uses Thin weight for the clock screensaver (digits + colon only).
+# roboto_thin300_font uses Thin weight for the clock screensaver (digits + colon only).
 font:
   - file: "gfonts://Roboto@Thin"
-    id: roboto_thin220_font
-    size: 220
+    id: roboto_thin300_font
+    size: 300
     bpp: 4
     glyphs: " 0123456789:"
 
