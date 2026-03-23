@@ -1,10 +1,11 @@
 substitutions:
   name: "music-dashboard-dev"
   friendly_name: "Music Dashboard Dev"
-  # 270° mounting — touch mirrors must match; see docs/advanced/display-rotation.md
+  # 270° mounting — see docs/advanced/display-rotation.md (swap_xy + mirrors)
   display_rotation: "270"
-  touch_mirror_x: "false"
-  touch_mirror_y: "true"
+  touch_swap_xy: "true"
+  touch_mirror_x: "true"
+  touch_mirror_y: "false"
 
 wifi:
   ssid: !secret wifi_ssid

@@ -9,10 +9,11 @@ substitutions:
   # Rotate to match your preferred mounting orientation / power cable direction
   display_rotation: "0"
   # Touch transform (must match display_rotation):
-  #   0:   mirror_x "false", mirror_y "false"
-  #   90:  mirror_x "true",  mirror_y "false"
-  #   180: mirror_x "true",  mirror_y "true"
-  #   270: mirror_x "false", mirror_y "true"
+  #   0:   swap_xy "false", mirror_x "false", mirror_y "false"
+  #   90:  swap_xy "false", mirror_x "true",  mirror_y "false"
+  #   180: swap_xy "false", mirror_x "true",  mirror_y "true"
+  #   270: swap_xy "true",  mirror_x "true",  mirror_y "false"
+  touch_swap_xy: "false"
   touch_mirror_x: "false"
   touch_mirror_y: "false"
 

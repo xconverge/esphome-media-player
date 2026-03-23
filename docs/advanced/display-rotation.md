@@ -1,21 +1,21 @@
 # Display Rotation
 
-Both devices support display rotation for different mounting orientations (for example to change which side the power cable exits from). Set `display_rotation` and update `touch_mirror_x` / `touch_mirror_y` to match.
+Both devices support display rotation for different mounting orientations (for example to change which side the power cable exits from). Set `display_rotation` and update `touch_swap_xy` / `touch_mirror_x` / `touch_mirror_y` to match.
 
 ::: warning
-If you set `display_rotation` without updating the touch mirror values, the screen image will be rotated but taps will register in the wrong position.
+If you set `display_rotation` without updating the touch transform values, the screen image will be rotated but taps will register in the wrong position.
 :::
 
 ## ESP32-S3 4848S040
 
-The 480×480 square display supports all four rotations:
+The 480×480 square display supports all four rotations. At **270°** the controller needs **axis swap** in addition to mirroring (mirrors alone match the image but gestures/taps stay wrong).
 
-| `display_rotation` | `touch_mirror_x` | `touch_mirror_y` |
-| ------------------- | ----------------- | ----------------- |
-| `"0"` (default)     | `"false"`         | `"false"`         |
-| `"90"`              | `"true"`          | `"false"`         |
-| `"180"`             | `"true"`          | `"true"`          |
-| `"270"`             | `"false"`         | `"true"`          |
+| `display_rotation` | `touch_swap_xy` | `touch_mirror_x` | `touch_mirror_y` |
+| ------------------- | ---------------- | ----------------- | ----------------- |
+| `"0"` (default)     | `"false"`        | `"false"`         | `"false"`         |
+| `"90"`              | `"false"`        | `"true"`          | `"false"`         |
+| `"180"`             | `"false"`        | `"true"`          | `"true"`          |
+| `"270"`             | `"true"`         | `"true"`          | `"false"`         |
 
 ### Example: 90-degree rotation
 

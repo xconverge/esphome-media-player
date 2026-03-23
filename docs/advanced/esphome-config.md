@@ -64,6 +64,6 @@ These substitutions can be added to the `substitutions:` block in your configura
 | `ha_protocol`     | `"http"`                | Protocol for artwork requests — `"http"` or `"https"`                      |
 | `ha_verify_ssl`   | `"true"`                | Verify SSL certificate — set to `"false"` for self-signed or local CA certs |
 | `display_rotation` | `"0"` (S3) / `"90"` (P4) | Display rotation in degrees. See [Display Rotation](/advanced/display-rotation).  |
-| `touch_swap_xy`   | `"true"` / `"false"`    | Touch X/Y axis swap — ESP32-P4 only. `"true"` for landscape, `"false"` for portrait. |
+| `touch_swap_xy`   | `"false"` (S3 default)  | Touch X/Y swap — required at **270°** on ESP32-S3; on ESP32-P4 see [rotation tables](/advanced/display-rotation). |
 | `touch_mirror_x`  | `"false"`               | Touch X-axis mirror — must match `display_rotation`. See [rotation tables](/advanced/display-rotation). |
 | `touch_mirror_y`  | `"false"`               | Touch Y-axis mirror — must match `display_rotation`. See [rotation tables](/advanced/display-rotation). |
