@@ -17,7 +17,7 @@ Most settings are configurable from the device page in Home Assistant (**Setting
 | Setting | Description |
 |---------|-------------|
 | **Clock Screensaver** | When enabled, the idle screen shows a large 24-hour clock (`HH:MM`) on a black background instead of dimming the media UI and turning off. The clock position drifts subtly each minute to prevent burn-in. |
-| **Clock: Brightness** | Backlight level for the clock screensaver. Default: 10%. |
+| **Clock: Brightness** | Backlight level for the clock screensaver. Default: 35%. |
 | **Clock: Timeout** | Time after playback pauses before the clock screensaver appears. Default: 10 seconds. |
 
 When the clock screensaver is enabled, the **Day/Night: Dim Brightness** and **Day/Night: Screen Saver** settings are bypassed — the clock uses its own brightness and timeout settings above.
