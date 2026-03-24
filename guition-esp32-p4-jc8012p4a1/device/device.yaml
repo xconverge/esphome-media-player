@@ -30,6 +30,7 @@ esphome:
     build_flags:
       - "-DCONFIG_LV_DISP_DEF_REFR_PERIOD=10"
       - "-DCONFIG_COMPILER_OPTIMIZATION_PERF=y"
+      - "-Wno-deprecated-declarations"
 
 
 # ESP32-C6 coprocessor for WiFi and Bluetooth via SDIO
