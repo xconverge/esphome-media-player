@@ -162,9 +162,8 @@ script:
             {"(+10:00) Sydney",      "AEST-10AEDT,M10.1.0,M4.1.0/3"},
             {"(+12:00) Auckland",    "NZST-12NZDT,M9.5.0,M4.1.0/3"},
           };
-          auto opt = id(clock_timezone).current_option();
-          if (!opt.has_value()) return;
-          std::string sel = opt.value();
+          std::string sel = id(clock_timezone).current_option();
+          if (sel.empty()) return;
           for (auto& e : tz_table) {
             if (sel == e[0]) {
               setenv("TZ", e[1], 1);
