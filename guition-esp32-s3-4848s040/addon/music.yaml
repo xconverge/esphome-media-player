@@ -87,7 +87,7 @@ script:
       - lambda: |-
           const std::string &url = id(is_tv_mode) ? id(last_tv_artwork_url) : id(last_artwork_url);
           ESP_LOGW("artwork", "Artwork download failed: %s", url.c_str());
-      - delay: 2s
+      - delay: 1s
       - lambda: |-
           auto *img = id(is_tv_mode) ? id(tv_art_background) : id(album_art_background);
           const std::string &url = id(is_tv_mode) ? id(last_tv_artwork_url) : id(last_artwork_url);
