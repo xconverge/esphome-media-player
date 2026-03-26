@@ -307,6 +307,8 @@ script:
     then:
       - lambda: |-
           id(is_clock_showing) = true;
+          setenv("TZ", id(tz_posix).c_str(), 1);
+          tzset();
           auto time = id(ha_time).now();
           if (time.is_valid()) {
             char buf[6];
@@ -345,6 +347,8 @@ interval:
     then:
       - lambda: |-
           if (!id(is_clock_showing)) return;
+          setenv("TZ", id(tz_posix).c_str(), 1);
+          tzset();
           auto time = id(ha_time).now();
           if (!time.is_valid()) return;
           char buf[6];

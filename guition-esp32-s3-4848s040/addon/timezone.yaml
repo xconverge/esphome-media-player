@@ -12,6 +12,12 @@
 # =============================================================================
 
 
+globals:
+  - id: tz_posix
+    type: std::string
+    initial_value: '"UTC0"'
+
+
 esphome:
   on_boot:
     priority: -10
@@ -166,6 +172,8 @@ script:
           if (sel.empty()) return;
           for (auto& e : tz_table) {
             if (sel == e[0]) {
+              id(tz_posix) = e[1];
+              id(ha_time).set_timezone(e[1]);
               setenv("TZ", e[1], 1);
               tzset();
               ESP_LOGI("timezone", "Applied timezone: %s -> %s", e[0], e[1]);
