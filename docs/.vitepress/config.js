@@ -59,6 +59,10 @@ export default {
         ],
       },
       {
+        text: 'Roadmap',
+        link: '/roadmap',
+      },
+      {
         text: 'Support',
         items: [
           { text: 'Troubleshooting', link: '/advanced/troubleshooting' },

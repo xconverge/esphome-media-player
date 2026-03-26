@@ -241,12 +241,46 @@ text_sensor:
                         - script.execute: hide_clock_view
                         - script.execute: show_track_view
                 else:
-                  - script.execute: show_track_view
-                  - lvgl.widget.show:
-                      id: media_play_icon
-                  - lvgl.widget.hide:
-                      id: media_pause_icon
-                  - script.execute: backlight_wake_timeout
+                  - if:
+                      condition:
+                        lambda: 'return x == "idle" || x == "off" || x == "standby";'
+                      then:
+                        - lvgl.label.update:
+                            id: media_title_label
+                            text: "\xe2\x80\x94"
+                        - lambda: 'id(artist_has_content) = false;'
+                        - lvgl.widget.hide: media_artist_label
+                        - lvgl.label.update:
+                            id: media_time_label
+                            text: "0:00"
+                        - lvgl.bar.update:
+                            id: media_progress_bar
+                            value: 0
+                        - lambda: |-
+                            id(last_media_position) = 0.0f;
+                            id(ha_position_epoch) = 0;
+                            id(last_position_timestamp) = 0;
+                            id(last_artwork_url) = "";
+                        - lvgl.image.update:
+                            id: album_art_background_widget
+                            src: album_art_placeholder
+                        - lvgl.widget.update:
+                            id: album_art_background_widget
+                            opa: 50%
+                        - lvgl.widget.hide: artwork_error_label
+                        - lvgl.widget.show:
+                            id: media_play_icon
+                        - lvgl.widget.hide:
+                            id: media_pause_icon
+                        - script.execute: show_track_view
+                        - script.execute: backlight_wake_timeout
+                      else:
+                        - script.execute: show_track_view
+                        - lvgl.widget.show:
+                            id: media_play_icon
+                        - lvgl.widget.hide:
+                            id: media_pause_icon
+                        - script.execute: backlight_wake_timeout
 
   - platform: template
     id: media_position_updated_at_sensor
