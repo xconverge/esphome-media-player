@@ -8,6 +8,12 @@ Most settings are configurable from the device page in Home Assistant (**Setting
 
 See [Screen Saver](/features/screen-saver) for all brightness, timer, clock, and day/night screen saver settings.
 
+## Clock
+
+| Setting | Description |
+|---------|-------------|
+| **Clock: Timezone** | City-based timezone for the clock screen saver. Select the nearest city to your location from the dropdown — DST is handled automatically. Defaults to UTC. |
+
 ## Speakers
 
 | Setting | Description |

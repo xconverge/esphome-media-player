@@ -1,0 +1,172 @@
+# =============================================================================
+# CLOCK TIMEZONE
+# =============================================================================
+# Lets the user pick their timezone from a city list on the HA device page.
+# The POSIX TZ string is applied at runtime via setenv/tzset so the clock
+# screensaver (and any other .now() call) returns correct local time —
+# regardless of what timezone the firmware was compiled under.
+#
+# The compile-time timezone is pinned to UTC in time.yaml; this select
+# overrides it at boot (via restore_value → on_value) and whenever the
+# user changes the selection.
+# =============================================================================
+
+
+select:
+  - platform: template
+    name: "Clock: Timezone"
+    id: clock_timezone
+    icon: "mdi:map-clock"
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_option: "UTC"
+    options:
+      - "UTC"
+      # Americas (UTC-11 → UTC-3)
+      - "Pago Pago"
+      - "Honolulu"
+      - "Anchorage"
+      - "Los Angeles"
+      - "Phoenix"
+      - "Denver"
+      - "Chicago"
+      - "Mexico City"
+      - "New York"
+      - "Bogota"
+      - "Lima"
+      - "Havana"
+      - "Caracas"
+      - "Halifax"
+      - "Santiago"
+      - "St. John's"
+      - "Sao Paulo"
+      - "Buenos Aires"
+      # Europe / Africa (UTC-1 → UTC+3)
+      - "Azores"
+      - "London"
+      - "Lisbon"
+      - "Reykjavik"
+      - "Paris"
+      - "Berlin"
+      - "Rome"
+      - "Madrid"
+      - "Amsterdam"
+      - "Lagos"
+      - "Cairo"
+      - "Johannesburg"
+      - "Athens"
+      - "Helsinki"
+      - "Bucharest"
+      - "Istanbul"
+      - "Moscow"
+      # Middle East / Central Asia (UTC+3 → UTC+5)
+      - "Nairobi"
+      - "Riyadh"
+      - "Tehran"
+      - "Dubai"
+      - "Kabul"
+      - "Karachi"
+      - "Mumbai"
+      # South / Southeast Asia (UTC+5:45 → UTC+7)
+      - "Kathmandu"
+      - "Dhaka"
+      - "Almaty"
+      - "Yangon"
+      - "Bangkok"
+      - "Jakarta"
+      # East Asia / Pacific (UTC+8 → UTC+12)
+      - "Singapore"
+      - "Hong Kong"
+      - "Perth"
+      - "Taipei"
+      - "Beijing"
+      - "Tokyo"
+      - "Seoul"
+      - "Adelaide"
+      - "Darwin"
+      - "Sydney"
+      - "Brisbane"
+      - "Auckland"
+    on_value:
+      - script.execute: apply_timezone
+
+
+script:
+  - id: apply_timezone
+    mode: single
+    then:
+      - lambda: |-
+          static const char* const tz_table[][2] = {
+            {"UTC",           "UTC0"},
+            {"Pago Pago",     "SST11"},
+            {"Honolulu",      "HST10"},
+            {"Anchorage",     "AKST9AKDT,M3.2.0,M11.1.0"},
+            {"Los Angeles",   "PST8PDT,M3.2.0,M11.1.0"},
+            {"Phoenix",       "MST7"},
+            {"Denver",        "MST7MDT,M3.2.0,M11.1.0"},
+            {"Chicago",       "CST6CDT,M3.2.0,M11.1.0"},
+            {"Mexico City",   "CST6"},
+            {"New York",      "EST5EDT,M3.2.0,M11.1.0"},
+            {"Bogota",        "<-05>5"},
+            {"Lima",          "<-05>5"},
+            {"Havana",        "CST5CDT,M3.2.0/0,M11.1.0/1"},
+            {"Caracas",       "<-04>4"},
+            {"Halifax",       "AST4ADT,M3.2.0,M11.1.0"},
+            {"Santiago",      "<-04>4<-03>,M9.1.6/24,M4.1.6/24"},
+            {"St. John's",   "NST3:30NDT,M3.2.0,M11.1.0"},
+            {"Sao Paulo",     "<-03>3"},
+            {"Buenos Aires",  "<-03>3"},
+            {"Azores",        "<-01>1<+00>,M3.5.0/0,M10.5.0/1"},
+            {"London",        "GMT0BST,M3.5.0/1,M10.5.0"},
+            {"Lisbon",        "WET0WEST,M3.5.0/1,M10.5.0"},
+            {"Reykjavik",     "GMT0"},
+            {"Paris",         "CET-1CEST,M3.5.0,M10.5.0/3"},
+            {"Berlin",        "CET-1CEST,M3.5.0,M10.5.0/3"},
+            {"Rome",          "CET-1CEST,M3.5.0,M10.5.0/3"},
+            {"Madrid",        "CET-1CEST,M3.5.0,M10.5.0/3"},
+            {"Amsterdam",     "CET-1CEST,M3.5.0,M10.5.0/3"},
+            {"Lagos",         "WAT-1"},
+            {"Cairo",         "EET-2EEST,M4.5.5/0,M10.5.4/24"},
+            {"Johannesburg",  "SAST-2"},
+            {"Athens",        "EET-2EEST,M3.5.0/3,M10.5.0/4"},
+            {"Helsinki",      "EET-2EEST,M3.5.0/3,M10.5.0/4"},
+            {"Bucharest",     "EET-2EEST,M3.5.0/3,M10.5.0/4"},
+            {"Istanbul",      "<+03>-3"},
+            {"Moscow",        "MSK-3"},
+            {"Nairobi",       "EAT-3"},
+            {"Riyadh",        "<+03>-3"},
+            {"Tehran",        "<+0330>-3:30"},
+            {"Dubai",         "<+04>-4"},
+            {"Kabul",         "<+0430>-4:30"},
+            {"Karachi",       "PKT-5"},
+            {"Mumbai",        "IST-5:30"},
+            {"Kathmandu",     "<+0545>-5:45"},
+            {"Dhaka",         "<+06>-6"},
+            {"Almaty",        "<+05>-5"},
+            {"Yangon",        "<+0630>-6:30"},
+            {"Bangkok",       "<+07>-7"},
+            {"Jakarta",       "WIB-7"},
+            {"Singapore",     "<+08>-8"},
+            {"Hong Kong",     "HKT-8"},
+            {"Perth",         "AWST-8"},
+            {"Taipei",        "CST-8"},
+            {"Beijing",       "CST-8"},
+            {"Tokyo",         "JST-9"},
+            {"Seoul",         "KST-9"},
+            {"Adelaide",      "ACST-9:30ACDT,M10.1.0,M4.1.0/3"},
+            {"Darwin",        "ACST-9:30"},
+            {"Sydney",        "AEST-10AEDT,M10.1.0,M4.1.0/3"},
+            {"Brisbane",      "AEST-10"},
+            {"Auckland",      "NZST-12NZDT,M9.5.0,M4.1.0/3"},
+          };
+          std::string sel = id(clock_timezone).state;
+          for (auto& e : tz_table) {
+            if (sel == e[0]) {
+              setenv("TZ", e[1], 1);
+              tzset();
+              ESP_LOGI("timezone", "Applied timezone: %s → %s", e[0], e[1]);
+              return;
+            }
+          }
+          ESP_LOGW("timezone", "Unknown timezone selection: %s", sel.c_str());

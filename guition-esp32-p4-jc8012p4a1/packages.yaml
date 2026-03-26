@@ -19,6 +19,7 @@ packages:
   accent_color: !include addon/accent_color.yaml
   backlight: !include addon/backlight.yaml
   time_sync: !include addon/time.yaml
+  timezone: !include addon/timezone.yaml
   network: !include addon/network.yaml
   speaker_group: !include addon/speaker_group.yaml
   fonts: !include assets/fonts.yaml
