@@ -84,10 +84,7 @@ size_t OnlineImage::resize_(int width_in, int height_in) {
     }
   } else if (width_in > 0 && height_in > 0) {
     if (width_in == height_in) {
-      if (width_in < this->fixed_width_ || height_in < this->fixed_height_) {
-        width = width_in;
-        height = height_in;
-      }
+      // Square source — use fixed target dimensions directly
     } else {
       double scale = std::min(
         static_cast<double>(this->fixed_width_) / width_in,
