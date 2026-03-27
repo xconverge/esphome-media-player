@@ -97,6 +97,7 @@ api:
         }
     - script.execute: subscribe_media_player
     - script.execute: subscribe_linked_media_player
+    - script.execute: subscribe_day_night_sensor
   on_client_disconnected:
     - lvgl.widget.hide: setup_prompt
     - if:

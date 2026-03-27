@@ -8,8 +8,18 @@
 #
 # All settings (brightness levels, timeouts) are exposed to Home Assistant
 # as configurable number entities under the device's "Configuration" section.
-# Sun state (above/below horizon) is read from HA's built-in sun.sun entity.
+# Sun state (above/below horizon) is read from HA's built-in sun.sun entity,
+# unless overridden with a custom binary_sensor via the Day/Night Sensor setting.
 # =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# CUSTOM DAY/NIGHT SENSOR STATE
+# -----------------------------------------------------------------------------
+globals:
+  - id: custom_day_night_is_day
+    type: bool
+    initial_value: 'true'
 
 
 # -----------------------------------------------------------------------------
@@ -50,6 +60,28 @@ text_sensor:
 
 
 # -----------------------------------------------------------------------------
+# DAY/NIGHT SENSOR OVERRIDE (optional)
+# -----------------------------------------------------------------------------
+# Users can point this at any binary_sensor or input_boolean in HA.
+# on = day, off = night. When empty, sun.sun is used (default).
+# -----------------------------------------------------------------------------
+text:
+  - platform: template
+    name: "Day/Night Sensor"
+    id: day_night_sensor_entity
+    entity_category: config
+    icon: "mdi:theme-light-dark"
+    mode: text
+    optimistic: true
+    restore_value: true
+    initial_value: ""
+    min_length: 0
+    max_length: 100
+    on_value:
+      - script.execute: subscribe_day_night_sensor
+
+
+# -----------------------------------------------------------------------------
 # USER-CONFIGURABLE SETTINGS (exposed to Home Assistant)
 # -----------------------------------------------------------------------------
 # These appear as number entities under the device's Configuration section.
@@ -76,8 +108,9 @@ number:
             - light.turn_on:
                 id: backlight
                 brightness: !lambda |-
-                  bool is_day = id(sun_state_sensor).has_state() &&
-                                id(sun_state_sensor).state == "above_horizon";
+                  bool is_day = id(day_night_sensor_entity).state.empty()
+                      ? (id(sun_state_sensor).has_state() && id(sun_state_sensor).state == "above_horizon")
+                      : id(custom_day_night_is_day);
                   return (is_day ? x : id(backlight_night_active_brightness).state) / 100.0f;
                 transition_length: 500ms
 
@@ -101,8 +134,9 @@ number:
             - light.turn_on:
                 id: backlight
                 brightness: !lambda |-
-                  bool is_day = id(sun_state_sensor).has_state() &&
-                                id(sun_state_sensor).state == "above_horizon";
+                  bool is_day = id(day_night_sensor_entity).state.empty()
+                      ? (id(sun_state_sensor).has_state() && id(sun_state_sensor).state == "above_horizon")
+                      : id(custom_day_night_is_day);
                   return (is_day ? id(backlight_day_active_brightness).state : x) / 100.0f;
                 transition_length: 500ms
 
@@ -231,8 +265,9 @@ script:
       - light.turn_on:
           id: backlight
           brightness: !lambda |-
-            bool is_day = id(sun_state_sensor).has_state() &&
-                          id(sun_state_sensor).state == "above_horizon";
+            bool is_day = id(day_night_sensor_entity).state.empty()
+                ? (id(sun_state_sensor).has_state() && id(sun_state_sensor).state == "above_horizon")
+                : id(custom_day_night_is_day);
             float pct = is_day
               ? id(backlight_day_active_brightness).state
               : id(backlight_night_active_brightness).state;
@@ -255,8 +290,9 @@ script:
             - light.turn_on:
                 id: backlight
                 brightness: !lambda |-
-                  bool is_day = id(sun_state_sensor).has_state() &&
-                                id(sun_state_sensor).state == "above_horizon";
+                  bool is_day = id(day_night_sensor_entity).state.empty()
+                      ? (id(sun_state_sensor).has_state() && id(sun_state_sensor).state == "above_horizon")
+                      : id(custom_day_night_is_day);
                   float pct = is_day
                     ? id(backlight_day_brightness).state
                     : id(backlight_night_brightness).state;
@@ -278,8 +314,9 @@ script:
                         - if:
                             condition:
                               lambda: |-
-                                bool is_day = id(sun_state_sensor).has_state() &&
-                                              id(sun_state_sensor).state == "above_horizon";
+                                bool is_day = id(day_night_sensor_entity).state.empty()
+                                    ? (id(sun_state_sensor).has_state() && id(sun_state_sensor).state == "above_horizon")
+                                    : id(custom_day_night_is_day);
                                 return is_day
                                   ? id(backlight_day_screen_off).state
                                   : id(backlight_night_screen_off).state;
@@ -333,6 +370,24 @@ script:
     then:
       - lambda: 'id(is_clock_showing) = false;'
       - lvgl.widget.hide: clock_screensaver
+
+  - id: subscribe_day_night_sensor
+    mode: restart
+    then:
+      - lambda: |-
+          if (esphome::api::global_api_server == nullptr) return;
+          std::string entity = id(day_night_sensor_entity).state;
+          if (entity.empty()) return;
+          if (entity.substr(0, 14) != "binary_sensor." && entity.substr(0, 14) != "input_boolean.") {
+            ESP_LOGW("backlight", "Invalid day/night entity '%s' — must start with 'binary_sensor.' or 'input_boolean.'", entity.c_str());
+            return;
+          }
+          auto *api = esphome::api::global_api_server;
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>(""),
+              std::function<void(const std::string &)>([](const std::string &state) {
+                id(custom_day_night_is_day) = (state == "on");
+              }));
+          ESP_LOGI("backlight", "Subscribed to day/night sensor '%s'", entity.c_str());
 
 
 # -----------------------------------------------------------------------------

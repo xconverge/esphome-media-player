@@ -8,6 +8,10 @@ Most settings are configurable from the device page in Home Assistant (**Setting
 
 See [Screen Saver](/features/screen-saver) for all brightness, timer, clock, and day/night screen saver settings.
 
+| Setting | Description |
+|---------|-------------|
+| **Day/Night Sensor** | (Optional) Entity ID of a `binary_sensor` or `input_boolean` to control day/night mode (`on` = day, `off` = night). Leave empty to use `sun.sun` (default). See [Screen Saver](/features/screen-saver#custom-day-night-sensor). |
+
 ## Clock
 
 | Setting | Description |
