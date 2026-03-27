@@ -144,14 +144,14 @@ lvgl:
                   text_font: icon_font_large
                   align: center
                   text: $play
-                  text_color: 0xFFFFFF
+                  text_color: 0xFFF5E0
                   hidden: false
               - label:
                   id: media_pause_icon
                   text_font: icon_font_large
                   align: center
                   text: $pause
-                  text_color: 0xFFFFFF
+                  text_color: 0xFFF5E0
                   hidden: true
             on_press:
               - homeassistant.service:
