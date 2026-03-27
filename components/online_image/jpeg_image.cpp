@@ -90,20 +90,25 @@ int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
   int target_h = this->image_->get_fixed_height();
   if (target_w > 0 && target_h > 0) {
     // libjpeg supports scale_num/scale_denom ratios: 1/1, 1/2, 1/4, 1/8
-    // Pick the smallest that still produces output >= target
+    // Pick the smallest that still produces output >= 75% of target.
+    // Accepting slightly-smaller-than-target output enables aggressive IDCT
+    // scaling (e.g. 800x800 at 1/2 = 400x400 for a 480 target) which is ~4x
+    // faster to decode. The small shortfall is handled by LVGL zoom in the
+    // apply_downloaded_artwork script.
+    int threshold_w = target_w * 3 / 4;
+    int threshold_h = target_h * 3 / 4;
     constexpr unsigned int denoms[] = {8, 4, 2, 1};
     for (unsigned int denom : denoms) {
       cinfo.scale_num = 1;
       cinfo.scale_denom = denom;
       jpeg_calc_output_dimensions(&cinfo);
-      if (static_cast<int>(cinfo.output_width) >= target_w &&
-          static_cast<int>(cinfo.output_height) >= target_h) {
+      if (static_cast<int>(cinfo.output_width) >= threshold_w &&
+          static_cast<int>(cinfo.output_height) >= threshold_h) {
         break;
       }
     }
-    // Reset to 1/1 if none fit (shouldn't happen since 1/1 >= source)
-    if (static_cast<int>(cinfo.output_width) < target_w ||
-        static_cast<int>(cinfo.output_height) < target_h) {
+    if (static_cast<int>(cinfo.output_width) < threshold_w ||
+        static_cast<int>(cinfo.output_height) < threshold_h) {
       cinfo.scale_num = 1;
       cinfo.scale_denom = 1;
       jpeg_calc_output_dimensions(&cinfo);
