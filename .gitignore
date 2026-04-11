@@ -12,3 +12,5 @@ secrets.yaml
 # Docs (VitePress)
 node_modules/
 docs/.vitepress/dist/
+
+__pycache__

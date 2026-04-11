@@ -76,12 +76,8 @@ class JPEGFormat(Format):
         # Copy libjpeg-turbo as an IDF component into the build directory.
         # Skip if dest already exists and CMakeLists.txt mtimes match (avoid
         # redundant copies on incremental builds).
-        src_path = os.path.join(
-            os.path.dirname(__file__), "..", "libjpeg-turbo-esp32"
-        )
-        dest_path = str(
-            CORE.relative_build_path("components", "libjpeg-turbo-esp32")
-        )
+        src_path = os.path.join(os.path.dirname(__file__), "..", "libjpeg-turbo-esp32")
+        dest_path = str(CORE.relative_build_path("components", "libjpeg-turbo-esp32"))
         src_cmake = os.path.join(src_path, "CMakeLists.txt")
         dest_cmake = os.path.join(dest_path, "CMakeLists.txt")
         needs_copy = not os.path.exists(dest_cmake) or (
@@ -141,44 +137,35 @@ DownloadErrorTrigger = online_image_ns.class_(
 )
 
 
-ONLINE_IMAGE_SCHEMA = (
-    cv.Schema(
-        {
-            cv.Required(CONF_ID): cv.declare_id(OnlineImage),
-            cv.Required(CONF_TYPE): validate_type(IMAGE_TYPE),
-            cv.Optional(CONF_RESIZE): cv.dimensions,
-            cv.Optional(CONF_BYTE_ORDER): cv.one_of(
-                "BIG_ENDIAN", "LITTLE_ENDIAN", upper=True
-            ),
-            cv.Optional(CONF_TRANSPARENCY, default="OPAQUE"): validate_transparency(),
-            cv.GenerateID(CONF_HTTP_REQUEST_ID): cv.use_id(HttpRequestComponent),
-            cv.Required(CONF_URL): cv.url,
-            cv.Optional(CONF_REQUEST_HEADERS): cv.All(
-                cv.Schema({cv.string: cv.templatable(cv.string)})
-            ),
-            cv.Optional(CONF_FORMAT, default="AUTO"): cv.one_of(
-                *IMAGE_FORMATS, upper=True
-            ),
-            cv.Optional(CONF_PLACEHOLDER): cv.use_id(Image_),
-            cv.Optional(CONF_BUFFER_SIZE, default=65536): cv.int_range(256, 524288),
-            cv.Optional(CONF_ON_DOWNLOAD_FINISHED): automation.validate_automation(
-                {
-                    cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(
-                        DownloadFinishedTrigger
-                    ),
-                }
-            ),
-            cv.Optional(CONF_ON_ERROR): automation.validate_automation(
-                {
-                    cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(
-                        DownloadErrorTrigger
-                    ),
-                }
-            ),
-        }
-    )
-    .extend(cv.polling_component_schema("never"))
-)
+ONLINE_IMAGE_SCHEMA = cv.Schema(
+    {
+        cv.Required(CONF_ID): cv.declare_id(OnlineImage),
+        cv.Required(CONF_TYPE): validate_type(IMAGE_TYPE),
+        cv.Optional(CONF_RESIZE): cv.dimensions,
+        cv.Optional(CONF_BYTE_ORDER): cv.one_of(
+            "BIG_ENDIAN", "LITTLE_ENDIAN", upper=True
+        ),
+        cv.Optional(CONF_TRANSPARENCY, default="OPAQUE"): validate_transparency(),
+        cv.GenerateID(CONF_HTTP_REQUEST_ID): cv.use_id(HttpRequestComponent),
+        cv.Required(CONF_URL): cv.url,
+        cv.Optional(CONF_REQUEST_HEADERS): cv.All(
+            cv.Schema({cv.string: cv.templatable(cv.string)})
+        ),
+        cv.Optional(CONF_FORMAT, default="AUTO"): cv.one_of(*IMAGE_FORMATS, upper=True),
+        cv.Optional(CONF_PLACEHOLDER): cv.use_id(Image_),
+        cv.Optional(CONF_BUFFER_SIZE, default=65536): cv.int_range(256, 524288),
+        cv.Optional(CONF_ON_DOWNLOAD_FINISHED): automation.validate_automation(
+            {
+                cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(DownloadFinishedTrigger),
+            }
+        ),
+        cv.Optional(CONF_ON_ERROR): automation.validate_automation(
+            {
+                cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(DownloadErrorTrigger),
+            }
+        ),
+    }
+).extend(cv.polling_component_schema("never"))
 
 CONFIG_SCHEMA = cv.Schema(
     cv.All(
@@ -210,9 +197,11 @@ RELEASE_IMAGE_SCHEMA = automation.maybe_simple_id(
 )
 
 
-@automation.register_action("online_image.set_url", SetUrlAction, SET_URL_SCHEMA)
 @automation.register_action(
-    "online_image.release", ReleaseImageAction, RELEASE_IMAGE_SCHEMA
+    "online_image.set_url", SetUrlAction, SET_URL_SCHEMA, synchronous=True
+)
+@automation.register_action(
+    "online_image.release", ReleaseImageAction, RELEASE_IMAGE_SCHEMA, synchronous=True
 )
 async def online_image_action_to_code(config, action_id, template_arg, args):
     paren = await cg.get_variable(config[CONF_ID])
