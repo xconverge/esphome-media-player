@@ -3,16 +3,6 @@ substitutions:
   tv_media_player: ""
   ha_port: "8123"
   ha_host: "homeassistant.local"
-  # Display rotation in degrees: 0, 90, 180, or 270
-  # Rotate to match your preferred mounting orientation / power cable direction
-  display_rotation: "0"
-  # Touch transform (must match display_rotation):
-  #   0:   mirror_x "false", mirror_y "false"
-  #   90:  mirror_x "true",  mirror_y "false"
-  #   180: mirror_x "true",  mirror_y "true"
-  #   270: mirror_x "false", mirror_y "true"
-  touch_mirror_x: "false"
-  touch_mirror_y: "false"
   # Hide transport buttons: "true" or "false"
   hide_previous_button: "false"
   hide_shuffle_button: "false"
