@@ -10,15 +10,6 @@ globals:
     type: bool
     initial_value: 'false'
 
-external_components:
-  - source:
-      type: git
-      url: https://github.com/jtenniswood/esphome-media-player
-      ref: main
-      path: components
-    components: [online_image]
-    refresh: 1s
-
 http_request:
   id: http_req
   verify_ssl: ${ha_verify_ssl}
@@ -30,9 +21,9 @@ image:
     byte_order: ${image_byte_order}
 
 online_image:
-  - url: "https://placehold.co/${artwork_size}x${artwork_size}/2d2d2d/555555"
+  - url: "https://placehold.co/${artwork_size}x${artwork_size}/2d2d2d/555555.jpg"
     id: album_art_background
-    format: AUTO
+    format: JPEG
     type: RGB565
     byte_order: ${image_byte_order}
     placeholder: album_art_placeholder
@@ -43,9 +34,9 @@ online_image:
     on_error:
       - script.execute: handle_artwork_error
 
-  - url: "https://placehold.co/${artwork_size}x${artwork_size}/2d2d2d/555555"
+  - url: "https://placehold.co/${artwork_size}x${artwork_size}/2d2d2d/555555.jpg"
     id: tv_art_background
-    format: AUTO
+    format: JPEG
     type: RGB565
     byte_order: ${image_byte_order}
     placeholder: album_art_placeholder
