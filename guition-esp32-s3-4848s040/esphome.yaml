@@ -7,13 +7,9 @@ substitutions:
 
 # Wifi Setup
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  ssid: "test"
+  password: "test123123"
 
 # Packages
 packages:
-  music_dashboard:
-    url: https://github.com/xconverge/esphome-media-player
-    files: [guition-esp32-s3-4848s040/packages.yaml]
-    ref: main
-    refresh: 1s
+  - !include packages.yaml
