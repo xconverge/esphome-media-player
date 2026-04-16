@@ -225,7 +225,11 @@ script:
       - lambda: |-
           id(was_screen_dimmed) = id(is_screen_dimmed);
           id(is_screen_dimmed) = false;
-      - lvgl.resume:
+      - if:
+          condition: lvgl.is_paused
+          then:
+            - lvgl.resume:
+            - lvgl.widget.redraw:
       - delay: 100ms
       - light.turn_on:
           id: backlight
@@ -290,7 +294,6 @@ script:
                                   id: backlight
                                   transition_length: 3s
                               - lvgl.pause:
-                                  show_snow: true
 
   - id: turn_off_display
     mode: single
@@ -302,7 +305,6 @@ script:
           transition_length: 1s
       - delay: 1s
       - lvgl.pause:
-          show_snow: true
 
   - id: show_clock_view
     mode: single
