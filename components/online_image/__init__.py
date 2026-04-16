@@ -6,8 +6,10 @@ import esphome.codegen as cg
 from esphome.components.const import CONF_BYTE_ORDER, CONF_REQUEST_HEADERS
 from esphome.components.http_request import CONF_HTTP_REQUEST_ID, HttpRequestComponent
 from esphome.components.image import (
+    CONF_TRANSPARENCY,
     IMAGE_TYPE,
     Image_,
+    add_metadata,
     get_image_type_enum,
     get_transparency_enum,
     validate_settings,
@@ -34,7 +36,6 @@ MULTI_CONF = True
 
 CONF_ON_DOWNLOAD_FINISHED = "on_download_finished"
 CONF_PLACEHOLDER = "placeholder"
-CONF_TRANSPARENCY = "transparency"
 CONF_UPDATE = "update"
 
 _LOGGER = logging.getLogger(__name__)
@@ -136,7 +137,6 @@ DownloadErrorTrigger = online_image_ns.class_(
     "DownloadErrorTrigger", automation.Trigger.template()
 )
 
-
 ONLINE_IMAGE_SCHEMA = cv.Schema(
     {
         cv.Required(CONF_ID): cv.declare_id(OnlineImage),
@@ -223,6 +223,14 @@ async def to_code(config):
     url = config[CONF_URL]
     width, height = config.get(CONF_RESIZE, (0, 0))
     transparent = get_transparency_enum(config[CONF_TRANSPARENCY])
+
+    add_metadata(
+        config[CONF_ID],
+        width,
+        height,
+        config[CONF_TYPE],
+        config[CONF_TRANSPARENCY],
+    )
 
     var = cg.new_Pvariable(
         config[CONF_ID],
