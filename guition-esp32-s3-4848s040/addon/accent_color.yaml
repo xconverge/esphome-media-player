@@ -13,13 +13,13 @@
 globals:
   - id: accent_r
     type: int
-    initial_value: '26'
+    initial_value: "26"
   - id: accent_g
     type: int
-    initial_value: '26'
+    initial_value: "26"
   - id: accent_b
     type: int
-    initial_value: '26'
+    initial_value: "26"
 
 output:
   - id: accent_r_output
@@ -55,7 +55,7 @@ script:
           int img_h = img->get_height();
           if (img_w <= 0 || img_h <= 0) return;
 
-          lv_img_dsc_t *dsc = img->get_lv_img_dsc();
+          lv_img_dsc_t *dsc = img->get_lv_image_dsc();
           const uint8_t *data = dsc->data;
           if (!data) return;
 
