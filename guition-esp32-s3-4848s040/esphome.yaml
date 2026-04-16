@@ -13,7 +13,7 @@ wifi:
 # Packages
 packages:
   music_dashboard:
-    url: https://github.com/jtenniswood/esphome-media-player
+    url: https://github.com/xconverge/esphome-media-player
     files: [guition-esp32-s3-4848s040/packages.yaml]
     ref: main
     refresh: 1s

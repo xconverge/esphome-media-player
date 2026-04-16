@@ -9,8 +9,8 @@ wifi:
 packages:
   music_dashboard: !include packages.yaml
 
-# external_components:
-#   - source:
-#       type: local
-#       path: ../components
-#     components: [online_image]
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [online_image]
