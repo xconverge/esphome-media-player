@@ -229,6 +229,8 @@ touchscreen:
     display: tft_display
     reset_pin: GPIO22
     interrupt_pin: GPIO21
+    transform:
+      mirror_y: true
     on_touch:
       - lambda: |-
           id(was_screen_dimmed) = id(is_screen_dimmed);
