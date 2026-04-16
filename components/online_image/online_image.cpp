@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include "esphome/core/log.h"
+#include "esphome/core/version.h"
 
 static const char *const TAG = "online_image";
 static const char *const ETAG_HEADER_NAME = "etag";
@@ -290,7 +291,11 @@ void OnlineImage::loop() {
     ESP_LOGD(TAG, "Total time: %" PRIu32 "s", (uint32_t) (::time(nullptr) - this->start_time_));
 #ifdef USE_LVGL
     this->dsc_.data = this->buffer_ + 1;
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2026, 4, 0)
+    this->get_lv_image_dsc();
+#else
     this->get_lv_img_dsc();
+#endif
 #endif
     this->etag_ = this->downloader_->get_response_header(ETAG_HEADER_NAME);
     this->last_modified_ = this->downloader_->get_response_header(LAST_MODIFIED_HEADER_NAME);

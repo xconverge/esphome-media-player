@@ -27,6 +27,13 @@ from esphome.const import (
 )
 from esphome.core import Lambda
 
+try:
+    from esphome.components.image import add_metadata
+except ImportError:
+
+    def add_metadata(*args, **kwargs):
+        pass
+
 AUTO_LOAD = ["image"]
 DEPENDENCIES = ["display", "http_request"]
 CODEOWNERS = ["@guillempages", "@clydebarrow"]
@@ -236,6 +243,13 @@ async def to_code(config):
     url = config[CONF_URL]
     width, height = config.get(CONF_RESIZE, (0, 0))
     transparent = get_transparency_enum(config[CONF_TRANSPARENCY])
+    add_metadata(
+        config[CONF_ID],
+        width,
+        height,
+        config[CONF_TYPE],
+        config[CONF_TRANSPARENCY],
+    )
 
     var = cg.new_Pvariable(
         config[CONF_ID],

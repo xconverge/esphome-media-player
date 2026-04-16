@@ -55,7 +55,11 @@ script:
           int img_h = img->get_height();
           if (img_w <= 0 || img_h <= 0) return;
 
-          lv_img_dsc_t *dsc = img->get_lv_img_dsc();
+          #if ESPHOME_VERSION_CODE >= VERSION_CODE(2026, 4, 0)
+          auto *dsc = img->get_lv_image_dsc();
+          #else
+          auto *dsc = img->get_lv_img_dsc();
+          #endif
           const uint8_t *data = dsc->data;
           if (!data) return;
 

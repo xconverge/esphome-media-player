@@ -109,7 +109,11 @@ script:
 
           auto *img = id(is_tv_mode) ? id(tv_art_background) : id(album_art_background);
           if (!img) return;
-          lv_img_dsc_t *dsc = img->get_lv_img_dsc();
+          #if ESPHOME_VERSION_CODE >= VERSION_CODE(2026, 4, 0)
+          auto *dsc = img->get_lv_image_dsc();
+          #else
+          auto *dsc = img->get_lv_img_dsc();
+          #endif
           if (!dsc || !dsc->data) return;
           uint8_t *buf = const_cast<uint8_t*>(dsc->data);
           int total = img->get_width() * img->get_height();
