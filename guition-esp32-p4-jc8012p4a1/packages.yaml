@@ -15,7 +15,7 @@ substitutions:
   touch_mirror_y: "false"
 
   # -- Shared config (consumed by shared/ files) --
-  artwork_size: "480"
+  artwork_size: "800"
   artwork_display_size: "800"
   image_byte_order: "big_endian"
   online_image_buffer_size: "131072"
