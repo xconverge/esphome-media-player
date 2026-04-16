@@ -119,13 +119,13 @@ script:
           int total = img->get_width() * img->get_height();
           for (int i = 0; i < total; i++) {
             int pos = i * 2;
-            uint16_t px = buf[pos] | (buf[pos + 1] << 8);
+            uint16_t px = (buf[pos] << 8) | buf[pos + 1];
             uint8_t r5 = r_lut[(px >> 11) & 0x1F];
             uint8_t g6 = g_lut[(px >> 5) & 0x3F];
             uint8_t b5 = b_lut[px & 0x1F];
             uint16_t out = (r5 << 11) | (g6 << 5) | b5;
-            buf[pos]     = out & 0xFF;
-            buf[pos + 1] = (out >> 8) & 0xFF;
+            buf[pos]     = (out >> 8) & 0xFF;
+            buf[pos + 1] = out & 0xFF;
           }
 
           lv_obj_invalidate(id(album_art_background_widget));
