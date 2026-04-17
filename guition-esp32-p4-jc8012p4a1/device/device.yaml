@@ -127,8 +127,13 @@ logger:
 
 
 external_components:
-  - source: github://kvj/esphome@jd9365_gsl3680
+  - source:
+      type: git
+      url: https://github.com/jtenniswood/esphome-media-player
+      ref: main
+      path: components
     components: [gsl3680]
+    refresh: 1s
 
 
 # DSI PHY power rail
