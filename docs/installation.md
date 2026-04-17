@@ -21,9 +21,7 @@ If you prefer to install via the ESPHome dashboard, see [ESPHome Config](/advanc
 
 ## Connect to Wi-Fi
 
-After flashing, keep the device connected by USB. The installer should ask for your Wi-Fi network name and password and send them to the device through the USB cable.
-
-If the browser does not show the Wi-Fi step, the device also creates a Wi-Fi hotspot called **esphome-media-player**. Connect to it from your phone or laptop and enter your home Wi-Fi credentials. The device will reboot and join your network.
+After flashing, the device creates a Wi-Fi hotspot called **esphome-media-player**. Connect to it from your phone or laptop and enter your home Wi-Fi credentials. The device will reboot and join your network.
 
 ## Add to Home Assistant
 

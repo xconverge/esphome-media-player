@@ -125,7 +125,7 @@ jobs:
           echo "Created media-player-4848s040.manifest.json"
 
           # P4 device manifest (JC8012P4A1) — extract the ESP32-P4 build entry
-          jq '{name: .name, version: .version, home_assistant_domain: .home_assistant_domain, new_install_prompt_erase: .new_install_prompt_erase, new_install_improv_wait_time: 30, builds: [.builds[] | select(.chipFamily == "ESP32-P4")]}' \
+          jq '{name: .name, version: .version, home_assistant_domain: .home_assistant_domain, new_install_prompt_erase: .new_install_prompt_erase, builds: [.builds[] | select(.chipFamily == "ESP32-P4")]}' \
             "$MANIFEST" > "${FW}/media-player-jc8012p4a1.manifest.json"
           echo "Created media-player-jc8012p4a1.manifest.json"
       - uses: actions/upload-pages-artifact@v5
