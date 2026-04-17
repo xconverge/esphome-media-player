@@ -9,6 +9,18 @@ esphome:
 dashboard_import:
   package_import_url: github://jtenniswood/esphome-media-player/guition-esp32-p4-jc8012p4a1/esphome.yaml@main
 
+logger:
+  level: DEBUG
+  baud_rate: 115200
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [improv_serial]
+
+improv_serial:
+
 update:
   - platform: esp32_hosted
     id: c6_firmware_update
