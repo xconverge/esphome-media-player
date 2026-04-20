@@ -13,7 +13,7 @@
 globals:
   - id: ha_base_url
     type: std::string
-    initial_value: '"http://${ha_host}:${ha_port}"'
+    initial_value: "\"http://${ha_host}:${ha_port}\""
   - id: last_media_position
     type: float
     initial_value: "0.0"
@@ -31,7 +31,7 @@ globals:
     initial_value: "false"
   - id: last_artwork_url
     type: std::string
-    initial_value: '""'
+    initial_value: "\"\""
   - id: shuffle_state
     type: bool
     initial_value: "false"
@@ -142,9 +142,9 @@ text_sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return id(is_tv_mode) && x != "TV";'
+            lambda: "return id(is_tv_mode) && x != \"TV\";"
           then:
-            - lambda: 'id(media_source_sensor).publish_state("");'
+            - lambda: "id(media_source_sensor).publish_state(\"\");"
       - if:
           condition:
             lambda: "return !id(is_tv_mode);"
@@ -250,7 +250,7 @@ text_sensor:
                 id: album_art_background_widget
                 opa: 50%
             - lvgl.widget.hide: artwork_error_label
-            - online_image.set_url:
+            - artwork_image.set_url:
                 id: album_art_background
                 url: !lambda "return id(last_artwork_url);"
 
@@ -259,16 +259,16 @@ text_sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return id(is_tv_mode) && id(is_tv_idle) && x == "playing";'
+            lambda: "return id(is_tv_mode) && id(is_tv_idle) && x == \"playing\";"
           then:
-            - lambda: 'id(media_source_sensor).publish_state("");'
+            - lambda: "id(media_source_sensor).publish_state(\"\");"
       - if:
           condition:
             lambda: "return !id(is_tv_mode);"
           then:
             - if:
                 condition:
-                  lambda: 'return x == "playing";'
+                  lambda: "return x == \"playing\";"
                 then:
                   - script.stop: backlight_wake_timeout
                   - lvgl.resume:
@@ -329,7 +329,7 @@ text_sensor:
             - script.execute: enter_tv_mode
       - if:
           condition:
-            lambda: 'return x != "TV" && id(is_tv_mode);'
+            lambda: "return x != \"TV\" && id(is_tv_mode);"
           then:
             - script.execute: exit_tv_mode
 

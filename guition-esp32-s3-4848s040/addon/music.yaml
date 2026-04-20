@@ -1,7 +1,7 @@
 # =============================================================================
 # MUSIC DASHBOARD - HTTP request, album art image
 # =============================================================================
-# Required for online_image (album art from Home Assistant entity_picture).
+# Required for artwork_image (album art from Home Assistant entity_picture).
 # Placeholder image shown until art is downloaded.
 # =============================================================================
 
@@ -11,7 +11,7 @@ external_components:
       url: https://github.com/xconverge/esphome-media-player
       ref: adjust
       path: components
-    components: [online_image]
+    components: [ artwork_image ]
     refresh: 1s
 
 http_request:
@@ -19,13 +19,14 @@ http_request:
 
 # Placeholder shown while album art is loading or when no art is available.
 image:
-  - file: "https://github.com/xconverge/esphome-media-player/raw/main/guition-esp32-s3-4848s040/assets/placeholder.png"
+  - file: "https://github.com/xconverge/esphome-media-player/raw/main/guition-esp32\
+      -s3-4848s040/assets/placeholder.png"
     id: album_art_placeholder
     type: rgb565
 
 # Dynamic album art from media_player entity_picture (URL set by sensors.yaml).
 # Decoded at 480x480 to match the physical display resolution (1:1 pixel mapping).
-online_image:
+artwork_image:
   - url: "https://placehold.co/480x480/2d2d2d/555555"
     id: album_art_background
     format: AUTO

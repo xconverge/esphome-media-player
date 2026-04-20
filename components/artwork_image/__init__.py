@@ -6,10 +6,8 @@ import esphome.codegen as cg
 from esphome.components.const import CONF_BYTE_ORDER, CONF_REQUEST_HEADERS
 from esphome.components.http_request import CONF_HTTP_REQUEST_ID, HttpRequestComponent
 from esphome.components.image import (
-    CONF_TRANSPARENCY,
     IMAGE_TYPE,
     Image_,
-    add_metadata,
     get_image_type_enum,
     get_transparency_enum,
     validate_settings,
@@ -23,26 +21,38 @@ from esphome.const import (
     CONF_ID,
     CONF_ON_ERROR,
     CONF_RESIZE,
-    CONF_TRIGGER_ID,
     CONF_TYPE,
     CONF_URL,
 )
 from esphome.core import Lambda
 
+try:
+    from esphome.components.lvgl import defines as lvgl_defines
+except ImportError:
+    lvgl_defines = None
+
+try:
+    from esphome.components.image import add_metadata
+except ImportError:
+
+    def add_metadata(*args, **kwargs):
+        pass
+
 AUTO_LOAD = ["image"]
 DEPENDENCIES = ["display", "http_request"]
-CODEOWNERS = ["@guillempages", "@clydebarrow"]
+CODEOWNERS = ["@jtenniswood"]
 MULTI_CONF = True
 
 CONF_ON_DOWNLOAD_FINISHED = "on_download_finished"
 CONF_PLACEHOLDER = "placeholder"
+CONF_TRANSPARENCY = "transparency"
 CONF_UPDATE = "update"
 
 _LOGGER = logging.getLogger(__name__)
 
-online_image_ns = cg.esphome_ns.namespace("online_image")
+artwork_image_ns = cg.esphome_ns.namespace("artwork_image")
 
-ImageFormat = online_image_ns.enum("ImageFormat")
+ImageFormat = artwork_image_ns.enum("ImageFormat")
 
 
 class Format:
@@ -62,7 +72,7 @@ class BMPFormat(Format):
         super().__init__("BMP")
 
     def actions(self):
-        cg.add_define("USE_ONLINE_IMAGE_BMP_SUPPORT")
+        cg.add_define("USE_ARTWORK_IMAGE_BMP_SUPPORT")
 
 
 class JPEGFormat(Format):
@@ -70,15 +80,19 @@ class JPEGFormat(Format):
         super().__init__("JPEG")
 
     def actions(self):
-        cg.add_define("USE_ONLINE_IMAGE_JPEG_SUPPORT")
+        cg.add_define("USE_ARTWORK_IMAGE_JPEG_SUPPORT")
         import shutil
         from esphome.core import CORE
 
         # Copy libjpeg-turbo as an IDF component into the build directory.
         # Skip if dest already exists and CMakeLists.txt mtimes match (avoid
         # redundant copies on incremental builds).
-        src_path = os.path.join(os.path.dirname(__file__), "..", "libjpeg-turbo-esp32")
-        dest_path = str(CORE.relative_build_path("components", "libjpeg-turbo-esp32"))
+        src_path = os.path.join(
+            os.path.dirname(__file__), "..", "libjpeg-turbo-esp32"
+        )
+        dest_path = str(
+            CORE.relative_build_path("components", "libjpeg-turbo-esp32")
+        )
         src_cmake = os.path.join(src_path, "CMakeLists.txt")
         dest_cmake = os.path.join(dest_path, "CMakeLists.txt")
         needs_copy = not os.path.exists(dest_cmake) or (
@@ -95,7 +109,7 @@ class PNGFormat(Format):
         super().__init__("PNG")
 
     def actions(self):
-        cg.add_define("USE_ONLINE_IMAGE_PNG_SUPPORT")
+        cg.add_define("USE_ARTWORK_IMAGE_PNG_SUPPORT")
         cg.add_library("pngle", "1.1.0")
 
 
@@ -119,57 +133,46 @@ IMAGE_FORMATS = {
 }
 IMAGE_FORMATS.update({"JPG": IMAGE_FORMATS["JPEG"]})
 
-OnlineImage = online_image_ns.class_("OnlineImage", cg.PollingComponent, Image_)
+ArtworkImage = artwork_image_ns.class_("ArtworkImage", cg.PollingComponent, Image_)
 
 # Actions
-SetUrlAction = online_image_ns.class_(
-    "OnlineImageSetUrlAction", automation.Action, cg.Parented.template(OnlineImage)
+SetUrlAction = artwork_image_ns.class_(
+    "ArtworkImageSetUrlAction", automation.Action, cg.Parented.template(ArtworkImage)
 )
-ReleaseImageAction = online_image_ns.class_(
-    "OnlineImageReleaseAction", automation.Action, cg.Parented.template(OnlineImage)
-)
-
-# Triggers
-DownloadFinishedTrigger = online_image_ns.class_(
-    "DownloadFinishedTrigger", automation.Trigger.template()
-)
-DownloadErrorTrigger = online_image_ns.class_(
-    "DownloadErrorTrigger", automation.Trigger.template()
+ReleaseImageAction = artwork_image_ns.class_(
+    "ArtworkImageReleaseAction", automation.Action, cg.Parented.template(ArtworkImage)
 )
 
-ONLINE_IMAGE_SCHEMA = cv.Schema(
-    {
-        cv.Required(CONF_ID): cv.declare_id(OnlineImage),
-        cv.Required(CONF_TYPE): validate_type(IMAGE_TYPE),
-        cv.Optional(CONF_RESIZE): cv.dimensions,
-        cv.Optional(CONF_BYTE_ORDER): cv.one_of(
-            "BIG_ENDIAN", "LITTLE_ENDIAN", upper=True
-        ),
-        cv.Optional(CONF_TRANSPARENCY, default="OPAQUE"): validate_transparency(),
-        cv.GenerateID(CONF_HTTP_REQUEST_ID): cv.use_id(HttpRequestComponent),
-        cv.Required(CONF_URL): cv.url,
-        cv.Optional(CONF_REQUEST_HEADERS): cv.All(
-            cv.Schema({cv.string: cv.templatable(cv.string)})
-        ),
-        cv.Optional(CONF_FORMAT, default="AUTO"): cv.one_of(*IMAGE_FORMATS, upper=True),
-        cv.Optional(CONF_PLACEHOLDER): cv.use_id(Image_),
-        cv.Optional(CONF_BUFFER_SIZE, default=65536): cv.int_range(256, 524288),
-        cv.Optional(CONF_ON_DOWNLOAD_FINISHED): automation.validate_automation(
-            {
-                cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(DownloadFinishedTrigger),
-            }
-        ),
-        cv.Optional(CONF_ON_ERROR): automation.validate_automation(
-            {
-                cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(DownloadErrorTrigger),
-            }
-        ),
-    }
-).extend(cv.polling_component_schema("never"))
+ARTWORK_IMAGE_SCHEMA = (
+    cv.Schema(
+        {
+            cv.Required(CONF_ID): cv.declare_id(ArtworkImage),
+            cv.Required(CONF_TYPE): validate_type(IMAGE_TYPE),
+            cv.Optional(CONF_RESIZE): cv.dimensions,
+            cv.Optional(CONF_BYTE_ORDER): cv.one_of(
+                "BIG_ENDIAN", "LITTLE_ENDIAN", upper=True
+            ),
+            cv.Optional(CONF_TRANSPARENCY, default="OPAQUE"): validate_transparency(),
+            cv.GenerateID(CONF_HTTP_REQUEST_ID): cv.use_id(HttpRequestComponent),
+            cv.Required(CONF_URL): cv.url,
+            cv.Optional(CONF_REQUEST_HEADERS): cv.All(
+                cv.Schema({cv.string: cv.templatable(cv.string)})
+            ),
+            cv.Optional(CONF_FORMAT, default="AUTO"): cv.one_of(
+                *IMAGE_FORMATS, upper=True
+            ),
+            cv.Optional(CONF_PLACEHOLDER): cv.use_id(Image_),
+            cv.Optional(CONF_BUFFER_SIZE, default=65536): cv.int_range(256, 524288),
+            cv.Optional(CONF_ON_DOWNLOAD_FINISHED): automation.validate_automation({}),
+            cv.Optional(CONF_ON_ERROR): automation.validate_automation({}),
+        }
+    )
+    .extend(cv.polling_component_schema("never"))
+)
 
 CONFIG_SCHEMA = cv.Schema(
     cv.All(
-        ONLINE_IMAGE_SCHEMA,
+        ARTWORK_IMAGE_SCHEMA,
         cv.require_framework_version(
             # esp8266 not supported yet; if enabled in the future, minimum version of 2.7.0 is needed
             # esp8266_arduino=cv.Version(2, 7, 0),
@@ -184,7 +187,7 @@ CONFIG_SCHEMA = cv.Schema(
 
 SET_URL_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(): cv.use_id(OnlineImage),
+        cv.GenerateID(): cv.use_id(ArtworkImage),
         cv.Required(CONF_URL): cv.templatable(cv.url),
         cv.Optional(CONF_UPDATE, default=True): cv.templatable(bool),
     }
@@ -192,18 +195,26 @@ SET_URL_SCHEMA = cv.Schema(
 
 RELEASE_IMAGE_SCHEMA = automation.maybe_simple_id(
     {
-        cv.GenerateID(): cv.use_id(OnlineImage),
+        cv.GenerateID(): cv.use_id(ArtworkImage),
     }
 )
 
 
+_CALLBACK_AUTOMATIONS = (
+    automation.CallbackAutomation(
+        CONF_ON_DOWNLOAD_FINISHED, "add_on_finished_callback", [(bool, "cached")]
+    ),
+    automation.CallbackAutomation(CONF_ON_ERROR, "add_on_error_callback"),
+)
+
+
 @automation.register_action(
-    "online_image.set_url", SetUrlAction, SET_URL_SCHEMA, synchronous=True
+    "artwork_image.set_url", SetUrlAction, SET_URL_SCHEMA, synchronous=True
 )
 @automation.register_action(
-    "online_image.release", ReleaseImageAction, RELEASE_IMAGE_SCHEMA, synchronous=True
+    "artwork_image.release", ReleaseImageAction, RELEASE_IMAGE_SCHEMA, synchronous=True
 )
-async def online_image_action_to_code(config, action_id, template_arg, args):
+async def artwork_image_action_to_code(config, action_id, template_arg, args):
     paren = await cg.get_variable(config[CONF_ID])
     var = cg.new_Pvariable(action_id, template_arg, paren)
 
@@ -219,11 +230,13 @@ async def online_image_action_to_code(config, action_id, template_arg, args):
 async def to_code(config):
     image_format = IMAGE_FORMATS[config[CONF_FORMAT]]
     image_format.actions()
+    if lvgl_defines is not None:
+        lvgl_defines.add_define("LV_DRAW_SW_SUPPORT_RGB565", "1")
+        lvgl_defines.add_define("LV_DRAW_SW_SUPPORT_RGB565A8", "1")
 
     url = config[CONF_URL]
     width, height = config.get(CONF_RESIZE, (0, 0))
     transparent = get_transparency_enum(config[CONF_TRANSPARENCY])
-
     add_metadata(
         config[CONF_ID],
         width,
@@ -257,10 +270,4 @@ async def to_code(config):
         placeholder = await cg.get_variable(placeholder_id)
         cg.add(var.set_placeholder(placeholder))
 
-    for conf in config.get(CONF_ON_DOWNLOAD_FINISHED, []):
-        trigger = cg.new_Pvariable(conf[CONF_TRIGGER_ID], var)
-        await automation.build_automation(trigger, [(bool, "cached")], conf)
-
-    for conf in config.get(CONF_ON_ERROR, []):
-        trigger = cg.new_Pvariable(conf[CONF_TRIGGER_ID], var)
-        await automation.build_automation(trigger, [], conf)
+    await automation.build_callback_automations(var, config, _CALLBACK_AUTOMATIONS)

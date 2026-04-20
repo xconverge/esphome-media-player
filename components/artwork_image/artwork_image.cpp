@@ -1,36 +1,35 @@
-#include "online_image.h"
+#include "artwork_image.h"
 
 #include <cstring>
-
 #include "esphome/core/log.h"
+#include "esphome/core/version.h"
 
-static const char* const TAG = "online_image";
-static const char* const ETAG_HEADER_NAME = "etag";
-static const char* const IF_NONE_MATCH_HEADER_NAME = "if-none-match";
-static const char* const LAST_MODIFIED_HEADER_NAME = "last-modified";
-static const char* const IF_MODIFIED_SINCE_HEADER_NAME = "if-modified-since";
-static const char* const CONTENT_TYPE_HEADER_NAME = "content-type";
+static const char *const TAG = "artwork_image";
+static const char *const ETAG_HEADER_NAME = "etag";
+static const char *const IF_NONE_MATCH_HEADER_NAME = "if-none-match";
+static const char *const LAST_MODIFIED_HEADER_NAME = "last-modified";
+static const char *const IF_MODIFIED_SINCE_HEADER_NAME = "if-modified-since";
+static const char *const CONTENT_TYPE_HEADER_NAME = "content-type";
 
 #include "image_decoder.h"
 
-#ifdef USE_ONLINE_IMAGE_BMP_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_BMP_SUPPORT
 #include "bmp_image.h"
 #endif
-#ifdef USE_ONLINE_IMAGE_JPEG_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_JPEG_SUPPORT
 #include "jpeg_image.h"
 #endif
-#ifdef USE_ONLINE_IMAGE_PNG_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_PNG_SUPPORT
 #include "png_image.h"
 #endif
 
 namespace esphome {
-namespace online_image {
+namespace artwork_image {
 
 using image::ImageType;
 
-inline bool is_color_on(const Color& color) {
-  // This produces the most accurate monochrome conversion, but is slightly
-  // slower.
+inline bool is_color_on(const Color &color) {
+  // This produces the most accurate monochrome conversion, but is slightly slower.
   //  return (0.2125 * color.r + 0.7154 * color.g + 0.0721 * color.b) > 127;
 
   // Approximation using fast integer computations; produces acceptable results
@@ -38,10 +37,8 @@ inline bool is_color_on(const Color& color) {
   return ((color.r >> 2) + (color.g >> 1) + (color.b >> 2)) & 0x80;
 }
 
-OnlineImage::OnlineImage(const std::string& url, int width, int height,
-                         ImageFormat format, ImageType type,
-                         image::Transparency transparency,
-                         uint32_t download_buffer_size, bool is_big_endian)
+ArtworkImage::ArtworkImage(const std::string &url, int width, int height, ImageFormat format, ImageType type,
+                         image::Transparency transparency, uint32_t download_buffer_size, bool is_big_endian)
     : Image(nullptr, 0, 0, type, transparency),
       buffer_(nullptr),
       download_buffer_(download_buffer_size),
@@ -53,8 +50,7 @@ OnlineImage::OnlineImage(const std::string& url, int width, int height,
   this->set_url(url);
 }
 
-void OnlineImage::draw(int x, int y, display::Display* display, Color color_on,
-                       Color color_off) {
+void ArtworkImage::draw(int x, int y, display::Display *display, Color color_on, Color color_off) {
   if (this->data_start_) {
     Image::draw(x, y, display, color_on, color_off);
   } else if (this->placeholder_) {
@@ -62,7 +58,7 @@ void OnlineImage::draw(int x, int y, display::Display* display, Color color_on,
   }
 }
 
-void OnlineImage::release() {
+void ArtworkImage::release() {
   if (this->buffer_) {
     ESP_LOGV(TAG, "Deallocating old buffer");
     this->allocator_.deallocate(this->buffer_, this->get_buffer_size_());
@@ -72,13 +68,16 @@ void OnlineImage::release() {
     this->height_ = 0;
     this->buffer_width_ = 0;
     this->buffer_height_ = 0;
+#ifdef USE_LVGL
+    memset(&this->dsc_, 0, sizeof(this->dsc_));
+#endif
     this->last_modified_ = "";
     this->etag_ = "";
     this->end_connection_();
   }
 }
 
-size_t OnlineImage::resize_(int width_in, int height_in) {
+size_t ArtworkImage::resize_(int width_in, int height_in) {
   int width = this->fixed_width_;
   int height = this->fixed_height_;
   if (this->is_auto_resize_()) {
@@ -94,9 +93,10 @@ size_t OnlineImage::resize_(int width_in, int height_in) {
         height = height_in;
       }
     } else {
-      double scale =
-          std::min(static_cast<double>(this->fixed_width_) / width_in,
-                   static_cast<double>(this->fixed_height_) / height_in);
+      double scale = std::min(
+        static_cast<double>(this->fixed_width_) / width_in,
+        static_cast<double>(this->fixed_height_) / height_in
+      );
       width = (static_cast<int>(width_in * scale) + 3) & ~3;
       height = (static_cast<int>(height_in * scale) + 3) & ~3;
       if (width > this->fixed_width_) width = this->fixed_width_;
@@ -109,29 +109,39 @@ size_t OnlineImage::resize_(int width_in, int height_in) {
       this->buffer_width_ = width;
       this->buffer_height_ = height;
       this->width_ = width;
+      this->height_ = height;
+#ifdef USE_LVGL
+      memset(&this->dsc_, 0, sizeof(this->dsc_));
+#endif
       return new_size;
     }
     this->allocator_.deallocate(this->buffer_, this->get_buffer_size_());
     this->buffer_ = nullptr;
     this->data_start_ = nullptr;
+#ifdef USE_LVGL
+    memset(&this->dsc_, 0, sizeof(this->dsc_));
+#endif
   }
   ESP_LOGD(TAG, "Allocating new buffer of %zu bytes", new_size);
   this->buffer_ = this->allocator_.allocate(new_size);
   if (this->buffer_ == nullptr) {
-    ESP_LOGE(TAG,
-             "allocation of %zu bytes failed. Biggest block in heap: %zu Bytes",
-             new_size, this->allocator_.get_max_free_block_size());
+    ESP_LOGE(TAG, "allocation of %zu bytes failed. Biggest block in heap: %zu Bytes", new_size,
+             this->allocator_.get_max_free_block_size());
     this->end_connection_();
     return 0;
   }
   this->buffer_width_ = width;
   this->buffer_height_ = height;
   this->width_ = width;
+  this->height_ = height;
+#ifdef USE_LVGL
+  memset(&this->dsc_, 0, sizeof(this->dsc_));
+#endif
   ESP_LOGV(TAG, "New size: (%d, %d)", width, height);
   return new_size;
 }
 
-void OnlineImage::update() {
+void ArtworkImage::update() {
   if (this->decoder_) {
     ESP_LOGW(TAG, "Cancelling in-progress image download to fetch new URL");
     this->end_connection_();
@@ -147,46 +157,41 @@ void OnlineImage::update() {
     case ImageFormat::AUTO:
       accept_mime_type = "image/jpeg, image/png";
       break;
-#ifdef USE_ONLINE_IMAGE_BMP_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_BMP_SUPPORT
     case ImageFormat::BMP:
       accept_mime_type = "image/bmp";
       break;
-#endif  // USE_ONLINE_IMAGE_BMP_SUPPORT
-#ifdef USE_ONLINE_IMAGE_JPEG_SUPPORT
+#endif  // USE_ARTWORK_IMAGE_BMP_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_JPEG_SUPPORT
     case ImageFormat::JPEG:
       accept_mime_type = "image/jpeg";
       break;
-#endif  // USE_ONLINE_IMAGE_JPEG_SUPPORT
-#ifdef USE_ONLINE_IMAGE_PNG_SUPPORT
+#endif  // USE_ARTWORK_IMAGE_JPEG_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_PNG_SUPPORT
     case ImageFormat::PNG:
       accept_mime_type = "image/png";
       break;
-#endif  // USE_ONLINE_IMAGE_PNG_SUPPORT
+#endif  // USE_ARTWORK_IMAGE_PNG_SUPPORT
     default:
       accept_mime_type = "image/*";
   }
   accept_header.value = accept_mime_type + ",*/*;q=0.8";
 
   if (!this->etag_.empty()) {
-    headers.push_back(
-        http_request::Header{IF_NONE_MATCH_HEADER_NAME, this->etag_});
+    headers.push_back(http_request::Header{IF_NONE_MATCH_HEADER_NAME, this->etag_});
   }
 
   if (!this->last_modified_.empty()) {
-    headers.push_back(http_request::Header{IF_MODIFIED_SINCE_HEADER_NAME,
-                                           this->last_modified_});
+    headers.push_back(http_request::Header{IF_MODIFIED_SINCE_HEADER_NAME, this->last_modified_});
   }
 
   headers.push_back(accept_header);
 
-  for (auto& header : this->request_headers_) {
-    headers.push_back(
-        http_request::Header{header.first, header.second.value()});
+  for (auto &header : this->request_headers_) {
+    headers.push_back(http_request::Header{header.first, header.second.value()});
   }
 
-  this->downloader_ = this->parent_->get(
-      this->url_, headers,
-      {ETAG_HEADER_NAME, LAST_MODIFIED_HEADER_NAME, CONTENT_TYPE_HEADER_NAME});
+  this->downloader_ = this->parent_->get(this->url_, headers, {ETAG_HEADER_NAME, LAST_MODIFIED_HEADER_NAME, CONTENT_TYPE_HEADER_NAME});
 
   if (this->downloader_ == nullptr) {
     ESP_LOGE(TAG, "Download failed.");
@@ -216,9 +221,7 @@ void OnlineImage::update() {
   ImageFormat resolved = this->detect_format_();
 
   if (resolved == ImageFormat::AUTO) {
-    ESP_LOGD(TAG,
-             "Image format not identified from Content-Type, deferring to "
-             "magic-byte detection");
+    ESP_LOGD(TAG, "Image format not identified from Content-Type, deferring to magic-byte detection");
     this->start_time_ = ::time(nullptr);
     this->last_data_millis_ = millis();
     this->enable_loop();
@@ -236,27 +239,25 @@ void OnlineImage::update() {
   this->enable_loop();
 }
 
-void OnlineImage::loop() {
+void ArtworkImage::loop() {
   if (!this->decoder_ && !this->downloader_) {
     this->disable_loop();
     return;
   }
 
-  // Deferred decoder creation for AUTO format: read data for magic-byte
-  // detection
+  // Deferred decoder creation for AUTO format: read data for magic-byte detection
   if (!this->decoder_ && this->downloader_) {
     size_t available = this->download_buffer_.free_capacity();
     if (available) {
       available = std::min(available, this->download_buffer_initial_size_);
-      auto len =
-          this->downloader_->read(this->download_buffer_.append(), available);
+      auto len = this->downloader_->read(this->download_buffer_.append(), available);
       if (len > 0) {
         this->download_buffer_.write(len);
         this->last_data_millis_ = millis();
       }
     }
 
-    if (this->download_buffer_.unread() < 4) {
+    if (this->download_buffer_.unread() < 12) {
       if (millis() - this->last_data_millis_ > DOWNLOAD_STALL_TIMEOUT_MS) {
         ESP_LOGE(TAG, "Download stalled waiting for format detection bytes");
         this->end_connection_();
@@ -267,8 +268,7 @@ void OnlineImage::loop() {
 
     ImageFormat resolved = this->detect_format_();
     if (resolved == ImageFormat::AUTO) {
-      ESP_LOGE(TAG,
-               "Could not determine image format from headers or file content");
+      ESP_LOGE(TAG, "Could not determine image format from headers or file content");
       this->end_connection_();
       this->download_error_callback_.call();
       return;
@@ -284,8 +284,7 @@ void OnlineImage::loop() {
 
     // Feed already-buffered data to the newly created decoder
     if (this->download_buffer_.unread() > 0) {
-      auto fed = this->decoder_->decode(this->download_buffer_.data(),
-                                        this->download_buffer_.unread());
+      auto fed = this->decoder_->decode(this->download_buffer_.data(), this->download_buffer_.unread());
       if (fed < 0) {
         ESP_LOGE(TAG, "Error when decoding image.");
         this->end_connection_();
@@ -301,18 +300,19 @@ void OnlineImage::loop() {
     this->data_start_ = buffer_;
     this->width_ = buffer_width_;
     this->height_ = buffer_height_;
-    ESP_LOGD(TAG,
-             "Image fully downloaded, read %zu bytes, width/height = %d/%d",
-             this->downloader_->get_bytes_read(), this->width_, this->height_);
-    ESP_LOGD(TAG, "Total time: %" PRIu32 "s",
-             (uint32_t)(::time(nullptr) - this->start_time_));
+    ESP_LOGD(TAG, "Image fully downloaded, read %zu bytes, width/height = %d/%d", this->downloader_->get_bytes_read(),
+             this->width_, this->height_);
+    ESP_LOGD(TAG, "Total time: %" PRIu32 "s", (uint32_t) (::time(nullptr) - this->start_time_));
 #ifdef USE_LVGL
     this->dsc_.data = this->buffer_ + 1;
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2026, 4, 0)
     this->get_lv_image_dsc();
+#else
+    this->get_lv_img_dsc();
+#endif
 #endif
     this->etag_ = this->downloader_->get_response_header(ETAG_HEADER_NAME);
-    this->last_modified_ =
-        this->downloader_->get_response_header(LAST_MODIFIED_HEADER_NAME);
+    this->last_modified_ = this->downloader_->get_response_header(LAST_MODIFIED_HEADER_NAME);
     this->download_finished_callback_.call(false);
     this->end_connection_();
     return;
@@ -324,13 +324,11 @@ void OnlineImage::loop() {
   size_t available = this->download_buffer_.free_capacity();
   if (available) {
     available = std::min(available, this->download_buffer_initial_size_);
-    auto len =
-        this->downloader_->read(this->download_buffer_.append(), available);
+    auto len = this->downloader_->read(this->download_buffer_.append(), available);
     if (len > 0) {
       this->download_buffer_.write(len);
       this->last_data_millis_ = millis();
-      auto fed = this->decoder_->decode(this->download_buffer_.data(),
-                                        this->download_buffer_.unread());
+      auto fed = this->decoder_->decode(this->download_buffer_.data(), this->download_buffer_.unread());
       if (fed < 0) {
         ESP_LOGE(TAG, "Error when decoding image.");
         this->end_connection_();
@@ -339,9 +337,7 @@ void OnlineImage::loop() {
       }
       this->download_buffer_.read(fed);
     } else if (millis() - this->last_data_millis_ > DOWNLOAD_STALL_TIMEOUT_MS) {
-      ESP_LOGE(TAG,
-               "Download stalled: no data received for %" PRIu32
-               "ms (buffered %zu bytes)",
+      ESP_LOGE(TAG, "Download stalled: no data received for %" PRIu32 "ms (buffered %zu bytes)",
                DOWNLOAD_STALL_TIMEOUT_MS, this->download_buffer_.unread());
       this->end_connection_();
       this->download_error_callback_.call();
@@ -350,7 +346,7 @@ void OnlineImage::loop() {
   }
 }
 
-void OnlineImage::map_chroma_key(Color& color) {
+void ArtworkImage::map_chroma_key(Color &color) {
   if (this->transparency_ == image::TRANSPARENCY_CHROMA_KEY) {
     if (color.g == 1 && color.r == 0 && color.b == 0) {
       color.g = 0;
@@ -363,7 +359,7 @@ void OnlineImage::map_chroma_key(Color& color) {
   }
 }
 
-void OnlineImage::draw_pixel_(int x, int y, Color color) {
+void ArtworkImage::draw_pixel_(int x, int y, Color color) {
   if (!this->buffer_) {
     ESP_LOGE(TAG, "Buffer not allocated!");
     return;
@@ -380,7 +376,8 @@ void OnlineImage::draw_pixel_(int x, int y, Color color) {
       auto bitno = 0x80 >> (pos % 8u);
       pos /= 8u;
       auto on = is_color_on(color);
-      if (this->has_transparency() && color.w < 0x80) on = false;
+      if (this->has_transparency() && color.w < 0x80)
+        on = false;
       if (on) {
         this->buffer_[pos] |= bitno;
       } else {
@@ -389,8 +386,7 @@ void OnlineImage::draw_pixel_(int x, int y, Color color) {
       break;
     }
     case ImageType::IMAGE_TYPE_GRAYSCALE: {
-      auto gray = static_cast<uint8_t>(0.2125 * color.r + 0.7154 * color.g +
-                                       0.0721 * color.b);
+      auto gray = static_cast<uint8_t>(0.2125 * color.r + 0.7154 * color.g + 0.0721 * color.b);
       if (this->transparency_ == image::TRANSPARENCY_CHROMA_KEY) {
         if (gray == 1) {
           gray = 0;
@@ -399,7 +395,8 @@ void OnlineImage::draw_pixel_(int x, int y, Color color) {
           gray = 1;
         }
       } else if (this->transparency_ == image::TRANSPARENCY_ALPHA_CHANNEL) {
-        if (color.w != 0xFF) gray = color.w;
+        if (color.w != 0xFF)
+          gray = color.w;
       }
       this->buffer_[pos] = gray;
       break;
@@ -432,23 +429,25 @@ void OnlineImage::draw_pixel_(int x, int y, Color color) {
   }
 }
 
-ImageFormat OnlineImage::detect_format_() {
+ImageFormat ArtworkImage::detect_format_() {
   if (this->format_ != ImageFormat::AUTO) {
     return this->format_;
   }
 
   // Try Content-Type header
   if (this->downloader_) {
-    std::string ct =
-        this->downloader_->get_response_header(CONTENT_TYPE_HEADER_NAME);
-    if (ct.find("image/jpeg") != std::string::npos ||
-        ct.find("image/jpg") != std::string::npos) {
+    std::string ct = this->downloader_->get_response_header(CONTENT_TYPE_HEADER_NAME);
+    if (ct.find("image/jpeg") != std::string::npos || ct.find("image/jpg") != std::string::npos) {
       ESP_LOGD(TAG, "Detected JPEG from Content-Type: %s", ct.c_str());
       return ImageFormat::JPEG;
     }
     if (ct.find("image/png") != std::string::npos) {
       ESP_LOGD(TAG, "Detected PNG from Content-Type: %s", ct.c_str());
       return ImageFormat::PNG;
+    }
+    if (ct.find("image/heic") != std::string::npos || ct.find("image/heif") != std::string::npos) {
+      ESP_LOGW(TAG, "Detected HEIC/HEIF from Content-Type: %s", ct.c_str());
+      return ImageFormat::HEIC;
     }
     if (ct.find("image/bmp") != std::string::npos) {
       ESP_LOGD(TAG, "Detected BMP from Content-Type: %s", ct.c_str());
@@ -458,15 +457,22 @@ ImageFormat OnlineImage::detect_format_() {
 
   // Fallback: magic bytes from download buffer
   if (this->download_buffer_.unread() >= 4) {
-    const uint8_t* data = this->download_buffer_.data();
+    const uint8_t *data = this->download_buffer_.data();
     if (data[0] == 0xFF && data[1] == 0xD8) {
-      ESP_LOGD(TAG, "Detected JPEG from magic bytes");
+      if (this->detect_progressive_jpeg_()) {
+        ESP_LOGW(TAG, "Detected progressive JPEG from magic bytes; attempting native JPEG decoder");
+      } else {
+        ESP_LOGD(TAG, "Detected JPEG from magic bytes; decoder will report baseline/progressive from the header");
+      }
       return ImageFormat::JPEG;
     }
-    if (data[0] == 0x89 && data[1] == 0x50 && data[2] == 0x4E &&
-        data[3] == 0x47) {
+    if (data[0] == 0x89 && data[1] == 0x50 && data[2] == 0x4E && data[3] == 0x47) {
       ESP_LOGD(TAG, "Detected PNG from magic bytes");
       return ImageFormat::PNG;
+    }
+    if (this->detect_heic_()) {
+      ESP_LOGW(TAG, "Detected HEIC/HEIF from file signature");
+      return ImageFormat::HEIC;
     }
     if (data[0] == 0x42 && data[1] == 0x4D) {
       ESP_LOGD(TAG, "Detected BMP from magic bytes");
@@ -477,28 +483,89 @@ ImageFormat OnlineImage::detect_format_() {
   return ImageFormat::AUTO;
 }
 
-bool OnlineImage::create_decoder_(ImageFormat format, size_t total_size) {
-#ifdef USE_ONLINE_IMAGE_BMP_SUPPORT
+bool ArtworkImage::detect_progressive_jpeg_() {
+  size_t len = this->download_buffer_.unread();
+  const uint8_t *data = this->download_buffer_.data();
+  if (len < 4 || data[0] != 0xFF || data[1] != 0xD8) {
+    return false;
+  }
+
+  size_t pos = 2;
+  while (pos + 3 < len) {
+    while (pos < len && data[pos] != 0xFF) pos++;
+    while (pos < len && data[pos] == 0xFF) pos++;
+    if (pos >= len) break;
+
+    uint8_t marker = data[pos++];
+    if (marker == 0xDA || marker == 0xD9) {
+      break;
+    }
+    if (marker >= 0xD0 && marker <= 0xD7) {
+      continue;
+    }
+    if (pos + 1 >= len) break;
+    uint16_t segment_len = (static_cast<uint16_t>(data[pos]) << 8) | data[pos + 1];
+    if (segment_len < 2) break;
+
+    if (marker == 0xC2) {
+      return true;
+    }
+    if (marker == 0xC0) {
+      return false;
+    }
+    pos += segment_len;
+  }
+  return false;
+}
+
+bool ArtworkImage::detect_heic_() {
+  size_t len = this->download_buffer_.unread();
+  const uint8_t *data = this->download_buffer_.data();
+  if (len < 12) {
+    return false;
+  }
+  if (data[4] != 'f' || data[5] != 't' || data[6] != 'y' || data[7] != 'p') {
+    return false;
+  }
+
+  for (size_t pos = 8; pos + 3 < len && pos < 64; pos += 4) {
+    if ((data[pos] == 'h' && data[pos + 1] == 'e' && data[pos + 2] == 'i' &&
+         (data[pos + 3] == 'c' || data[pos + 3] == 'x')) ||
+        (data[pos] == 'h' && data[pos + 1] == 'e' && data[pos + 2] == 'v' &&
+         (data[pos + 3] == 'c' || data[pos + 3] == 'x')) ||
+        (data[pos] == 'm' && data[pos + 1] == 'i' && data[pos + 2] == 'f' && data[pos + 3] == '1') ||
+        (data[pos] == 'm' && data[pos + 1] == 's' && data[pos + 2] == 'f' && data[pos + 3] == '1')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool ArtworkImage::create_decoder_(ImageFormat format, size_t total_size) {
+  if (format == ImageFormat::HEIC) {
+    ESP_LOGE(TAG, "HEIC/HEIF artwork detected, but no native HEIC decoder is bundled for this firmware");
+    return false;
+  }
+#ifdef USE_ARTWORK_IMAGE_BMP_SUPPORT
   if (format == ImageFormat::BMP) {
     ESP_LOGD(TAG, "Allocating BMP decoder");
     this->decoder_ = make_unique<BmpDecoder>(this);
   }
 #endif
-#ifdef USE_ONLINE_IMAGE_JPEG_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_JPEG_SUPPORT
   if (format == ImageFormat::JPEG) {
     ESP_LOGD(TAG, "Allocating JPEG decoder");
     this->decoder_ = esphome::make_unique<JpegDecoder>(this);
   }
 #endif
-#ifdef USE_ONLINE_IMAGE_PNG_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_PNG_SUPPORT
   if (format == ImageFormat::PNG) {
     ESP_LOGD(TAG, "Allocating PNG decoder");
     this->decoder_ = make_unique<PngDecoder>(this);
   }
 #endif
   if (!this->decoder_) {
-    ESP_LOGE(TAG, "Could not instantiate decoder. Image format unsupported: %d",
-             format);
+    ESP_LOGE(TAG, "Could not instantiate decoder. Image format unsupported: %d", format);
     return false;
   }
   if (this->decoder_->prepare(total_size) < 0) {
@@ -508,7 +575,7 @@ bool OnlineImage::create_decoder_(ImageFormat format, size_t total_size) {
   return true;
 }
 
-void OnlineImage::end_connection_() {
+void ArtworkImage::end_connection_() {
   if (this->downloader_) {
     this->downloader_->end();
     this->downloader_ = nullptr;
@@ -517,25 +584,13 @@ void OnlineImage::end_connection_() {
   this->download_buffer_.reset();
 }
 
-bool OnlineImage::validate_url_(const std::string& url) {
-  if ((url.length() < 8) || !url.starts_with("http") ||
-      (url.find("://") == std::string::npos)) {
-    ESP_LOGE(
-        TAG,
-        "URL is invalid and/or must be prefixed with 'http://' or 'https://'");
+bool ArtworkImage::validate_url_(const std::string &url) {
+  if ((url.length() < 8) || !url.starts_with("http") || (url.find("://") == std::string::npos)) {
+    ESP_LOGE(TAG, "URL is invalid and/or must be prefixed with 'http://' or 'https://'");
     return false;
   }
   return true;
 }
 
-void OnlineImage::add_on_finished_callback(
-    std::function<void(bool)>&& callback) {
-  this->download_finished_callback_.add(std::move(callback));
-}
-
-void OnlineImage::add_on_error_callback(std::function<void()>&& callback) {
-  this->download_error_callback_.add(std::move(callback));
-}
-
-}  // namespace online_image
+}  // namespace artwork_image
 }  // namespace esphome

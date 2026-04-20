@@ -22,7 +22,7 @@ globals:
     initial_value: "0"
   - id: last_tv_artwork_url
     type: std::string
-    initial_value: '""'
+    initial_value: "\"\""
 
 text_sensor:
   - platform: template
@@ -112,7 +112,7 @@ text_sensor:
                 id: album_art_background_widget
                 opa: 50%
             - lvgl.widget.hide: artwork_error_label
-            - online_image.set_url:
+            - artwork_image.set_url:
                 id: tv_art_background
                 url: !lambda "return id(last_tv_artwork_url);"
 
@@ -164,7 +164,7 @@ text_sensor:
           then:
             - if:
                 condition:
-                  lambda: 'return x == "playing";'
+                  lambda: "return x == \"playing\";"
                 then:
                   - if:
                       condition:

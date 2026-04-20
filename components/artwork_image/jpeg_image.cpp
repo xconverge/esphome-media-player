@@ -1,15 +1,16 @@
 #include "jpeg_image.h"
-#ifdef USE_ONLINE_IMAGE_JPEG_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_JPEG_SUPPORT
 
 #include "esphome/components/display/display_buffer.h"
 #include "esphome/core/application.h"
 #include "esphome/core/helpers.h"
 #include "esphome/core/log.h"
-#include "online_image.h"
-static const char* const TAG = "online_image.jpeg";
+
+#include "artwork_image.h"
+static const char *const TAG = "artwork_image.jpeg";
 
 namespace esphome {
-namespace online_image {
+namespace artwork_image {
 
 /// Custom error manager that longjmps instead of calling exit()
 struct JpegErrorMgr {
@@ -19,7 +20,7 @@ struct JpegErrorMgr {
 };
 
 static void jpeg_error_exit(j_common_ptr cinfo) {
-  auto* err = reinterpret_cast<JpegErrorMgr*>(cinfo->err);
+  auto *err = reinterpret_cast<JpegErrorMgr *>(cinfo->err);
   (*(cinfo->err->format_message))(cinfo, err->message);
   longjmp(err->setjmp_buffer, 1);
 }
@@ -28,9 +29,7 @@ static constexpr size_t MAX_JPEG_DOWNLOAD_SIZE = 2 * 1024 * 1024;  // 2 MB
 
 int JpegDecoder::prepare(size_t download_size) {
   if (download_size > MAX_JPEG_DOWNLOAD_SIZE) {
-    ESP_LOGE(TAG,
-             "JPEG too large to decode: %zu bytes (max %zu). Consider using a "
-             "smaller image URL.",
+    ESP_LOGE(TAG, "JPEG too large to decode: %zu bytes (max %zu). Consider using a smaller image URL.",
              download_size, MAX_JPEG_DOWNLOAD_SIZE);
     return DECODE_ERROR_OUT_OF_MEMORY;
   }
@@ -43,10 +42,9 @@ int JpegDecoder::prepare(size_t download_size) {
   return 0;
 }
 
-int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
+int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
   if (size < this->download_size_) {
-    ESP_LOGV(TAG, "Download not complete. Size: %zu/%zu", size,
-             this->download_size_);
+    ESP_LOGV(TAG, "Download not complete. Size: %zu/%zu", size, this->download_size_);
     return 0;
   }
 
@@ -56,9 +54,8 @@ int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
   cinfo.err = jpeg_std_error(&jerr.pub);
   jerr.pub.error_exit = jpeg_error_exit;
 
-  // Raw pointer for longjmp safety — unique_ptr destructors are skipped by
-  // longjmp
-  uint8_t* row_buffer = nullptr;
+  // Raw pointer for longjmp safety — unique_ptr destructors are skipped by longjmp
+  uint8_t *row_buffer = nullptr;
 
   if (setjmp(jerr.setjmp_buffer)) {
     ESP_LOGE(TAG, "JPEG decode error: %s", jerr.message);
@@ -78,9 +75,9 @@ int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
 
   int src_w = cinfo.image_width;
   int src_h = cinfo.image_height;
-  ESP_LOGD(TAG, "JPEG header: %dx%d, components=%d, progressive=%s", src_w,
-           src_h, cinfo.num_components, cinfo.progressive_mode ? "yes" : "no");
-
+  ESP_LOGD(TAG, "JPEG header: %dx%d, components=%d, progressive=%s",
+           src_w, src_h, cinfo.num_components,
+           cinfo.progressive_mode ? "yes" : "no");
   // Request RGB output regardless of input colorspace
   cinfo.out_color_space = JCS_RGB;
   // Use fast integer IDCT — slightly lower quality but faster on ESP32
@@ -94,8 +91,7 @@ int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
     // libjpeg supports scale_num/scale_denom ratios: 1/1, 1/2, 1/4, 1/8
     // Accept output >= 83% of target — LVGL zoom handles the remaining upscale.
     // This avoids decoding at full resolution when a slightly-smaller IDCT step
-    // is available (e.g. 800→400 via 1/2 instead of 800→800 via 1/1 for a 480
-    // target).
+    // is available (e.g. 800→400 via 1/2 instead of 800→800 via 1/1 for a 480 target).
     int thresh_w = target_w * 5 / 6;
     int thresh_h = target_h * 5 / 6;
     constexpr unsigned int denoms[] = {8, 4, 2, 1};
@@ -121,8 +117,7 @@ int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
   int out_w = cinfo.output_width;
   int out_h = cinfo.output_height;
   if (out_w != src_w || out_h != src_h) {
-    ESP_LOGD(TAG, "Using IDCT downscale: %dx%d -> %dx%d", src_w, src_h, out_w,
-             out_h);
+    ESP_LOGD(TAG, "Using IDCT downscale: %dx%d -> %dx%d", src_w, src_h, out_w, out_h);
   }
 
   if (!this->set_size(out_w, out_h)) {
@@ -134,19 +129,18 @@ int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
 
   // Allocate row buffers (raw pointers — safe across longjmp)
   size_t row_stride = static_cast<size_t>(out_w) * 3;
-  row_buffer = static_cast<uint8_t*>(malloc(row_stride));
+  row_buffer = static_cast<uint8_t *>(malloc(row_stride));
   if (row_buffer == nullptr) {
     jpeg_destroy_decompress(&cinfo);
     return DECODE_ERROR_OUT_OF_MEMORY;
   }
 
-  bool use_rgb565 =
-      (this->image_->image_type() == image::ImageType::IMAGE_TYPE_RGB565);
+  bool use_rgb565 = (this->image_->image_type() == image::ImageType::IMAGE_TYPE_RGB565);
   bool big_endian = this->image_->is_big_endian();
 
   int y = 0;
   while (cinfo.output_scanline < cinfo.output_height) {
-    uint8_t* row_ptr = row_buffer;
+    uint8_t *row_ptr = row_buffer;
     jpeg_read_scanlines(&cinfo, &row_ptr, 1);
 
     if ((y & 63) == 0) {
@@ -158,7 +152,7 @@ int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
       // source buffer, so no separate allocation needed).  We read forward
       // and write forward; the write pointer never overtakes the read
       // pointer because 2 < 3.
-      uint8_t* dst = row_buffer;
+      uint8_t *dst = row_buffer;
       for (int x = 0; x < out_w; x++) {
         uint8_t r = row_buffer[x * 3 + 0];
         uint8_t g = row_buffer[x * 3 + 1];
@@ -177,8 +171,7 @@ int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
     } else {
       // Per-pixel draw for other image types
       for (int x = 0; x < out_w; x++) {
-        Color color(row_buffer[x * 3 + 0], row_buffer[x * 3 + 1],
-                    row_buffer[x * 3 + 2]);
+        Color color(row_buffer[x * 3 + 0], row_buffer[x * 3 + 1], row_buffer[x * 3 + 2]);
         this->draw(x, y, 1, 1, color);
       }
     }
@@ -193,7 +186,7 @@ int HOT JpegDecoder::decode(uint8_t* buffer, size_t size) {
   return size;
 }
 
-}  // namespace online_image
+}  // namespace artwork_image
 }  // namespace esphome
 
-#endif  // USE_ONLINE_IMAGE_JPEG_SUPPORT
+#endif  // USE_ARTWORK_IMAGE_JPEG_SUPPORT

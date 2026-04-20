@@ -1,12 +1,12 @@
 #pragma once
 
 #include "esphome/core/defines.h"
-#ifdef USE_ONLINE_IMAGE_BMP_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_BMP_SUPPORT
 
 #include "image_decoder.h"
 
 namespace esphome {
-namespace online_image {
+namespace artwork_image {
 
 /**
  * @brief Image decoder specialization for PNG images.
@@ -18,7 +18,7 @@ class BmpDecoder : public ImageDecoder {
    *
    * @param display The image to decode the stream into.
    */
-  BmpDecoder(OnlineImage *image) : ImageDecoder(image) {}
+  BmpDecoder(ArtworkImage *image) : ImageDecoder(image) {}
 
   int HOT decode(uint8_t *buffer, size_t size) override;
 
@@ -36,7 +36,7 @@ class BmpDecoder : public ImageDecoder {
   uint8_t padding_bytes_{0};
 };
 
-}  // namespace online_image
+}  // namespace artwork_image
 }  // namespace esphome
 
-#endif  // USE_ONLINE_IMAGE_BMP_SUPPORT
+#endif  // USE_ARTWORK_IMAGE_BMP_SUPPORT

@@ -1,15 +1,15 @@
 #include "png_image.h"
-#ifdef USE_ONLINE_IMAGE_PNG_SUPPORT
+#ifdef USE_ARTWORK_IMAGE_PNG_SUPPORT
 
 #include "esphome/components/display/display_buffer.h"
 #include "esphome/core/application.h"
 #include "esphome/core/helpers.h"
 #include "esphome/core/log.h"
 
-static const char *const TAG = "online_image.png";
+static const char *const TAG = "artwork_image.png";
 
 namespace esphome {
-namespace online_image {
+namespace artwork_image {
 
 /**
  * @brief Callback method that will be called by the PNGLE engine when the basic
@@ -49,7 +49,7 @@ static void draw_callback(pngle_t *pngle, uint32_t x, uint32_t y, uint32_t w, ui
   }
 }
 
-PngDecoder::PngDecoder(OnlineImage *image) : ImageDecoder(image) {
+PngDecoder::PngDecoder(ArtworkImage *image) : ImageDecoder(image) {
   {
     pngle_t *pngle = this->allocator_.allocate(1, PNGLE_T_SIZE);
     if (!pngle) {
@@ -93,13 +93,16 @@ int HOT PngDecoder::decode(uint8_t *buffer, size_t size) {
   auto fed = pngle_feed(this->pngle_, buffer, size);
   if (fed < 0) {
     ESP_LOGE(TAG, "Error decoding image: %s", pngle_error(this->pngle_));
+  } else if (this->has_failed()) {
+    ESP_LOGE(TAG, "PNG decode failed while allocating or sizing the artwork buffer");
+    return DECODE_ERROR_OUT_OF_MEMORY;
   } else {
     this->decoded_bytes_ += fed;
   }
   return fed;
 }
 
-}  // namespace online_image
+}  // namespace artwork_image
 }  // namespace esphome
 
-#endif  // USE_ONLINE_IMAGE_PNG_SUPPORT
+#endif  // USE_ARTWORK_IMAGE_PNG_SUPPORT

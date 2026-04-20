@@ -2,7 +2,7 @@
 #include "esphome/core/color.h"
 
 namespace esphome {
-namespace online_image {
+namespace artwork_image {
 
 enum DecodeError : int {
   DECODE_ERROR_INVALID_TYPE = -1,
@@ -10,7 +10,7 @@ enum DecodeError : int {
   DECODE_ERROR_OUT_OF_MEMORY = -3,
 };
 
-class OnlineImage;
+class ArtworkImage;
 
 /**
  * @brief Class to abstract decoding different image formats.
@@ -22,7 +22,7 @@ class ImageDecoder {
    *
    * @param image The image to decode the stream into.
    */
-  ImageDecoder(OnlineImage *image) : image_(image) {}
+  ImageDecoder(ArtworkImage *image) : image_(image) {}
   virtual ~ImageDecoder() = default;
 
   /**
@@ -58,6 +58,7 @@ class ImageDecoder {
    * @return true if the image was resized, false otherwise.
    */
   bool set_size(int width, int height);
+  bool has_failed() const { return this->failed_; }
 
   /**
    * @brief Fill a rectangle on the display_buffer using the defined color.
@@ -89,13 +90,14 @@ class ImageDecoder {
   bool is_finished() const { return this->decoded_bytes_ == this->download_size_; }
 
  protected:
-  OnlineImage *image_;
+  ArtworkImage *image_;
   // Initializing to 1, to ensure it is distinguishable from initial "decoded_bytes_".
   // Will be overwritten anyway once the download size is known.
   size_t download_size_ = 1;
   size_t decoded_bytes_ = 0;
   double x_scale_ = 1.0;
   double y_scale_ = 1.0;
+  bool failed_{false};
 };
 
 class DownloadBuffer {
@@ -130,5 +132,5 @@ class DownloadBuffer {
   size_t unread_;
 };
 
-}  // namespace online_image
+}  // namespace artwork_image
 }  // namespace esphome
