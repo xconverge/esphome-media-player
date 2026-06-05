@@ -16,7 +16,11 @@ substitutions:
   track_info_duration_default: "5"
   pause_lvgl_on_screen_off: "true"
   clock_screensaver_supported: "true"
-  idle_action_default: "Clock"
+  # When idle (no playback) past the screensaver timeout, turn the screen off
+  # (black) rather than showing the clock. Applies to both day and night idle
+  # actions; tunable per-mode in Home Assistant via "Screen: Day/Night Idle
+  # Action" (options: Clock / Screen Off / Disabled).
+  idle_action_default: "Screen Off"
 
   # Custom settings panel: favorites grid + compact single-speaker volume row.
   # These override the empty/stock defaults in common/device/base.yaml so the
