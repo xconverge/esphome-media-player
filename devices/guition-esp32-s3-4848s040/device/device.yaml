@@ -378,10 +378,11 @@ touchscreen:
               }
             }
           }
-          // Tap: minimal movement anywhere on screen — toggle UI visibility
-          // Excludes the play/pause button area (x:390-462, y:356-428).
-          // If screen was dimmed, just wake it (don't hide the UI).
-          // Only allow hiding the UI when media is actively playing.
+          // Tap: minimal movement anywhere on screen.
+          // Excludes the play/pause button area (x:385-467, y:351-433).
+          // If the screen was dimmed, just wake it. If the now-playing overlay
+          // is hidden, reveal it. Otherwise (overlay + play/pause shown) open
+          // the settings/favorites panel, the same as a swipe-down.
           else if (abs(view_dx) < 20 && abs(view_dy) < 20) {
             int sx = view_x_start;
             int sy = view_y_start;
@@ -395,13 +396,10 @@ touchscreen:
               // UI is hidden — always allow showing it
               id(toggle_ui).execute();
             } else {
-              bool playing;
-              if (id(is_tv_mode)) {
-                playing = id(tv_media_player_state_sensor).has_state() && id(tv_media_player_state_sensor).state == "playing";
-              } else {
-                playing = id(media_player_state_sensor).has_state() && id(media_player_state_sensor).state == "playing";
-              }
-              if (playing) id(toggle_ui).execute();
+              // UI (incl. the play/pause button) is visible — a tap anywhere
+              // except the play/pause button opens the settings/favorites panel,
+              // the same as a swipe-down.
+              id(open_settings_panel).execute();
             }
           }
 
