@@ -27,7 +27,6 @@ substitutions:
   # overrides these in its packages.yaml to drive its own widgets. Keeping the
   # injected lambda code here means the shared scripts never reference IDs a
   # device hasn't defined.
-  shuffle_button_style_apply: ""
   volume_panel_extra_hide: ""
   single_speaker_volume_show: |-
     lv_obj_clear_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);

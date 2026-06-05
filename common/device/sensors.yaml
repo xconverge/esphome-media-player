@@ -44,9 +44,6 @@ globals:
   - id: last_artwork_url
     type: std::string
     initial_value: '""'
-  - id: shuffle_state
-    type: bool
-    initial_value: "false"
 
 # Refresh elapsed time from the last Home Assistant position anchor. The progress
 # bar redraws on a reduced range without LVGL animation, keeping movement light.
@@ -515,17 +512,6 @@ text_sensor:
             lambda: 'return x != "TV" && x != "Line-in" && id(is_tv_mode);'
           then:
             - script.execute: exit_tv_mode
-
-  # Shuffle state from the active media player. The shuffle_state global is
-  # device-agnostic; devices with a shuffle button override
-  # shuffle_button_style_apply to tint it (keeps this shared file generic).
-  - platform: template
-    id: shuffle_sensor
-    on_value:
-      - lambda: |-
-          bool on = (x == "True" || x == "true" || x == "on");
-          id(shuffle_state) = on;
-          ${shuffle_button_style_apply}
 
 sensor:
   - platform: template
