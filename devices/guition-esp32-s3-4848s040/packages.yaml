@@ -45,3 +45,6 @@ packages:
   fonts: !include assets/fonts.yaml
   icons: !include assets/icons.yaml
   button: !include theme/button.yaml
+
+  # Sonos favorites (dynamic playlist buttons in the settings panel)
+  favorites: !include addon/favorites.yaml

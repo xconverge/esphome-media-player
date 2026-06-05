@@ -288,6 +288,7 @@ script:
             lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(fav_volume_card), LV_OBJ_FLAG_HIDDEN);
             return;
           }
 
@@ -323,7 +324,7 @@ script:
           }
           id(speaker_volumes)[0] = volume;
 
-          // Hide speaker card grid, show volume arc
+          // Hide speaker card grid
           lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
           lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
 
@@ -333,12 +334,17 @@ script:
           char buf[8];
           snprintf(buf, sizeof(buf), "%d%%", pct);
           lv_label_set_text(id(volume_pct_label), buf);
+          lv_label_set_text(id(fav_vol_pct), buf);
 
-          lv_obj_clear_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_clear_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_clear_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_clear_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_clear_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
+          // Single-speaker setup: keep the large arc + its controls hidden and
+          // show the compact volume row (fav_volume_card) instead. volume_arc
+          // stays as the hidden state driver for the row's +/- buttons.
+          lv_obj_add_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_clear_flag(id(fav_volume_card), LV_OBJ_FLAG_HIDDEN);
 
   # ---------------------------------------------------------------------------
   # Parse group_members and update the grouped state for each speaker slot.
@@ -406,12 +412,13 @@ script:
     mode: restart
     then:
       - lambda: |-
-          // Hide volume arc widgets when showing multi-speaker grid
+          // Hide volume arc widgets (and the compact row) when showing the grid
           lv_obj_add_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
           lv_obj_add_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
           lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
           lv_obj_add_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
           lv_obj_add_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(fav_volume_card), LV_OBJ_FLAG_HIDDEN);
 
           lv_obj_t *cards[] = {
             id(speaker_card_0), id(speaker_card_1), id(speaker_card_2), id(speaker_card_3),
