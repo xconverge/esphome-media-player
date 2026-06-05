@@ -424,6 +424,11 @@ script:
   - id: toggle_ui
     mode: restart
     then:
+      # This device keeps the now-playing overlay always visible. toggle_ui
+      # therefore only ever *shows* it; the hide path is intentionally removed
+      # so the track-info auto-hide timer (which calls toggle_ui) can never dim
+      # the title/artist/play-pause controls. (web_settings still hides the
+      # overlay directly via web_activity.yaml.)
       - if:
           condition:
             lambda: 'return id(web_settings_active);'
@@ -442,17 +447,6 @@ script:
                 lv_obj_fade_in(id(accent_overlay), 200, 0);
                 lv_obj_fade_in(id(track_info_text), 200, 0);
                 lv_obj_fade_in(id(media_play_pause_button), 200, 0);
-          else:
-            - lambda: 'id(is_ui_hidden) = true;'
-            - lambda: |-
-                lv_obj_fade_out(id(accent_overlay), 300, 0);
-                lv_obj_fade_out(id(track_info_text), 300, 0);
-                lv_obj_fade_out(id(media_play_pause_button), 300, 0);
-            - delay: 400ms
-            - lvgl.widget.hide: accent_overlay
-            - lvgl.widget.hide: track_info_text
-            - lvgl.widget.hide: media_play_pause_button
-            - lvgl.widget.hide: media_artist_label
   # -- Track navigation (horizontal swipe; allowed when playing or paused) --
   - id: swipe_next_track
     mode: single
