@@ -516,18 +516,16 @@ text_sensor:
           then:
             - script.execute: exit_tv_mode
 
-  # Shuffle state from the active media player; tints the shuffle button when on.
+  # Shuffle state from the active media player. The shuffle_state global is
+  # device-agnostic; devices with a shuffle button override
+  # shuffle_button_style_apply to tint it (keeps this shared file generic).
   - platform: template
     id: shuffle_sensor
     on_value:
       - lambda: |-
           bool on = (x == "True" || x == "true" || x == "on");
           id(shuffle_state) = on;
-          if (on) {
-            lv_obj_set_style_bg_color(id(media_shuffle_button), lv_color_make(0xFF, 0x8C, 0x00), 0);
-          } else {
-            lv_obj_set_style_bg_color(id(media_shuffle_button), lv_color_make(0x31, 0x31, 0x31), 0);
-          }
+          ${shuffle_button_style_apply}
 
 sensor:
   - platform: template

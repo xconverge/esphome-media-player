@@ -22,6 +22,20 @@ substitutions:
   screen_schedule_internal: "true"
   ha_config_internal: "false"
 
+  # Device-specific UI hooks. Default to the stock single-speaker volume arc;
+  # a device with a custom settings panel (e.g. guition-esp32-s3-4848s040)
+  # overrides these in its packages.yaml to drive its own widgets. Keeping the
+  # injected lambda code here means the shared scripts never reference IDs a
+  # device hasn't defined.
+  shuffle_button_style_apply: ""
+  volume_panel_extra_hide: ""
+  single_speaker_volume_show: |-
+    lv_obj_clear_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
+
 preferences:
   # The dashboard UI keeps display buffers in external RAM while ESPHome also
   # restores many settings. Avoid the default 1-minute flash flush while the UI

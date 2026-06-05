@@ -18,6 +18,28 @@ substitutions:
   clock_screensaver_supported: "true"
   idle_action_default: "Clock"
 
+  # Custom settings panel: favorites grid + compact single-speaker volume row.
+  # These override the empty/stock defaults in common/device/base.yaml so the
+  # shared speaker_group/sensors scripts drive this device's extra widgets
+  # (fav_volume_card, fav_vol_pct, media_shuffle_button) without other devices
+  # ever referencing IDs they don't define.
+  shuffle_button_style_apply: |-
+    if (on) {
+      lv_obj_set_style_bg_color(id(media_shuffle_button), lv_color_make(0xFF, 0x8C, 0x00), 0);
+    } else {
+      lv_obj_set_style_bg_color(id(media_shuffle_button), lv_color_make(0x31, 0x31, 0x31), 0);
+    }
+  volume_panel_extra_hide: |-
+    lv_obj_add_flag(id(fav_volume_card), LV_OBJ_FLAG_HIDDEN);
+  single_speaker_volume_show: |-
+    lv_label_set_text(id(fav_vol_pct), buf);
+    lv_obj_add_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(id(fav_volume_card), LV_OBJ_FLAG_HIDDEN);
+
   # Setup screens
   setup_content_width: "420"
   setup_pad_row: "16"
