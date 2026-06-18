@@ -20,7 +20,7 @@ globals:
     initial_value: '-1'
 
 external_components:
-  - source: github://jtenniswood/esphome-media-player@main
+  - source: github://xconverge/esphome-media-player@adjust-v2
     components: [artwork_image, mipi_rgb]
     refresh: 1s
 

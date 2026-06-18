@@ -159,7 +159,7 @@ logger:
 
 
 external_components:
-  - source: github://jtenniswood/esphome-media-player@main
+  - source: github://xconverge/esphome-media-player@adjust-v2
     components: [gsl3680]
     refresh: 1s
 
