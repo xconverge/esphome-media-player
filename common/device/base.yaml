@@ -59,7 +59,7 @@ packages:
   network: !include ../addon/network.yaml
   speaker_group: !include ../addon/speaker_group.yaml
   accent_color: !include ../addon/accent_color.yaml
-  firmware_update: !include ../addon/firmware_update.yaml
+  # firmware_update: !include ../addon/firmware_update.yaml
   sensors: !include sensors.yaml
   media_player_select: !include media_player_select.yaml
   linked_sensors: !include linked_sensors.yaml
