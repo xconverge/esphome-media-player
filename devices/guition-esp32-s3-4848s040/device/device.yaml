@@ -149,7 +149,7 @@ psram:
 # The display backlight is controlled via PWM (pulse width modulation).
 # This allows dimming the screen brightness from 0-100%.
 # - pin: GPIO38 controls the backlight
-# - frequency: 20kHz PWM frequency (above visible flicker range)
+# - frequency: 150Hz PWM frequency (above visible flicker range)
 # - min_power: Minimum brightness level (1% - prevents fully dark)
 # - zero_means_zero: When set to 0, backlight turns completely off
 #
@@ -159,7 +159,7 @@ output:
   - platform: ledc
     id: backlight_output
     pin: GPIO38
-    frequency: 20kHz
+    frequency: 150Hz
     min_power: 0.01
     zero_means_zero: true
 
@@ -740,7 +740,7 @@ display:
     color_order: RGB
     # 16 MHz puts the panel refresh near 60 Hz with these timings, which avoids
     # the subtle low-refresh shimmer visible at 6-12 MHz on some panels.
-    pclk_frequency: 16MHz
+    pclk_frequency: 6MHz
     update_interval: never
     auto_clear_enabled: False
     transform:
