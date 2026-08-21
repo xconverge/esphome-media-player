@@ -115,7 +115,7 @@ script:
           variables:
             target: !lambda return id(media_player_entity).state;
           data:
-            shuffle: true
+            shuffle: "true"
           data_template:
             entity_id: "{{ target }}"
       - script.execute: close_settings_panel
