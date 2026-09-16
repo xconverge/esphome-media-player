@@ -7,6 +7,10 @@
 # =============================================================================
 
 
+esphome:
+  includes:
+    - ../../common/addon/posix_tz_runtime.h
+
 globals:
   - id: tz_posix
     type: std::string
@@ -383,7 +387,7 @@ script:
           for (auto& e : tz_table) {
             if (tz_id == e[0] || sel == e[0]) {
               id(tz_posix) = e[1];
-              id(ha_time).set_timezone(e[1]);
+              esphome_media_player::apply_posix_timezone(e[1]);
               setenv("TZ", e[1], 1);
               tzset();
               ESP_LOGI("timezone", "Applied timezone: %s -> %s", sel.c_str(), e[1]);
