@@ -115,6 +115,12 @@ class JPEGFormat(Format):
                 shutil.rmtree(dest_path)
             shutil.copytree(src_path, dest_path)
 
+        # Register via idf_component.yml so ESP-IDF's strict component
+        # requirements (enforced since recent IDF/ESPHome versions) add
+        # libjpeg-turbo-esp32 to the "src" component's REQUIRES list;
+        # otherwise jpeg_image.h's #include <jpeglib.h> fails to resolve.
+        esp32.add_idf_component(name="libjpeg-turbo-esp32", path=dest_path)
+
 
 class PNGFormat(Format):
     def __init__(self):
